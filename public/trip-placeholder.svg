@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Trip image placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E2E8F0"/>
+      <stop offset="100%" stop-color="#CBD5E1"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <path d="M0 520 L300 420 L520 500 L760 380 L1200 460 L1200 800 L0 800 Z" fill="#94A3B8" opacity="0.35"/>
+  <circle cx="220" cy="170" r="58" fill="#F8FAFC" opacity="0.9"/>
+  <path d="M520 560 L700 360 L860 470 L1040 300 L1120 360 L1120 800 L520 800 Z" fill="#64748B" opacity="0.25"/>
+  <g transform="translate(520 285)" fill="#0F766E" opacity="0.85">
+    <rect x="70" y="120" width="180" height="110" rx="14"/>
+    <rect x="88" y="88" width="144" height="44" rx="10"/>
+    <rect x="150" y="52" width="20" height="52" rx="8"/>
+    <circle cx="118" cy="248" r="16" fill="#115E59"/>
+    <circle cx="202" cy="248" r="16" fill="#115E59"/>
+  </g>
+  <text x="600" y="690" text-anchor="middle" fill="#475569" font-family="Arial, sans-serif" font-size="34" font-weight="600">MidTravel</text>
+</svg>

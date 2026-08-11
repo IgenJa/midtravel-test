@@ -1,0 +1,423 @@
+import { createTrip } from "./create-trip";
+
+export const moreTripsEn = [
+  createTrip({
+    id: "4",
+    slug: "greece",
+    title: "Santorini & Athens Discovery",
+    country: "Greece",
+    price: 1290,
+    duration: 6,
+    difficulty: "Easy",
+    featured: true,
+    shortDescription:
+      "Whitewashed villages, volcanic sunsets, and ancient wonders of the Acropolis.",
+    description:
+      "Experience the magic of Greece from the iconic caldera views of Santorini to the historic heart of Athens. Stroll through Oia at golden hour, sail the Aegean, and walk in the footsteps of philosophers beneath the Parthenon.",
+    heroImage:
+      "https://images.unsplash.com/photo-1613395877344-13d4a8e0d325?w=1920&q=80",
+    meetingPoint: "Athens International Airport, Arrivals Hall",
+    programDays: [
+      { title: "Arrival in Athens", description: "Welcome dinner in Plaka with views of the Acropolis." },
+      { title: "Athens Highlights", description: "Acropolis, Parthenon, and the Acropolis Museum." },
+      { title: "Ferry to Santorini", description: "Scenic crossing and evening in Fira." },
+      { title: "Santorini Villages", description: "Oia, Imerovigli, and a wine tasting at sunset." },
+      { title: "Caldera Cruise", description: "Boat trip to volcanic islands and hot springs." },
+      { title: "Departure", description: "Morning at leisure before airport transfer." },
+    ],
+  }),
+  createTrip({
+    id: "5",
+    slug: "portugal",
+    title: "Lisbon & Porto Heritage",
+    country: "Portugal",
+    price: 1380,
+    duration: 7,
+    difficulty: "Easy",
+    shortDescription:
+      "Tile-lined streets, riverfront wine cellars, and Atlantic coastal charm.",
+    description:
+      "Discover Portugal's soul in two magnificent cities. Ride Lisbon's historic trams, taste port wine in Vila Nova de Gaia, and explore colorful neighborhoods where tradition meets modern creativity.",
+    heroImage:
+      "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1920&q=80",
+    meetingPoint: "Lisbon Humberto Delgado Airport, Terminal 1",
+    programDays: [
+      { title: "Arrival in Lisbon", description: "Check-in and evening fado dinner in Alfama." },
+      { title: "Lisbon City Tour", description: "Belém Tower, Jerónimos Monastery, and LX Factory." },
+      { title: "Sintra Day Trip", description: "Pena Palace and the mystical Quinta da Regaleira." },
+      { title: "To Porto", description: "Scenic train north and Ribeira waterfront walk." },
+      { title: "Porto & Douro", description: "Port cellars, São Bento station, and river cruise." },
+      { title: "Braga & Guimarães", description: "Historic northern towns and baroque sanctuaries." },
+      { title: "Departure", description: "Transfer to Porto or Lisbon airport." },
+    ],
+  }),
+  createTrip({
+    id: "6",
+    slug: "france",
+    title: "Provence & French Riviera",
+    country: "France",
+    price: 1950,
+    duration: 8,
+    difficulty: "Moderate",
+    featured: true,
+    shortDescription:
+      "Lavender fields, hilltop villages, and the glamour of the Côte d'Azur.",
+    description:
+      "From the markets of Aix-en-Provence to the azure waters of Nice, this journey captures the art de vivre of southern France. Visit Van Gogh's Arles, the papal city of Avignon, and the cliffside villages of the Riviera.",
+    heroImage:
+      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1920&q=80",
+    meetingPoint: "Marseille Provence Airport, Arrivals",
+    programDays: [
+      { title: "Arrival in Marseille", description: "Welcome dinner in the Old Port district." },
+      { title: "Aix & Luberon", description: "Provencal markets and hilltop villages." },
+      { title: "Avignon", description: "Papal Palace and Pont du Gard aqueduct." },
+      { title: "Arles & Camargue", description: "Roman amphitheater and wild wetlands." },
+      { title: "Nice & Monaco", description: "Promenade des Anglais and Monte Carlo." },
+      { title: "Èze & Cannes", description: "Perfume workshops and coastal viewpoints." },
+      { title: "Free Day", description: "Beach time or optional art museum visits." },
+      { title: "Departure", description: "Airport transfer from Nice." },
+    ],
+  }),
+  createTrip({
+    id: "7",
+    slug: "austria",
+    title: "Vienna & Austrian Alps",
+    country: "Austria",
+    price: 1240,
+    duration: 6,
+    difficulty: "Moderate",
+    shortDescription:
+      "Imperial palaces, alpine lakes, and Sound of Music landscapes.",
+    description:
+      "Combine Vienna's elegance with the natural drama of the Austrian Alps. Attend a classical concert, visit Schönbrunn Palace, and cruise the turquoise waters of Lake Wolfgang.",
+    heroImage:
+      "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=1920&q=80",
+    meetingPoint: "Vienna International Airport, Arrivals",
+    programDays: [
+      { title: "Arrival in Vienna", description: "Evening stroll along the Ringstrasse." },
+      { title: "Imperial Vienna", description: "Schönbrunn, Hofburg, and St. Stephen's Cathedral." },
+      { title: "Salzburg", description: "Mozart's birthplace and Hohensalzburg Fortress." },
+      { title: "Hallstatt", description: "Alpine village and salt mine experience." },
+      { title: "Lake District", description: "Boat ride and mountain panorama viewpoints." },
+      { title: "Departure", description: "Transfer back to Vienna airport." },
+    ],
+  }),
+  createTrip({
+    id: "8",
+    slug: "netherlands",
+    title: "Amsterdam & Dutch Countryside",
+    country: "Netherlands",
+    price: 990,
+    duration: 5,
+    difficulty: "Easy",
+    shortDescription:
+      "Canals, tulip fields, windmills, and world-class museums.",
+    description:
+      "Pedal through Amsterdam's canals, visit the Rijksmuseum and Anne Frank House, then escape to the countryside for tulip season, cheese markets, and iconic Dutch windmills.",
+    heroImage:
+      "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=1920&q=80",
+    meetingPoint: "Amsterdam Schiphol Airport, Arrivals Plaza",
+    programDays: [
+      { title: "Arrival in Amsterdam", description: "Canal cruise and welcome dinner." },
+      { title: "Amsterdam Museums", description: "Rijksmuseum, Van Gogh Museum, and Jordaan district." },
+      { title: "Zaanse Schans", description: "Windmills, clogs, and cheese tasting." },
+      { title: "Keukenhof / Haarlem", description: "Tulip gardens or historic Haarlem old town." },
+      { title: "Departure", description: "Morning market visit and airport transfer." },
+    ],
+  }),
+  createTrip({
+    id: "9",
+    slug: "czech-republic",
+    title: "Prague & Bohemian Castles",
+    country: "Czech Republic",
+    price: 890,
+    duration: 5,
+    difficulty: "Easy",
+    shortDescription:
+      "Gothic spires, medieval squares, and fairytale castles beyond Prague.",
+    description:
+      "Fall in love with Prague's Old Town, Charles Bridge, and Prague Castle, then venture into Bohemia for Cesky Krumlov — one of Europe's most picturesque medieval towns.",
+    heroImage:
+      "https://images.unsplash.com/photo-1541849546-216549ae216d?w=1920&q=80",
+    meetingPoint: "Prague Václav Havel Airport, Terminal 1",
+    programDays: [
+      { title: "Arrival in Prague", description: "Evening walk across Charles Bridge." },
+      { title: "Prague Castle", description: "Castle district, St. Vitus Cathedral, and Mala Strana." },
+      { title: "Old Town", description: "Astronomical Clock, Jewish Quarter, and river cruise." },
+      { title: "Cesky Krumlov", description: "Full-day trip to the UNESCO-listed castle town." },
+      { title: "Departure", description: "Free morning and airport transfer." },
+    ],
+  }),
+  createTrip({
+    id: "10",
+    slug: "iceland",
+    title: "Iceland Ring Road Highlights",
+    country: "Iceland",
+    price: 2190,
+    duration: 7,
+    difficulty: "Challenging",
+    featured: true,
+    shortDescription:
+      "Waterfalls, glaciers, geysers, and midnight sun on the edge of the Arctic.",
+    description:
+      "Explore Iceland's raw natural power along the Golden Circle and south coast. Witness erupting geysers, black sand beaches, glacier lagoons, and soak in the Blue Lagoon before you fly home.",
+    heroImage:
+      "https://images.unsplash.com/photo-1504829857797-ddb29a287b8f?w=1920&q=80",
+    meetingPoint: "Keflavík International Airport, Arrivals",
+    programDays: [
+      { title: "Arrival in Reykjavik", description: "City walk and welcome seafood dinner." },
+      { title: "Golden Circle", description: "Thingvellir, Geysir, and Gullfoss waterfall." },
+      { title: "South Coast", description: "Seljalandsfoss, Skógafoss, and Reynisfjara beach." },
+      { title: "Glacier Lagoon", description: "Jökulsárlón icebergs and Diamond Beach." },
+      { title: "Snaefellsnes Peninsula", description: "Kirkjufell mountain and coastal fishing villages." },
+      { title: "Blue Lagoon", description: "Geothermal spa relaxation before departure." },
+      { title: "Departure", description: "Transfer to Keflavík airport." },
+    ],
+  }),
+  createTrip({
+    id: "11",
+    slug: "norway",
+    title: "Norwegian Fjords Explorer",
+    country: "Norway",
+    price: 2350,
+    duration: 8,
+    difficulty: "Challenging",
+    shortDescription:
+      "Dramatic fjords, scenic railways, and Nordic coastal villages.",
+    description:
+      "Cruise through Norway's deepest fjords, ride the Flåm Railway, and hike to panoramic viewpoints above Bergen. A journey through some of the most spectacular landscapes on Earth.",
+    heroImage:
+      "https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=1920&q=80",
+    meetingPoint: "Bergen Flesland Airport, Arrivals",
+    programDays: [
+      { title: "Arrival in Bergen", description: "Bryggen wharf and funicular to Mount Fløyen." },
+      { title: "Sognefjord Cruise", description: "Full-day fjord cruise through narrow waterways." },
+      { title: "Flåm Railway", description: "One of the world's most scenic train journeys." },
+      { title: "Geirangerfjord", description: "UNESCO fjord viewpoints and waterfall trails." },
+      { title: "Ålesund", description: "Art Nouveau architecture and coastal islands." },
+      { title: "Trolltunga / Hike Day", description: "Guided moderate hike with epic fjord views." },
+      { title: "Oslo Excursion", description: "Viking Ship Museum and Opera House." },
+      { title: "Departure", description: "Transfer to Bergen or Oslo airport." },
+    ],
+  }),
+  createTrip({
+    id: "12",
+    slug: "turkey",
+    title: "Istanbul & Cappadocia",
+    country: "Turkey",
+    price: 1580,
+    duration: 9,
+    difficulty: "Moderate",
+    shortDescription:
+      "Bazaars, Byzantine mosques, fairy chimneys, and hot air balloon skies.",
+    description:
+      "Bridge Europe and Asia in Istanbul, then fly to Cappadocia for underground cities, cave hotels, and an optional sunrise balloon ride over surreal rock formations.",
+    heroImage:
+      "https://images.unsplash.com/photo-1527838832700-5059252407fa?w=1920&q=80",
+    meetingPoint: "Istanbul Airport, International Arrivals",
+    programDays: [
+      { title: "Arrival in Istanbul", description: "Bosphorus dinner cruise at sunset." },
+      { title: "Historic Istanbul", description: "Hagia Sophia, Blue Mosque, and Grand Bazaar." },
+      { title: "Topkapi & Spice Market", description: "Palace treasures and Turkish delight tasting." },
+      { title: "Flight to Cappadocia", description: "Check into cave hotel in Göreme." },
+      { title: "Cappadocia Valleys", description: "Open-air museum and underground city." },
+      { title: "Balloon & Hike", description: "Optional balloon ride and Rose Valley trek." },
+      { title: "Pottery & Villages", description: "Avanos workshops and panoramic viewpoints." },
+      { title: "Return to Istanbul", description: "Free evening in Kadıköy district." },
+      { title: "Departure", description: "Airport transfer from Istanbul." },
+    ],
+  }),
+  createTrip({
+    id: "13",
+    slug: "morocco",
+    title: "Marrakech & Sahara Desert",
+    country: "Morocco",
+    price: 1420,
+    duration: 8,
+    difficulty: "Moderate",
+    shortDescription:
+      "Vibrant souks, riad courtyards, Atlas Mountains, and camel treks at dusk.",
+    description:
+      "Immerse yourself in Morocco's colors and rhythms. Explore Marrakech's medina, cross the High Atlas, and camp under the stars in the Sahara after a sunset camel caravan.",
+    heroImage:
+      "https://images.unsplash.com/photo-1489749791425-33a4a4cb8e10?w=1920&q=80",
+    meetingPoint: "Marrakech Menara Airport, Arrivals",
+    programDays: [
+      { title: "Arrival in Marrakech", description: "Riad check-in and Jemaa el-Fnaa at night." },
+      { title: "Marrakech Medina", description: "Bahia Palace, souks, and Majorelle Garden." },
+      { title: "Atlas Mountains", description: "Berber villages and mountain pass viewpoints." },
+      { title: "To the Sahara", description: "Desert gateway town and traditional dinner." },
+      { title: "Sahara Experience", description: "Camel trek, desert camp, and stargazing." },
+      { title: "Dades & Todra Gorges", description: "Dramatic canyon walks and kasbah visits." },
+      { title: "Ait Ben Haddou", description: "UNESCO ksar and film location tour." },
+      { title: "Departure", description: "Morning hammam option and airport transfer." },
+    ],
+  }),
+  createTrip({
+    id: "14",
+    slug: "scotland",
+    title: "Scottish Highlands & Isles",
+    country: "Scotland",
+    price: 1680,
+    duration: 7,
+    difficulty: "Challenging",
+    shortDescription:
+      "Lochs, whisky distilleries, rugged glens, and Isle of Skye drama.",
+    description:
+      "Trace Scotland's wild beauty from Edinburgh's Royal Mile to the misty peaks of Skye. Visit castles, sample single malt whisky, and hear tales of clans and legends along the way.",
+    heroImage:
+      "https://images.unsplash.com/photo-1506377554403-9d6d218509bf?w=1920&q=80",
+    meetingPoint: "Edinburgh Airport, Arrivals Hall",
+    programDays: [
+      { title: "Arrival in Edinburgh", description: "Castle viewpoint and traditional pub dinner." },
+      { title: "Edinburgh & Stirling", description: "Royal Mile, Holyrood, and Stirling Castle." },
+      { title: "Glencoe", description: "Highland valley drive and Loch Lomond stop." },
+      { title: "Isle of Skye", description: "Old Man of Storr and Fairy Pools hike." },
+      { title: "Whisky & Castles", description: "Distillery tour and Eilean Donan Castle." },
+      { title: "Loch Ness", description: "Urquhart Castle and Inverness evening." },
+      { title: "Departure", description: "Transfer to Edinburgh airport." },
+    ],
+  }),
+  createTrip({
+    id: "15",
+    slug: "switzerland",
+    title: "Swiss Alps Scenic Journey",
+    country: "Switzerland",
+    price: 2490,
+    duration: 6,
+    difficulty: "Moderate",
+    shortDescription:
+      "Glacier Express views, alpine lakes, and chocolate-box mountain towns.",
+    description:
+      "Ride legendary mountain railways, cruise Lake Lucerne, and breathe crisp alpine air in Zermatt beneath the Matterhorn. Switzerland's precision meets nature at its finest.",
+    heroImage:
+      "https://images.unsplash.com/photo-1530122037265-a5fd1f786d24?w=1920&q=80",
+    meetingPoint: "Zurich Airport, Arrivals",
+    programDays: [
+      { title: "Arrival in Zurich", description: "Lakefront walk and Swiss fondue dinner." },
+      { title: "Lucerne", description: "Chapel Bridge, lake cruise, and Mt. Pilatus." },
+      { title: "Interlaken", description: "Jungfrau region viewpoints and alpine village." },
+      { title: "Zermatt", description: "Gornergrat railway and Matterhorn panoramas." },
+      { title: "Bern & Chocolate", description: "Capital old town and chocolate factory visit." },
+      { title: "Departure", description: "Transfer to Zurich airport." },
+    ],
+  }),
+  createTrip({
+    id: "16",
+    slug: "belgium",
+    title: "Bruges & Brussels Charm",
+    country: "Belgium",
+    price: 780,
+    duration: 4,
+    difficulty: "Easy",
+    shortDescription:
+      "Medieval canals, Grand Place grandeur, and world-famous Belgian chocolate.",
+    description:
+      "A compact cultural escape to Belgium's finest cities. Wander Bruges' fairy-tale canals, admire Brussels' Art Nouveau, and indulge in waffles, chocolate, and Trappist beer.",
+    heroImage:
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=80",
+    meetingPoint: "Brussels Zaventem Airport, Arrivals",
+    programDays: [
+      { title: "Arrival in Brussels", description: "Grand Place evening illumination." },
+      { title: "Brussels Highlights", description: "Atomium, EU quarter, and chocolate workshop." },
+      { title: "Bruges Day Trip", description: "Canal boat, Belfry tower, and lace shops." },
+      { title: "Departure", description: "Morning market and airport transfer." },
+    ],
+  }),
+  createTrip({
+    id: "17",
+    slug: "ireland",
+    title: "Wild Atlantic Way",
+    country: "Ireland",
+    price: 1550,
+    duration: 7,
+    difficulty: "Moderate",
+    shortDescription:
+      "Cliffs of Moher, Galway culture, rugged coastlines, and warm pub evenings.",
+    description:
+      "Drive Ireland's legendary Wild Atlantic Way from Dublin to the west coast. Hear live music in Galway, stand atop the Cliffs of Moher, and kiss the Blarney Stone for the gift of eloquence.",
+    heroImage:
+      "https://images.unsplash.com/photo-1590089415225-32f835bc36b3?w=1920&q=80",
+    meetingPoint: "Dublin Airport, Terminal 2 Arrivals",
+    programDays: [
+      { title: "Arrival in Dublin", description: "Temple Bar music and Guinness experience." },
+      { title: "Dublin & Kilkenny", description: "Trinity College, Book of Kells, and medieval Kilkenny." },
+      { title: "Cork & Kinsale", description: "Colorful harbor town and coastal drive." },
+      { title: "Killarney", description: "National Park lakes and Ross Castle." },
+      { title: "Cliffs of Moher", description: "Clifftop walk and Burren limestone landscape." },
+      { title: "Galway", description: "Arts scene, local food, and Connemara day trip." },
+      { title: "Departure", description: "Transfer to Dublin airport." },
+    ],
+  }),
+  createTrip({
+    id: "18",
+    slug: "germany",
+    title: "Bavarian Castles & Munich",
+    country: "Germany",
+    price: 1120,
+    duration: 6,
+    difficulty: "Easy",
+    shortDescription:
+      "Neuschwanstein fairy tales, beer gardens, and Alpine lake serenity.",
+    description:
+      "Discover Bavaria's romantic castles, Munich's lively beer halls, and the crystal-clear waters of Lake Königssee. A perfect introduction to southern Germany's culture and scenery.",
+    heroImage:
+      "https://images.unsplash.com/photo-1467269206134-0da4c2a0d36b?w=1920&q=80",
+    meetingPoint: "Munich Airport, Terminal 2 Arrivals",
+    programDays: [
+      { title: "Arrival in Munich", description: "Marienplatz and welcome beer garden dinner." },
+      { title: "Munich City", description: "Residenz, English Garden, and Viktualienmarkt." },
+      { title: "Neuschwanstein", description: "Fairytale castle and Hohenschwangau visit." },
+      { title: "Berchtesgaden", description: "Königssee boat ride and Eagle's Nest viewpoint." },
+      { title: "Salzburg Excursion", description: "Cross-border day trip to Mozart's city." },
+      { title: "Departure", description: "Airport transfer from Munich." },
+    ],
+  }),
+  createTrip({
+    id: "19",
+    slug: "poland",
+    title: "Krakow & Tatra Mountains",
+    country: "Poland",
+    price: 950,
+    duration: 6,
+    difficulty: "Easy",
+    shortDescription:
+      "Royal Krakow, Wieliczka salt mine, and Zakopane mountain culture.",
+    description:
+      "Explore Poland's cultural jewel Krakow with its grand square and Wawel Castle, descend into the Wieliczka salt mine, and breathe mountain air in the Tatra foothills at Zakopane.",
+    heroImage:
+      "https://images.unsplash.com/photo-1555992336-fb0d2c8b2473?w=1920&q=80",
+    meetingPoint: "Krakow John Paul II Airport, Arrivals",
+    programDays: [
+      { title: "Arrival in Krakow", description: "Old Town square and pierogi dinner." },
+      { title: "Krakow Heritage", description: "Wawel Castle, Kazimierz district, and Schindler's Factory." },
+      { title: "Wieliczka Salt Mine", description: "Underground chapels and chambers tour." },
+      { title: "Auschwitz Memorial", description: "Solemn guided visit with historian." },
+      { title: "Zakopane", description: "Tatra mountain resort and Gubałówka funicular." },
+      { title: "Departure", description: "Free morning and airport transfer." },
+    ],
+  }),
+  createTrip({
+    id: "20",
+    slug: "slovenia",
+    title: "Ljubljana & Lake Bled",
+    country: "Slovenia",
+    price: 1050,
+    duration: 5,
+    difficulty: "Easy",
+    shortDescription:
+      "Storybook lake island, alpine trails, and one of Europe's greenest capitals.",
+    description:
+      "Slovenia packs enormous beauty into a small country. Cruise to Bled's island church, hike Vintgar Gorge, explore Ljubljana's riverside cafés, and taste local honey and wine.",
+    heroImage:
+      "https://images.unsplash.com/photo-1565008576549-57569a49371d?w=1920&q=80",
+    meetingPoint: "Ljubljana Jože Pučnik Airport, Arrivals",
+    programDays: [
+      { title: "Arrival in Ljubljana", description: "Castle hill viewpoint and riverside dinner." },
+      { title: "Ljubljana & Postojna", description: "Capital walking tour and cave adventure." },
+      { title: "Lake Bled", description: "Island church, castle, and cream cake tasting." },
+      { title: "Lake Bohinj", description: "Triglav National Park trails and waterfall." },
+      { title: "Departure", description: "Morning market and airport transfer." },
+    ],
+  }),
+];

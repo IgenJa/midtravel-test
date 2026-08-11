@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MidTravel
 
-## Getting Started
+Next.js travel agency site — **self-hosted on a VPS** (e.g. Rackhost) with Postgres, Better Auth, and Resend.
 
-First, run the development server:
+## Stack
+
+| Layer | Choice |
+|---|---|
+| App | Next.js 16 (`output: "standalone"`) |
+| Hosting | VPS + Docker Compose **or** Node + PM2 + nginx |
+| DB | PostgreSQL on the same VPS (Compose service) |
+| Auth | Better Auth |
+| Email | Resend |
+| Errors | Sentry (optional) |
+
+## Local development
 
 ```bash
+cp .env.example .env
+# Edit DATABASE_URL / secrets
+
+# Option A: Postgres via Docker only
+docker compose up -d db
+
+npm install
+npm run db:migrate
+npm run db:seed
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Production on VPS (recommended: Docker)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Point DNS `A` record to the VPS IP.
+2. Install Docker + Compose on the server.
+3. Clone the repo, create `.env` from `.env.example` (strong `POSTGRES_PASSWORD`, `BETTER_AUTH_SECRET`, Resend keys, public HTTPS URLs).
+4. Start:
 
-## Learn More
+```bash
+docker compose up -d --build
+```
 
-To learn more about Next.js, take a look at the following resources:
+5. Install nginx using [`deploy/nginx.conf`](deploy/nginx.conf), then TLS with Certbot.
+6. Seed admin once:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+docker compose exec app npx tsx prisma/seed.ts
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+App listens on `127.0.0.1:3000` (or `APP_PORT`); nginx terminates HTTPS.
 
-## Deploy on Vercel
+### Updates
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+git pull
+docker compose up -d --build
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Migrations run automatically on container start (`deploy/docker-entrypoint.sh`).
+
+## Production without Docker (PM2)
+
+```bash
+# On the VPS, with Node 22+, Postgres, nginx, PM2 installed
+cp .env.example .env   # configure DATABASE_URL to local Postgres
+chmod +x deploy/pm2-deploy.sh
+./deploy/pm2-deploy.sh
+```
+
+Point nginx to `127.0.0.1:3000` using `deploy/nginx.conf`.
+
+## Useful scripts
+
+| Script | Purpose |
+|---|---|
+| `npm run dev` | Local Next.js |
+| `npm run build` | Prisma generate + production build |
+| `npm run start` | Run production build |
+| `npm run db:migrate` | Dev migrations |
+| `npm run db:migrate:deploy` | Production migrations |
+| `npm run db:seed` | Create/update admin user |
+| `npm run docker:up` | `docker compose up -d --build` |
+| `npm run docker:down` | Stop Compose stack |
+
+## Uploads
+
+Trip/admin images will use `UPLOAD_DIR` (default `./uploads`, Compose volume `uploads_data`). Persist this path on the VPS.
+
+## SEO
+
+- `https://<domain>/sitemap.xml` — localized public pages + published trips
+- `https://<domain>/robots.txt` — blocks admin/profile/auth surfaces
+- JSON-LD: Organization on every locale page, TouristTrip on trip detail
+- Default Open Graph image: `/opengraph-image`
+
+## Handoff / staging
+
+- Client handoff pack (env, accounts, admin, ops): [`docs/HANDOFF.md`](docs/HANDOFF.md)
+- Pre-launch smoke checklist: [`docs/SMOKE_CHECKLIST.md`](docs/SMOKE_CHECKLIST.md)

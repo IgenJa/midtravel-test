@@ -1,26 +1,62 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --teal-50: #f0fdfa;
+  --teal-100: #ccfbf1;
+  --teal-400: #2dd4bf;
+  --teal-500: #14b8a6;
+  --teal-600: #0d9488;
+  --teal-700: #0f766e;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-playfair);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-playfair), Georgia, serif;
+}
+
+::selection {
+  background-color: #ccfbf1;
+  color: #0f766e;
+}
+
+.price-range-thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 1.125rem;
+  width: 1.125rem;
+  border-radius: 9999px;
+  border: 2px solid #ffffff;
+  background: #0d9488;
+  box-shadow: 0 1px 4px rgb(15 23 42 / 0.2);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.price-range-thumb::-moz-range-thumb {
+  height: 1.125rem;
+  width: 1.125rem;
+  border-radius: 9999px;
+  border: 2px solid #ffffff;
+  background: #0d9488;
+  box-shadow: 0 1px 4px rgb(15 23 42 / 0.2);
+  cursor: pointer;
+  pointer-events: auto;
 }

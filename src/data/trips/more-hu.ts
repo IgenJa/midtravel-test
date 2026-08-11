@@ -1,0 +1,435 @@
+import { createTrip } from "./create-trip";
+
+export const moreTripsHu = [
+  createTrip({
+    id: "4",
+    slug: "greece",
+    title: "Szantorini és Athén felfedezése",
+    country: "Görögország",
+    price: 1290,
+    duration: 6,
+    difficulty: "Easy",
+    featured: true,
+    shortDescription:
+      "Fehérre meszelt falvak, vulkáni naplementék és az Akropolisz ősi csodái.",
+    description:
+      "Éld át Görögország varázsát Szantorini ikonikus kaldera-kilátásaitól Athén történelmi szívéig. Sétálj Oiában aranyórakor, hajózz az Égei-tengeren, és járj a filozófusok nyomában a Parthenon alatt.",
+    heroImage:
+      "https://images.unsplash.com/photo-1613395877344-13d4a8e0d325?w=1920&q=80",
+    meetingPoint: "Athén nemzetközi repülőtér, érkezési csarnok",
+    included: [
+      "Központi szállodák",
+      "Napi reggeli",
+      "Vezetett túrák és belépők",
+      "Repülőtéri transzferek",
+    ],
+    notIncluded: [
+      "Nemzetközi repülőjegyek",
+      "Utasbiztosítás",
+      "Személyes kiadások",
+      "Opcionális programok",
+    ],
+    programDays: [
+      { title: "Érkezés Athénba", description: "Üdvözlő vacsora Plakában, kilátással az Akropoliszra." },
+      { title: "Athén látnivalói", description: "Akropolisz, Parthenon és az Akropolisz Múzeum." },
+      { title: "Komp Szantorinire", description: "Festői átkelés és est Fira városában." },
+      { title: "Szantorini falvai", description: "Oia, Imerovigli és borkóstoló naplementekor." },
+      { title: "Kaldera hajóút", description: "Hajókirándulás vulkánszigetekre és termálfürdőkbe." },
+      { title: "Távozás", description: "Reggel szabadprogram, majd transzfer a repülőtérre." },
+    ],
+  }),
+  createTrip({
+    id: "5",
+    slug: "portugal",
+    title: "Lisszabon és Porto öröksége",
+    country: "Portugália",
+    price: 1380,
+    duration: 7,
+    difficulty: "Easy",
+    shortDescription:
+      "Csempeborította utcák, folyóparti borospincék és atlanti parti hangulat.",
+    description:
+      "Fedezd fel Portugália lelkét két nagyszerű városban. Utazz Lisszabon történelmi villamosain, kóstold meg a portói bort Vila Nova de Gaia-ban, és barangolj színes negyedekben.",
+    heroImage:
+      "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1920&q=80",
+    meetingPoint: "Lisszabon Humberto Delgado repülőtér, 1-es terminál",
+    programDays: [
+      { title: "Érkezés Lisszabonba", description: "Bejelentkezés és esti fado vacsora Alfamában." },
+      { title: "Lisszabon városnézés", description: "Belém torony, Jerónimos kolostor és LX Factory." },
+      { title: "Sintra kirándulás", description: "Pena palota és a misztikus Quinta da Regaleira." },
+      { title: "Portóba", description: "Festői vonatút északra és séta a Ribeira parton." },
+      { title: "Porto és Douro", description: "Portói borospincék, São Bento pályaudvar és hajóút." },
+      { title: "Braga és Guimarães", description: "Történelmi északi városok és barokk szentélyek." },
+      { title: "Távozás", description: "Transzfer Porto vagy Lisszabon repülőtérre." },
+    ],
+  }),
+  createTrip({
+    id: "6",
+    slug: "france",
+    title: "Provence és a Francia Riviéra",
+    country: "Franciaország",
+    price: 1950,
+    duration: 8,
+    difficulty: "Moderate",
+    featured: true,
+    shortDescription:
+      "Levendulamezők, dombtetői falvak és a Côte d'Azur ragyogása.",
+    description:
+      "Aix-en-Provence piacaitól Nice azúr vizéig — ez az út megragadja Dél-Franciaország művészetét. Látogasd meg Van Gogh Arles-ét, Avignon pápai városát és a Riviéra sziklafalú faluit.",
+    heroImage:
+      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1920&q=80",
+    meetingPoint: "Marseille Provence repülőtér, érkezések",
+    programDays: [
+      { title: "Érkezés Marseille-be", description: "Üdvözlő vacsora az Ókikötő negyedben." },
+      { title: "Aix és Luberon", description: "Provence-i piacok és dombtetői falvak." },
+      { title: "Avignon", description: "Pápai palota és a Pont du Gard római vízvezeték." },
+      { title: "Arles és Camargue", description: "Római amfiteátrum és vad mocsárvidék." },
+      { title: "Nice és Monaco", description: "Promenade des Anglais és Monte Carlo." },
+      { title: "Èze és Cannes", description: "Parfüm műhelyek és parti kilátópontok." },
+      { title: "Szabadnap", description: "Strandolás vagy opcionális múzeumlátogatás." },
+      { title: "Távozás", description: "Repülőtéri transzfer Nice-ból." },
+    ],
+  }),
+  createTrip({
+    id: "7",
+    slug: "austria",
+    title: "Bécs és az osztrák Alpok",
+    country: "Ausztria",
+    price: 1240,
+    duration: 6,
+    difficulty: "Moderate",
+    shortDescription:
+      "Császári paloták, alpesi tavak és a Sound of Music tájai.",
+    description:
+      "Ötvözd Bécs eleganciáját az osztrák Alpok természeti drámájával. Klasszikus koncert, Schönbrunn palota és hajózás a türkizkék Wolfgang-tavon.",
+    heroImage:
+      "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=1920&q=80",
+    meetingPoint: "Bécs nemzetközi repülőtér, érkezések",
+    programDays: [
+      { title: "Érkezés Bécsbe", description: "Esti séta a Ringstrasse mentén." },
+      { title: "Császári Bécs", description: "Schönbrunn, Hofburg és Szent István-székesegyház." },
+      { title: "Salzburg", description: "Mozart szülővárosa és a Hohensalzburg erőd." },
+      { title: "Hallstatt", description: "Alpesi falu és sóbánya élmény." },
+      { title: "Tóvidék", description: "Hajóút és hegyi panoráma kilátópontok." },
+      { title: "Távozás", description: "Transzfer vissza Bécs repülőtérre." },
+    ],
+  }),
+  createTrip({
+    id: "8",
+    slug: "netherlands",
+    title: "Amszterdam és Holland vidék",
+    country: "Hollandia",
+    price: 990,
+    duration: 5,
+    difficulty: "Easy",
+    shortDescription:
+      "Csatornák, tulipánmezők, szélmalmok és világszínvonalú múzeumok.",
+    description:
+      "Tekerj végig Amszterdam csatornáin, látogasd meg a Rijksmuseumot és az Anne Frank Házat, majd fedezd fel a vidéket tulipánokkal, sajtpiacokkal és ikonikus holland szélmalmokkal.",
+    heroImage:
+      "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=1920&q=80",
+    meetingPoint: "Amszterdam Schiphol repülőtér, érkezési csarnok",
+    programDays: [
+      { title: "Érkezés Amszterdamba", description: "Csatorna hajóút és üdvözlő vacsora." },
+      { title: "Amszterdam múzeumai", description: "Rijksmuseum, Van Gogh Múzeum és Jordaan negyed." },
+      { title: "Zaanse Schans", description: "Szélmalmok, klompenek és sajt kóstoló." },
+      { title: "Keukenhof / Haarlem", description: "Tulipánkert vagy történelmi Haarlem óváros." },
+      { title: "Távozás", description: "Reggeli piac és repülőtéri transzfer." },
+    ],
+  }),
+  createTrip({
+    id: "9",
+    slug: "czech-republic",
+    title: "Prága és cseh várak",
+    country: "Csehország",
+    price: 890,
+    duration: 5,
+    difficulty: "Easy",
+    shortDescription:
+      "Gótikus tornyok, középkori terek és meseszép várak Prágán túl.",
+    description:
+      "Prága Óvárosába, a Károly-hídra és a prágai várba szerelmesedsz, majd Bohemiába utazol Český Krumlov középkori szépségéért.",
+    heroImage:
+      "https://images.unsplash.com/photo-1541849546-216549ae216d?w=1920&q=80",
+    meetingPoint: "Prága Václav Havel repülőtér, 1-es terminál",
+    programDays: [
+      { title: "Érkezés Prágába", description: "Esti séta a Károly-hídon." },
+      { title: "Prágai vár", description: "Várnegyed, Szent Vitus székesegyház és Malá Strana." },
+      { title: "Óváros", description: "Csillagászati óra, zsidó negyed és folyóút." },
+      { title: "Český Krumlov", description: "Egész napos kirándulás az UNESCO várkastély városba." },
+      { title: "Távozás", description: "Szabad reggel és repülőtéri transzfer." },
+    ],
+  }),
+  createTrip({
+    id: "10",
+    slug: "iceland",
+    title: "Izland körút kiemelt állomásai",
+    country: "Izland",
+    price: 2190,
+    duration: 7,
+    difficulty: "Challenging",
+    featured: true,
+    shortDescription:
+      "Vízesések, gleccserek, gejzírek és éjféli nap az Arktisz szélén.",
+    description:
+      "Fedezd fel Izland nyers természeti erejét az Aranykör mentén és a déli parton. Gejzírek, fekete homokos strandok, gleccserlagúnák és a Blue Lagoon pihenő.",
+    heroImage:
+      "https://images.unsplash.com/photo-1504829857797-ddb29a287b8f?w=1920&q=80",
+    meetingPoint: "Keflavík nemzetközi repülőtér, érkezések",
+    programDays: [
+      { title: "Érkezés Reykjavíkba", description: "Városi séta és üdvözlő tengeri vacsora." },
+      { title: "Aranykör", description: "Thingvellir, Geysir és Gullfoss vízesés." },
+      { title: "Déli part", description: "Seljalandsfoss, Skógafoss és Reynisfjara strand." },
+      { title: "Gleccserlagúna", description: "Jökulsárlón jéghegyek és Diamond Beach." },
+      { title: "Snæfellsnes-félsziget", description: "Kirkjufell hegy és parti halászfalvak." },
+      { title: "Blue Lagoon", description: "Geotermikus fürdő relaxáció távozás előtt." },
+      { title: "Távozás", description: "Transzfer Keflavík repülőtérre." },
+    ],
+  }),
+  createTrip({
+    id: "11",
+    slug: "norway",
+    title: "Norvég fjordok felfedezése",
+    country: "Norvégia",
+    price: 2350,
+    duration: 8,
+    difficulty: "Challenging",
+    shortDescription:
+      "Drámai fjordok, festői vasutak és északi parti falvak.",
+    description:
+      "Hajózz Norvégia legmélyebb fjordjain, utazz a Flåm vasúton, és túrázz Bergen feletti panoráma kilátókhoz. A Föld egyik leglátványosabb tájain keresztül.",
+    heroImage:
+      "https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=1920&q=80",
+    meetingPoint: "Bergen Flesland repülőtér, érkezések",
+    programDays: [
+      { title: "Érkezés Bergenbe", description: "Bryggen rakpart és felvonó a Fløyen hegyre." },
+      { title: "Sognefjord hajóút", description: "Egész napos fjord hajóút keskeny vízfolyásokon." },
+      { title: "Flåm vasút", description: "A világ egyik legszebb vasúti útvonala." },
+      { title: "Geirangerfjord", description: "UNESCO fjord kilátók és vízesés ösvények." },
+      { title: "Ålesund", description: "Szecessziós építészet és parti szigetek." },
+      { title: "Trolltunga túranap", description: "Vezetett közepes túra epikus fjord kilátással." },
+      { title: "Oslo kirándulás", description: "Viking Hajó Múzeum és Operaház." },
+      { title: "Távozás", description: "Transzfer Bergen vagy Oslo repülőtérre." },
+    ],
+  }),
+  createTrip({
+    id: "12",
+    slug: "turkey",
+    title: "Isztanbul és Kapadókia",
+    country: "Törökország",
+    price: 1580,
+    duration: 9,
+    difficulty: "Moderate",
+    shortDescription:
+      "Bazárok, bizánci mecsetek, tündérségtornyok és hőlégballon egek.",
+    description:
+      "Kösd össze Európát és Ázsiát Isztanbulban, majd repülj Kapadókiába barlangszállodákért, földalatti városokért és opcionális napfelkelte ballonért.",
+    heroImage:
+      "https://images.unsplash.com/photo-1527838832700-5059252407fa?w=1920&q=80",
+    meetingPoint: "Isztanbul repülőtér, nemzetközi érkezések",
+    programDays: [
+      { title: "Érkezés Isztanbulba", description: "Bosporusz vacsora hajóút naplementekor." },
+      { title: "Történelmi Isztanbul", description: "Hagia Sophia, Kék Mecset és Nagy Bazár." },
+      { title: "Topkapi és fűszerpiac", description: "Palota kincsek és török édesség kóstoló." },
+      { title: "Repülés Kapadókiába", description: "Bejelentkezés barlangszállodába Göreme-ben." },
+      { title: "Kapadókia völgyek", description: "Szabadtéri múzeum és földalatti város." },
+      { title: "Ballon és túra", description: "Opcionális ballonút és Rózsa-völgy túra." },
+      { title: "Fazekas műhelyek", description: "Avanos műhelyek és panoráma kilátók." },
+      { title: "Vissza Isztanbulba", description: "Szabad este Kadıköy negyedben." },
+      { title: "Távozás", description: "Repülőtéri transzfer Isztanbulból." },
+    ],
+  }),
+  createTrip({
+    id: "13",
+    slug: "morocco",
+    title: "Marrákes és a Szahara",
+    country: "Marokkó",
+    price: 1420,
+    duration: 8,
+    difficulty: "Moderate",
+    shortDescription:
+      "Élénk szúkok, riad udvarok, Atlasz-hegység és tevemenet naplementekor.",
+    description:
+      "Merülj el Marokkó színeiben és ritmusában. Fedezd fel Marrákes medináját, keresztüld az Atlaszt, és táborozz a csillagos ég alatt a Szaharában tevekaraván után.",
+    heroImage:
+      "https://images.unsplash.com/photo-1489749791425-33a4a4cb8e10?w=1920&q=80",
+    meetingPoint: "Marrákes Menara repülőtér, érkezések",
+    programDays: [
+      { title: "Érkezés Marrákesbe", description: "Riad bejelentkezés és Jemaa el-Fnaa éjjel." },
+      { title: "Marrákes medina", description: "Bahia palota, szúkok és Majorelle kert." },
+      { title: "Atlasz-hegység", description: "Berber falvak és hegyi hágó kilátók." },
+      { title: "A Szaharába", description: "Sivatagi kapu város és hagyományos vacsora." },
+      { title: "Szahara élmény", description: "Tevemenet, sivatagi tábor és csillagászat." },
+      { title: "Dades és Todra szurdok", description: "Szurdok séták és kasbah látogatások." },
+      { title: "Ait Ben Haddou", description: "UNESCO ksar és filmes helyszín túra." },
+      { title: "Távozás", description: "Opcionális hammam reggel és repülőtéri transzfer." },
+    ],
+  }),
+  createTrip({
+    id: "14",
+    slug: "scotland",
+    title: "Skót-felföld és szigetek",
+    country: "Skócia",
+    price: 1680,
+    duration: 7,
+    difficulty: "Challenging",
+    shortDescription:
+      "Tavak, whisky főzdék, zord völgyek és a Skye sziget drámája.",
+    description:
+      "Kövesd Skócia vad szépségét Edinburgh Királyi útjától Skye ködös csúcsaiig. Várak, single malt whisky és klánok legendái várnak.",
+    heroImage:
+      "https://images.unsplash.com/photo-1506377554403-9d6d218509bf?w=1920&q=80",
+    meetingPoint: "Edinburgh repülőtér, érkezési csarnok",
+    programDays: [
+      { title: "Érkezés Edinburghba", description: "Vár kilátó és hagyományos kocsmai vacsora." },
+      { title: "Edinburgh és Stirling", description: "Royal Mile, Holyrood és Stirling vár." },
+      { title: "Glencoe", description: "Felföldi völgy vezetés és Loch Lomond megálló." },
+      { title: "Skye sziget", description: "Old Man of Storr és Fairy Pools túra." },
+      { title: "Whisky és várak", description: "Főzde túra és Eilean Donan vár." },
+      { title: "Loch Ness", description: "Urquhart vár és Inverness est." },
+      { title: "Távozás", description: "Transzfer Edinburgh repülőtérre." },
+    ],
+  }),
+  createTrip({
+    id: "15",
+    slug: "switzerland",
+    title: "Svájci Alpok panorámaút",
+    country: "Svájc",
+    price: 2490,
+    duration: 6,
+    difficulty: "Moderate",
+    shortDescription:
+      "Gleccervonat kilátások, alpesi tavak és csokoládédoboz hegyi falvak.",
+    description:
+      "Utazz legendás hegyi vasutakon, hajózz a Lucerne-i tavon, és lélegezz friss alpesi levegőt Zermattban a Matterhorn alatt.",
+    heroImage:
+      "https://images.unsplash.com/photo-1530122037265-a5fd1f786d24?w=1920&q=80",
+    meetingPoint: "Zürich repülőtér, érkezések",
+    programDays: [
+      { title: "Érkezés Zürichbe", description: "Tóparti séta és svájci fondü vacsora." },
+      { title: "Luzern", description: "Kápolnahíd, tóhajóút és Pilatus hegy." },
+      { title: "Interlaken", description: "Jungfrau régió kilátók és alpesi falu." },
+      { title: "Zermatt", description: "Gornergrat vasút és Matterhorn panoráma." },
+      { title: "Bern és csokoládé", description: "Főváros óváros és csokoládégyár látogatás." },
+      { title: "Távozás", description: "Transzfer Zürich repülőtérre." },
+    ],
+  }),
+  createTrip({
+    id: "16",
+    slug: "belgium",
+    title: "Brugge és Brüsszel bája",
+    country: "Belgium",
+    price: 780,
+    duration: 4,
+    difficulty: "Easy",
+    shortDescription:
+      "Középkori csatornák, Grand Place nagysága és híres belga csokoládé.",
+    description:
+      "Kompakt kulturális kiruccanás Belgium legszebb városaiba. Brugge tündérmesés csatornái, Brüsszel szecessziós épületei, waffle, csokoládé és trappista sör.",
+    heroImage:
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=80",
+    meetingPoint: "Brüsszel Zaventem repülőtér, érkezések",
+    programDays: [
+      { title: "Érkezés Brüsszelbe", description: "Grand Place esti kivilágítása." },
+      { title: "Brüsszel látnivalói", description: "Atomium, EU negyed és csokoládé műhely." },
+      { title: "Brugge kirándulás", description: "Csatornahajó, harangtorony és csipke boltok." },
+      { title: "Távozás", description: "Reggeli piac és repülőtéri transzfer." },
+    ],
+  }),
+  createTrip({
+    id: "17",
+    slug: "ireland",
+    title: "Vad Atlanti-út",
+    country: "Írország",
+    price: 1550,
+    duration: 7,
+    difficulty: "Moderate",
+    shortDescription:
+      "Moher sziklák, Galway kultúra, zord partvonalak és meleg kocsmai esték.",
+    description:
+      "Vezess végig Írország legendás Vad Atlanti-útján Dublinból a nyugati partig. Élő zene Galwayben, Moher sziklák, és a Blarney kő csókjáért.",
+    heroImage:
+      "https://images.unsplash.com/photo-1590089415225-32f835bc36b3?w=1920&q=80",
+    meetingPoint: "Dublin repülőtér, 2-es terminál érkezések",
+    programDays: [
+      { title: "Érkezés Dublinba", description: "Temple Bar zene és Guinness élmény." },
+      { title: "Dublin és Kilkenny", description: "Trinity College, Book of Kells és középkori Kilkenny." },
+      { title: "Cork és Kinsale", description: "Színes kikötőváros és parti vezetés." },
+      { title: "Killarney", description: "Nemzeti park tavak és Ross kastély." },
+      { title: "Moher sziklák", description: "Sziklafal séta és Burren mészkő táj." },
+      { title: "Galway", description: "Művészeti élet, helyi konyha és Connemara kirándulás." },
+      { title: "Távozás", description: "Transzfer Dublin repülőtérre." },
+    ],
+  }),
+  createTrip({
+    id: "18",
+    slug: "germany",
+    title: "Bajor várak és München",
+    country: "Németország",
+    price: 1120,
+    duration: 6,
+    difficulty: "Easy",
+    shortDescription:
+      "Neuschwanstein mesék, sörkertek és alpesi tó nyugalma.",
+    description:
+      "Fedezd fel Bajorország romantikus várait, München élénk sörtermét és a Königssee kristálytiszta vizét. Tökéletes bevezetés Dél-Németország kultúrájába.",
+    heroImage:
+      "https://images.unsplash.com/photo-1467269206134-0da4c2a0d36b?w=1920&q=80",
+    meetingPoint: "München repülőtér, 2-es terminál érkezések",
+    programDays: [
+      { title: "Érkezés Münchenbe", description: "Marienplatz és üdvözlő sörkert vacsora." },
+      { title: "München város", description: "Residenz, Angol kert és Viktualienmarkt." },
+      { title: "Neuschwanstein", description: "Meseszép vár és Hohenschwangau látogatás." },
+      { title: "Berchtesgaden", description: "Königssee hajóút és Sasfészek kilátó." },
+      { title: "Salzburg kirándulás", description: "Határon átnyúló nap Mozart városában." },
+      { title: "Távozás", description: "Repülőtéri transzfer Münchenből." },
+    ],
+  }),
+  createTrip({
+    id: "19",
+    slug: "poland",
+    title: "Krakkó és a Tátra-hegység",
+    country: "Lengyelország",
+    price: 950,
+    duration: 6,
+    difficulty: "Easy",
+    shortDescription:
+      "Királyi Krakkó, Wieliczka sóbánya és zakopanei hegyi kultúra.",
+    description:
+      "Fedezd fel Lengyelország kulturális gyöngyszemét Krakkót nagy terével és Wawel várral, ereszkedj a Wieliczka sóbányába, és lélegezz hegyi levegőt Zakopane-ban.",
+    heroImage:
+      "https://images.unsplash.com/photo-1555992336-fb0d2c8b2473?w=1920&q=80",
+    meetingPoint: "Krakkó II. János Pál repülőtér, érkezések",
+    programDays: [
+      { title: "Érkezés Krakkóba", description: "Óváros tér és pierogi vacsora." },
+      { title: "Krakkó öröksége", description: "Wawel vár, Kazimierz negyed és Schindler gyára." },
+      { title: "Wieliczka sóbánya", description: "Földalatti kápolnák és termek túra." },
+      { title: "Auschwitz emlékhely", description: "Komoly vezetett látogatás történészsel." },
+      { title: "Zakopane", description: "Tátra hegyi üdülő és Gubałówka felvonó." },
+      { title: "Távozás", description: "Szabad reggel és repülőtéri transzfer." },
+    ],
+  }),
+  createTrip({
+    id: "20",
+    slug: "slovenia",
+    title: "Ljubljana és Bledi-tó",
+    country: "Szlovénia",
+    price: 1050,
+    duration: 5,
+    difficulty: "Easy",
+    shortDescription:
+      "Meseszép tósziget, alpesi ösvények és Európa egyik legzöldebb fővárosa.",
+    description:
+      "Szlovénia hatalmas szépséget rejt kis területen. Hajózz Bled szigettemplomához, túrázz a Vintgar szurdokban, fedezd fel Ljubljana folyóparti kávézóit.",
+    heroImage:
+      "https://images.unsplash.com/photo-1565008576549-57569a49371d?w=1920&q=80",
+    meetingPoint: "Ljubljana Jože Pučnik repülőtér, érkezések",
+    programDays: [
+      { title: "Érkezés Ljubljanába", description: "Várhegy kilátó és folyóparti vacsora." },
+      { title: "Ljubljana és Postojna", description: "Fővárosi séta és barlang kaland." },
+      { title: "Bledi-tó", description: "Szigettemplom, vár és krémes torta kóstoló." },
+      { title: "Bohinji-tó", description: "Triglav Nemzeti Park ösvények és vízesés." },
+      { title: "Távozás", description: "Reggeli piac és repülőtéri transzfer." },
+    ],
+  }),
+];

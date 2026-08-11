@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+README.md
+deploy/nginx.conf
+**/*.md
+.DS_Store
+uploads
+coverage
+.vscode
+.idea
+src/generated/prisma

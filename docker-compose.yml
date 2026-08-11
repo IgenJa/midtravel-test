@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-midtravel}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-midtravel}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-midtravel} -d ${POSTGRES_DB:-midtravel}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      # Optional local access; remove in production if only the app container needs DB.
+      - "${POSTGRES_PORT:-5432}:5432"
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-midtravel}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-midtravel}?schema=public
+      DIRECT_URL: postgresql://${POSTGRES_USER:-midtravel}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-midtravel}?schema=public
+      UPLOAD_DIR: /app/uploads
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+    volumes:
+      - uploads_data:/app/uploads
+    ports:
+      - "${APP_PORT:-3000}:3000"
+
+volumes:
+  postgres_data:
+  uploads_data:

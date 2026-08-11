@@ -1,0 +1,301 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Better Auth ─────────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Profile
+  phone String?
+
+  // Admin plugin
+  role       String    @default("user")
+  banned     Boolean?  @default(false)
+  banReason  String?
+  banExpires DateTime?
+
+  sessions Session[]
+  accounts Account[]
+
+  bookings        Booking[]
+  tripApplications TripApplication[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Admin plugin
+  impersonatedBy String?
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+// ─── Content ─────────────────────────────────────────────────────────────────
+
+enum Difficulty {
+  Easy
+  Moderate
+  Challenging
+}
+
+model Trip {
+  id             String     @id @default(cuid())
+  slug           String     @unique
+  price          Int
+  duration       Int
+  heroImage      String
+  gallery        String[]
+  difficulty     Difficulty @default(Moderate)
+  departureDates DateTime[]
+  featured       Boolean    @default(false)
+  published      Boolean    @default(true)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  translations TripTranslation[]
+  bookings     Booking[]
+  applications TripApplication[]
+
+  @@index([featured, published])
+  @@map("trip")
+}
+
+model TripTranslation {
+  id               String   @id @default(cuid())
+  tripId           String
+  trip             Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  locale           String
+  title            String
+  country          String
+  meetingPoint     String
+  shortDescription String
+  description      String
+  program          Json
+  included         String[]
+  notIncluded      String[]
+  faq              Json
+
+  @@unique([tripId, locale])
+  @@index([locale])
+  @@map("trip_translation")
+}
+
+model TeamMember {
+  id          String   @id @default(cuid())
+  name        String
+  positionHu  String
+  positionEn  String
+  descriptionHu String
+  descriptionEn String
+  photo       String
+  linkedin    String?
+  instagram   String?
+  email       String?
+  sortOrder   Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("team_member")
+}
+
+model Testimonial {
+  id         String   @id @default(cuid())
+  name       String
+  locationHu String
+  locationEn String
+  textHu     String
+  textEn     String
+  rating     Int      @default(5)
+  avatar     String
+  sortOrder  Int      @default(0)
+  published  Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("testimonial")
+}
+
+model SiteContent {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  valueHu   Json?
+  valueEn   Json?
+  updatedAt DateTime @updatedAt
+
+  @@map("site_content")
+}
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@map("site_setting")
+}
+
+// ─── Inbound ─────────────────────────────────────────────────────────────────
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@map("contact_message")
+}
+
+model TripApplication {
+  id               String   @id @default(cuid())
+  fullName         String
+  email            String
+  phone            String
+  participants     Int      @default(1)
+  tripSlug         String
+  tripId           String?
+  trip             Trip?    @relation(fields: [tripId], references: [id], onDelete: SetNull)
+  message          String?
+  requestInsurance Boolean  @default(false)
+  userId           String?
+  user             User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  read             Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  @@index([createdAt])
+  @@map("trip_application")
+}
+
+// ─── Booking / payments / invoices ───────────────────────────────────────────
+
+enum BookingStatus {
+  pending
+  paid
+  cancelled
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  failed
+  refunded
+}
+
+model Booking {
+  id           String        @id @default(cuid())
+  tripId       String
+  trip         Trip          @relation(fields: [tripId], references: [id], onDelete: Restrict)
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  participants Int           @default(1)
+  amount       Int
+  currency     String        @default("EUR")
+  status       BookingStatus @default(pending)
+  customerName String?
+  customerEmail String?
+  customerPhone String?
+  billingAddress String?
+  taxId        String?
+  notes        String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  payments Payment[]
+  invoice  Invoice?
+
+  @@index([userId])
+  @@index([status])
+  @@map("booking")
+}
+
+model Payment {
+  id                    String        @id @default(cuid())
+  bookingId             String
+  booking               Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  amount                Int
+  currency              String        @default("EUR")
+  status                PaymentStatus @default(pending)
+  stripeSessionId       String?       @unique
+  stripePaymentIntentId String?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  @@index([bookingId])
+  @@map("payment")
+}
+
+model Invoice {
+  id              String   @id @default(cuid())
+  bookingId       String   @unique
+  booking         Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  invoiceNumber   String?
+  pdfUrl          String?
+  szamlazzId      String?
+  issuedAt        DateTime?
+  issuedByUserId  String?
+  errorMessage    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("invoice")
+}
