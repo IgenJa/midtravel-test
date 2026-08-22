@@ -1,12 +1,15 @@
+import * as Sentry from "@sentry/nextjs";
 import { prisma } from "@/lib/prisma";
 import type { Locale } from "@/i18n/routing";
 import type { BookingStatus, PaymentStatus } from "@/generated/prisma";
 import {
   bookingConfirmationHtml,
+  bookingConfirmationSubject,
   bookingNotificationHtml,
   getNotifyEmail,
-  sendEmail,
+  sendGuestAndOfficeEmails,
 } from "@/lib/email";
+import { parseLocale, pickLocalizedTitle } from "@/lib/locale";
 
 export type UserBookingListItem = {
   id: string;
@@ -92,51 +95,70 @@ export async function getBookingForPaymentEmail(bookingId: string) {
   });
 }
 
-async function sendBookingPaidEmails(bookingId: string) {
+export async function sendBookingPaidEmails(bookingId: string): Promise<boolean> {
   const booking = await getBookingForPaymentEmail(bookingId);
-  if (!booking) return;
+  if (!booking) return false;
 
-  const tripTitle =
-    booking.trip.translations.find((item) => item.locale === "hu")?.title ??
-    booking.trip.translations.find((item) => item.locale === "en")?.title ??
-    booking.trip.translations[0]?.title ??
-    booking.trip.slug;
+  const locale = parseLocale(booking.locale);
+  const guestTitle = pickLocalizedTitle(
+    booking.trip.translations,
+    locale,
+    booking.trip.slug
+  );
+  const officeTitle = pickLocalizedTitle(
+    booking.trip.translations,
+    "hu",
+    booking.trip.slug
+  );
 
   const name = booking.customerName ?? booking.user.name;
   const email = booking.customerEmail ?? booking.user.email;
   const depositAmount = booking.payments[0]?.amount ?? 0;
 
-  await Promise.all([
-    sendEmail({
+  const status = await sendGuestAndOfficeEmails({
+    guest: {
       to: email,
-      subject: `Foglalás megerősítve — ${tripTitle}`,
+      subject: bookingConfirmationSubject(locale, guestTitle),
       html: bookingConfirmationHtml({
         name,
-        tripTitle,
+        tripTitle: guestTitle,
         participants: booking.participants,
         totalAmount: booking.amount,
         depositAmount,
         currency: booking.currency,
         bookingId: booking.id,
+        locale,
       }),
-    }),
-    sendEmail({
+    },
+    office: {
       to: getNotifyEmail(),
-      subject: `Új fizetett foglalás: ${tripTitle}`,
+      subject: `Új fizetett foglalás: ${officeTitle}`,
       html: bookingNotificationHtml({
         name,
         email,
-        tripTitle,
+        tripTitle: officeTitle,
         tripSlug: booking.trip.slug,
         participants: booking.participants,
         totalAmount: booking.amount,
         depositAmount,
         currency: booking.currency,
         bookingId: booking.id,
+        companionName: booking.companionName,
+        companionPhone: booking.companionPhone,
       }),
       replyTo: email,
-    }),
-  ]);
+    },
+  });
+
+  await prisma.booking.update({
+    where: { id: booking.id },
+    data: {
+      guestEmailStatus: status.guest,
+      officeEmailStatus: status.office,
+    },
+  });
+
+  return status.guest === "sent" && status.office === "sent";
 }
 
 /**
@@ -178,7 +200,18 @@ export async function fulfillPaidStripeSession(input: {
   });
 
   if (transitioned) {
-    await sendBookingPaidEmails(payment.bookingId);
+    try {
+      await sendBookingPaidEmails(payment.bookingId);
+    } catch (error) {
+      Sentry.captureException(error);
+      await prisma.booking.update({
+        where: { id: payment.bookingId },
+        data: {
+          guestEmailStatus: "failed",
+          officeEmailStatus: "failed",
+        },
+      });
+    }
   }
 
   return { bookingId: payment.bookingId, alreadyPaid: !transitioned };

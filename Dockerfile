@@ -38,6 +38,7 @@ COPY --from=builder /app/src/generated ./src/generated
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --chown=nextjs:nodejs deploy/docker-entrypoint.sh ./docker-entrypoint.sh
+COPY --chown=nextjs:nodejs deploy/healthcheck.mjs ./healthcheck.mjs
 
 RUN chmod +x ./docker-entrypoint.sh \
   && mkdir -p /app/uploads \
@@ -45,4 +46,6 @@ RUN chmod +x ./docker-entrypoint.sh \
 
 USER nextjs
 EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD ["node", "healthcheck.mjs"]
 ENTRYPOINT ["/usr/bin/tini", "--", "./docker-entrypoint.sh"]

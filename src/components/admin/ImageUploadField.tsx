@@ -67,7 +67,7 @@ export function ImageUploadField({ label, value, folder, onChange }: Props) {
         {uploading ? t("uploading") : t("uploadImage")}
         <input
           type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+          accept="image/jpeg,image/png,image/webp,image/gif"
           className="hidden"
           onChange={handleFile}
           disabled={uploading}

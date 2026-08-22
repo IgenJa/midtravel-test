@@ -1,3 +1,7 @@
+/**
+ * Direct Prisma inserts — proves the DB schema accepts contact/apply rows.
+ * Prefer `npm run smoke:http` against a running server for a real HTTP check.
+ */
 import "dotenv/config";
 import { prisma } from "../src/lib/prisma";
 

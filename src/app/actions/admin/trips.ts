@@ -6,6 +6,11 @@ import { getSession, isAdminRole } from "@/lib/session";
 import { revalidateTrips } from "@/lib/content/cache";
 import type { Difficulty, Prisma } from "@/generated/prisma";
 import type { TripDay, TripFaq } from "@/types";
+import {
+  MAX_CAPACITY_MAX,
+  OVERBOOK_LIMIT_MAX,
+  parseCapacityField,
+} from "@/lib/trip-capacity";
 
 export type TripTranslationInput = {
   title: string;
@@ -28,6 +33,8 @@ export type TripSaveInput = {
   gallery: string[];
   difficulty: Difficulty;
   departureDates: string[];
+  maxCapacity: number;
+  overbookLimit: number;
   featured: boolean;
   published: boolean;
   hu: TripTranslationInput;
@@ -131,6 +138,14 @@ export async function saveTrip(
   const heroImage = input.heroImage.trim();
   const gallery = cleanLines(input.gallery);
   const departureDates = parseDates(input.departureDates);
+  const maxCapacity = parseCapacityField(input.maxCapacity, {
+    min: 1,
+    max: MAX_CAPACITY_MAX,
+  });
+  const overbookLimit = parseCapacityField(input.overbookLimit, {
+    min: 0,
+    max: OVERBOOK_LIMIT_MAX,
+  });
 
   if (
     !slug ||
@@ -139,6 +154,8 @@ export async function saveTrip(
     price < 0 ||
     !Number.isFinite(duration) ||
     duration < 1 ||
+    maxCapacity == null ||
+    overbookLimit == null ||
     !validateTranslation(input.hu) ||
     !validateTranslation(input.en)
   ) {
@@ -169,6 +186,8 @@ export async function saveTrip(
       gallery: gallery.length > 0 ? gallery : [heroImage],
       difficulty,
       departureDates,
+      maxCapacity,
+      overbookLimit,
       featured: Boolean(input.featured),
       published: Boolean(input.published),
     };

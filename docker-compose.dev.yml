@@ -1,0 +1,7 @@
+# Local only — merged on top of docker-compose.yml when you need host access
+# (`npm run docker:db` or `docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d db`).
+# Production (`docker compose up`) does not load this file, so 5432 stays off the host.
+services:
+  db:
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"

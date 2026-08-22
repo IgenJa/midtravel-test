@@ -60,6 +60,9 @@ export interface TripApplicationFormData {
   tripSlug: string;
   message: string;
   requestInsurance: boolean;
+  hasCompanion: boolean;
+  companionName: string;
+  companionPhone: string;
   acceptPrivacy: boolean;
 }
 

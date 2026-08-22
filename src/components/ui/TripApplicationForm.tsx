@@ -20,6 +20,8 @@ interface FormErrors {
   phone?: string;
   participants?: string;
   tripSlug?: string;
+  companionName?: string;
+  companionPhone?: string;
   acceptPrivacy?: string;
   general?: string;
 }
@@ -37,6 +39,8 @@ interface TripApplicationFormProps {
     country: string;
     duration: number;
     price: number;
+    remainingSeats: number;
+    isFull: boolean;
   }[];
   depositPercent: number;
   stripeEnabled: boolean;
@@ -62,6 +66,9 @@ export function TripApplicationForm({
     tripSlug: defaultTripSlug ?? "",
     message: "",
     requestInsurance: false,
+    hasCompanion: false,
+    companionName: "",
+    companionPhone: "",
     acceptPrivacy: false,
   });
 
@@ -87,6 +94,7 @@ export function TripApplicationForm({
   }
 
   const selectedTrip = trips.find((trip) => trip.slug === formData.tripSlug);
+  const selectedTripFull = Boolean(selectedTrip?.isFull);
   const totalAmount = selectedTrip
     ? selectedTrip.price * Math.max(1, formData.participants || 1)
     : null;
@@ -106,7 +114,20 @@ export function TripApplicationForm({
     if (!data.participants || data.participants < 1) errs.participants = t("errors.participantsMin");
     else if (data.participants > 20) errs.participants = t("errors.participantsMax");
     if (!data.tripSlug) errs.tripSlug = t("errors.tripRequired");
-    if (!data.acceptPrivacy) errs.acceptPrivacy = t("errors.privacyRequired");
+    else if (trips.find((trip) => trip.slug === data.tripSlug)?.isFull) {
+      errs.general = t("errors.tripFull");
+    }
+    if (data.hasCompanion) {
+      if (!data.companionName.trim()) errs.companionName = t("errors.companionNameRequired");
+      else if (data.companionName.trim().length < 2) {
+        errs.companionName = t("errors.companionNameMin");
+      }
+      if (!data.companionPhone.trim()) errs.companionPhone = t("errors.companionPhoneRequired");
+      else if (!/^[\d\s+()-]{7,}$/.test(data.companionPhone)) {
+        errs.companionPhone = t("errors.companionPhoneInvalid");
+      }
+    }
+    if (!data.acceptPrivacy) errs.acceptPrivacy = t("errors.termsRequired");
     return errs;
   };
 
@@ -117,7 +138,7 @@ export function TripApplicationForm({
     }
   ): FormErrors => {
     if (result.code === "PRIVACY_REQUIRED") {
-      return { acceptPrivacy: t("errors.privacyRequired") };
+      return { acceptPrivacy: t("errors.termsRequired") };
     }
     if (result.code === "TRIP_NOT_FOUND") {
       return { tripSlug: t("errors.tripRequired") };
@@ -130,6 +151,15 @@ export function TripApplicationForm({
     }
     if (result.code === "RATE_LIMITED") {
       return { general: t("errors.rateLimited") };
+    }
+    if (result.code === "TRIP_FULL") {
+      return { general: t("errors.tripFull") };
+    }
+    if (result.fieldErrors?.companionName) {
+      return { companionName: t("errors.companionNameRequired") };
+    }
+    if (result.fieldErrors?.companionPhone) {
+      return { companionPhone: t("errors.companionPhoneInvalid") };
     }
     return { general: t("errors.submitFailed") };
   };
@@ -334,6 +364,9 @@ export function TripApplicationForm({
             <option key={trip.slug} value={trip.slug}>
               {trip.title} — {trip.country} ({trip.duration} {tCommon("days")}) ·{" "}
               {formatPrice(trip.price)}
+              {trip.isFull
+                ? ` — ${t("tripFull")}`
+                : ` — ${t("spotsLeft", { count: trip.remainingSeats })}`}
             </option>
           ))}
         </select>
@@ -343,6 +376,17 @@ export function TripApplicationForm({
             {errors.tripSlug}
           </p>
         )}
+        {selectedTrip && !errors.tripSlug ? (
+          <p
+            className={`mt-1 text-sm ${
+              selectedTripFull ? "text-red-600" : "text-slate-500"
+            }`}
+          >
+            {selectedTripFull
+              ? t("tripFull")
+              : t("spotsLeft", { count: selectedTrip.remainingSeats })}
+          </p>
+        ) : null}
       </div>
 
       {depositAmount != null && totalAmount != null && (
@@ -389,6 +433,82 @@ export function TripApplicationForm({
         </span>
       </label>
 
+      <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4">
+        <label className="flex items-start gap-3">
+          <input
+            id="apply-companion"
+            type="checkbox"
+            checked={formData.hasCompanion}
+            onChange={(e) => updateField("hasCompanion", e.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+            aria-controls="apply-companion-fields"
+            aria-expanded={formData.hasCompanion}
+          />
+          <span className="text-sm leading-relaxed text-slate-600">
+            {t("hasCompanion")}
+          </span>
+        </label>
+        <AnimatePresence initial={false}>
+          {formData.hasCompanion && (
+            <motion.div
+              id="apply-companion-fields"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+            >
+              <p className="mt-3 text-sm text-slate-500">{t("companionHint")}</p>
+              <div className="mt-3 grid gap-5 sm:grid-cols-2">
+                <div>
+                  <label
+                    htmlFor="apply-companion-name"
+                    className="mb-2 block text-sm font-medium text-slate-700"
+                  >
+                    {t("companionName")} <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="apply-companion-name"
+                    type="text"
+                    autoComplete="name"
+                    value={formData.companionName}
+                    onChange={(e) => updateField("companionName", e.target.value)}
+                    className={`${inputClasses} ${errors.companionName ? errorInputClasses : ""}`}
+                  />
+                  {errors.companionName && (
+                    <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                      <AlertCircle className="h-3.5 w-3.5" />
+                      {errors.companionName}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label
+                    htmlFor="apply-companion-phone"
+                    className="mb-2 block text-sm font-medium text-slate-700"
+                  >
+                    {t("companionPhone")} <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="apply-companion-phone"
+                    type="tel"
+                    autoComplete="tel"
+                    value={formData.companionPhone}
+                    onChange={(e) => updateField("companionPhone", e.target.value)}
+                    className={`${inputClasses} ${errors.companionPhone ? errorInputClasses : ""}`}
+                  />
+                  {errors.companionPhone && (
+                    <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                      <AlertCircle className="h-3.5 w-3.5" />
+                      {errors.companionPhone}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
       <div>
         <label className="flex items-start gap-3">
           <input
@@ -401,6 +521,10 @@ export function TripApplicationForm({
             {t("acceptPrivacy")}{" "}
             <Link href="/privacy-policy" className="text-teal-600 hover:underline">
               {t("privacyPolicy")}
+            </Link>{" "}
+            {t("and")}{" "}
+            <Link href="/travel-contract" className="text-teal-600 hover:underline">
+              {t("travelContract")}
             </Link>
           </span>
         </label>
@@ -413,7 +537,12 @@ export function TripApplicationForm({
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <Button type="submit" size="lg" disabled={isSubmitting} className="w-full">
+        <Button
+          type="submit"
+          size="lg"
+          disabled={isSubmitting || selectedTripFull}
+          className="w-full"
+        >
           <Send className="h-4 w-4" />
           {submittingMode === "inquire" ? t("submitting") : t("submit")}
         </Button>
@@ -421,7 +550,7 @@ export function TripApplicationForm({
           type="button"
           size="lg"
           variant="secondary"
-          disabled={isSubmitting}
+          disabled={isSubmitting || selectedTripFull}
           className="w-full"
           onClick={handleBook}
         >

@@ -7,16 +7,24 @@
     "build": "prisma generate && next build",
     "start": "next start -H 0.0.0.0 -p 3000",
     "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "smoke:http": "tsx scripts/http-smoke.ts",
+    "smoke:db": "tsx scripts/local-smoke.ts",
     "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed:force": "tsx prisma/seed.ts --force",
     "db:studio": "prisma studio",
     "docker:up": "docker compose up -d --build",
+    "docker:db": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d db",
     "docker:down": "docker compose down",
-    "docker:logs": "docker compose logs -f app"
+    "docker:logs": "docker compose logs -f app",
+    "backup": "bash deploy/backup.sh"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -49,6 +57,7 @@
     "prisma": "^7.9.1",
     "tailwindcss": "^4",
     "tsx": "^4.23.12",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.11"
   }
 }

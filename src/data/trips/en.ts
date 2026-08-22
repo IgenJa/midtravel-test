@@ -1,4 +1,5 @@
 import type { Trip } from "@/types";
+import { tripStockImage } from "./images";
 
 export const tripsEn: Trip[] = [
   {
@@ -13,16 +14,8 @@ export const tripsEn: Trip[] = [
       "From the colorful coast of Cinque Terre to the rolling hills of Tuscany — experience la dolce vita.",
     description:
       "Embark on an unforgettable journey through Italy's most enchanting regions. Wander through medieval villages perched on cliffs, savor world-class cuisine in Florence, and watch the sunset over vineyards in Chianti. This carefully curated tour blends iconic landmarks with hidden gems, giving you an authentic taste of Italian culture, art, and lifestyle.",
-    heroImage:
-      "https://images.unsplash.com/photo-1523906834651-6e2e0b0e0b0b?w=1920&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=800&q=80",
-      "https://images.unsplash.com/photo-1523906834651-6e2e0b0e0b0b?w=800&q=80",
-      "https://images.unsplash.com/photo-1534445867742-43195f401b6c?w=800&q=80",
-      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=80",
-      "https://images.unsplash.com/photo-1529260830195-03bfe6d85605?w=800&q=80",
-      "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80",
-    ],
+    heroImage: tripStockImage("italy"),
+    gallery: [tripStockImage("italy")],
     program: [
       {
         day: 1,
@@ -120,16 +113,8 @@ export const tripsEn: Trip[] = [
       "Crystal-clear Adriatic waters, ancient walled cities, and sun-drenched islands await.",
     description:
       "Discover the breathtaking beauty of Croatia's Dalmatian coast. Sail between idyllic islands, walk the marble streets of Dubrovnik's Old Town, and swim in hidden coves accessible only by boat. This adventure combines cultural exploration with outdoor activities, perfect for travelers who want both relaxation and discovery.",
-    heroImage:
-      "https://images.unsplash.com/photo-1555990793-da0b0b0e0b0b?w=1920&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1555990793-da0b0b0e0b0b?w=800&q=80",
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80",
-      "https://images.unsplash.com/photo-1565008576549-57569a49371d?w=800&q=80",
-      "https://images.unsplash.com/photo-1596436889106-be35e843f974?w=800&q=80",
-      "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&q=80",
-      "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?w=800&q=80",
-    ],
+    heroImage: tripStockImage("croatia"),
+    gallery: [tripStockImage("croatia")],
     program: [
       {
         day: 1,
@@ -221,16 +206,8 @@ export const tripsEn: Trip[] = [
       "Gaudí's masterpieces, flamenco nights, and the soul of southern Spain in one epic journey.",
     description:
       "From the avant-garde architecture of Barcelona to the passionate rhythms of Seville, this tour captures the essence of Spain. Marvel at Gaudí's Sagrada Familia, taste tapas in Madrid's hidden bars, and explore the Alhambra's Moorish splendor. A perfect blend of art, history, gastronomy, and vibrant local culture.",
-    heroImage:
-      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=1920&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=800&q=80",
-      "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&q=80",
-      "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&q=80",
-      "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&q=80",
-      "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=800&q=80",
-      "https://images.unsplash.com/photo-1562883670-4d9d0b8b0b0b?w=800&q=80",
-    ],
+    heroImage: tripStockImage("spain"),
+    gallery: [tripStockImage("spain")],
     program: [
       {
         day: 1,

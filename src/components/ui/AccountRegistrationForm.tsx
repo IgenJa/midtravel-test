@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/routing";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
-import { UserPlus, AlertCircle } from "lucide-react";
+import { UserPlus, AlertCircle, CheckCircle, Mail } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
+import { authClient } from "@/lib/auth-client";
+import type { Locale } from "@/i18n/routing";
 import type { AccountRegistrationFormData } from "@/types";
 
 interface FormErrors {
@@ -26,8 +28,8 @@ const errorInputClasses = "border-red-300 focus:border-red-500 focus:ring-red-50
 
 export function AccountRegistrationForm() {
   const t = useTranslations("accountRegister");
+  const locale = useLocale() as Locale;
   const { register } = useAuth();
-  const router = useRouter();
 
   const [formData, setFormData] = useState<AccountRegistrationFormData>({
     fullName: "",
@@ -39,6 +41,10 @@ export function AccountRegistrationForm() {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent" | "error">(
+    "idle"
+  );
 
   const validateForm = (data: AccountRegistrationFormData): FormErrors => {
     const errs: FormErrors = {};
@@ -66,13 +72,9 @@ export function AccountRegistrationForm() {
 
     try {
       await register(formData);
-      router.push("/profile");
-    } catch (error) {
-      if (error instanceof Error && error.message === "EMAIL_EXISTS") {
-        setErrors({ email: t("errors.emailExists") });
-      } else {
-        setErrors({ general: t("errors.registerFailed") });
-      }
+      setPendingVerification(true);
+    } catch {
+      setErrors({ general: t("errors.registerFailed") });
     } finally {
       setIsSubmitting(false);
     }
@@ -86,7 +88,64 @@ export function AccountRegistrationForm() {
     if (errors[field as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [field]: undefined, general: undefined }));
     }
+    if (pendingVerification) {
+      setPendingVerification(false);
+      setResendState("idle");
+    }
   };
+
+  const handleResendVerification = async () => {
+    if (resendState === "sending") return;
+    setResendState("sending");
+    try {
+      const { error } = await authClient.sendVerificationEmail({
+        email: formData.email.trim().toLowerCase(),
+        callbackURL: `/${locale}/verify-email`,
+      });
+      setResendState(error ? "error" : "sent");
+    } catch {
+      setResendState("error");
+    }
+  };
+
+  if (pendingVerification) {
+    return (
+      <div className="space-y-5">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center gap-3 rounded-xl bg-teal-50 p-4 text-teal-800"
+        >
+          <CheckCircle className="h-5 w-5 shrink-0" />
+          <p className="text-sm font-medium">{t("checkEmail")}</p>
+        </motion.div>
+        <div>
+          <button
+            type="button"
+            onClick={handleResendVerification}
+            disabled={resendState === "sending" || resendState === "sent"}
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-teal-700 underline disabled:no-underline disabled:opacity-70"
+          >
+            <Mail className="h-3.5 w-3.5" />
+            {resendState === "sending"
+              ? t("resendSending")
+              : resendState === "sent"
+                ? t("resendSent")
+                : t("resendVerification")}
+          </button>
+          {resendState === "error" && (
+            <p className="mt-1 text-sm text-red-600">{t("errors.resendFailed")}</p>
+          )}
+        </div>
+        <p className="text-center text-sm text-slate-600">
+          {t("hasAccount")}{" "}
+          <Link href="/login" className="font-semibold text-teal-600 hover:underline">
+            {t("login")}
+          </Link>
+        </p>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5" noValidate>

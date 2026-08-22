@@ -1,4 +1,4 @@
-import { Compass, Sparkles, Headphones, BadgeCheck } from "lucide-react";
+import { Compass, Sparkles, GraduationCap, BadgeCheck } from "lucide-react";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { HomeHero } from "./HomeHero";
@@ -16,7 +16,7 @@ import type { Locale } from "@/i18n/routing";
 const iconMap = {
   compass: Compass,
   sparkles: Sparkles,
-  headphones: Headphones,
+  graduation: GraduationCap,
   badge: BadgeCheck,
 };
 
@@ -137,16 +137,18 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
 
-      <AnimatedSection className="py-20 sm:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow={t("testimonialsEyebrow")}
-            title={t("testimonialsTitle")}
-            description={t("testimonialsDescription")}
-          />
-          <Testimonials testimonials={testimonials} />
-        </div>
-      </AnimatedSection>
+      {testimonials.length > 0 ? (
+        <AnimatedSection className="py-20 sm:py-28">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionHeading
+              eyebrow={t("testimonialsEyebrow")}
+              title={t("testimonialsTitle")}
+              description={t("testimonialsDescription")}
+            />
+            <Testimonials testimonials={testimonials} />
+          </div>
+        </AnimatedSection>
+      ) : null}
 
       <section className="py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

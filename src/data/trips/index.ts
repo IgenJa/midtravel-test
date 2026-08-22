@@ -4,6 +4,7 @@ export {
   getFeaturedTrips,
   getAllTripSlugs,
   getTripOptions,
+  getTripCapacityForSlug,
   getAllTripsForAdmin,
   getTripByIdForAdmin,
   mapTripToLocale,

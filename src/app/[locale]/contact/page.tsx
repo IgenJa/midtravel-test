@@ -5,7 +5,7 @@ import { Hero } from "@/components/ui/Hero";
 import { ContactForm } from "@/components/ui/ContactForm";
 import { Card } from "@/components/ui/Card";
 import { AnimatedSection, FadeIn } from "@/components/ui/AnimatedSection";
-import { getCompany } from "@/data/company";
+import { getResolvedCompany } from "@/lib/content/company";
 import { createMetadata } from "@/lib/seo";
 import type { Locale } from "@/i18n/routing";
 
@@ -29,7 +29,7 @@ export default async function ContactPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("contact");
-  const company = getCompany(locale);
+  const company = await getResolvedCompany(locale);
 
   return (
     <>
@@ -67,7 +67,7 @@ export default async function ContactPage({ params }: Props) {
                   </div>
                   <div>
                     <p className="font-semibold text-slate-900">{t("phone")}</p>
-                    <a href={`tel:${company.phone}`} className="text-teal-600 hover:underline">
+                    <a href={`tel:${company.phoneHref}`} className="text-teal-600 hover:underline">
                       {company.phone}
                     </a>
                   </div>
@@ -120,7 +120,7 @@ export default async function ContactPage({ params }: Props) {
             <div className="relative aspect-[21/9] overflow-hidden rounded-2xl bg-slate-200 ring-1 ring-slate-200">
               <iframe
                 title={t("mapTitle")}
-                src="https://maps.google.com/maps?q=Szeged,Hungary&z=13&output=embed"
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(company.address)}&z=16&output=embed`}
                 className="absolute inset-0 h-full w-full border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

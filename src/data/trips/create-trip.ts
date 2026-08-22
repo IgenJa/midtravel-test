@@ -1,4 +1,5 @@
 import type { Trip } from "@/types";
+import { tripStockImage } from "./images";
 
 export interface TripSeed {
   id: string;
@@ -10,7 +11,6 @@ export interface TripSeed {
   difficulty: Trip["difficulty"];
   shortDescription: string;
   description: string;
-  heroImage: string;
   featured?: boolean;
   programDays: { title: string; description: string }[];
   included?: string[];
@@ -19,6 +19,8 @@ export interface TripSeed {
 }
 
 export function createTrip(seed: TripSeed): Trip {
+  const image = tripStockImage(seed.slug);
+
   return {
     id: seed.id,
     slug: seed.slug,
@@ -30,12 +32,8 @@ export function createTrip(seed: TripSeed): Trip {
     featured: seed.featured,
     shortDescription: seed.shortDescription,
     description: seed.description,
-    heroImage: seed.heroImage,
-    gallery: [
-      seed.heroImage,
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80",
-      "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80",
-    ],
+    heroImage: image,
+    gallery: [image],
     program: seed.programDays.map((day, index) => ({
       day: index + 1,
       title: day.title,

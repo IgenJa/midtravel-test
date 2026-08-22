@@ -10,6 +10,7 @@ deploy/nginx.conf
 **/*.md
 .DS_Store
 uploads
+backups
 coverage
 .vscode
 .idea

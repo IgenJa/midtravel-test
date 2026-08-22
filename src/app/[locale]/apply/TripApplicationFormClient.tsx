@@ -10,6 +10,8 @@ type Props = {
     country: string;
     duration: number;
     price: number;
+    remainingSeats: number;
+    isFull: boolean;
   }[];
   depositPercent: number;
   stripeEnabled: boolean;

@@ -12,6 +12,13 @@ import {
 } from "@/app/actions/admin/trips";
 import type { Difficulty } from "@/generated/prisma";
 import type { TripDay, TripFaq } from "@/types";
+import {
+  DEFAULT_MAX_CAPACITY,
+  DEFAULT_OVERBOOK_LIMIT,
+  MAX_CAPACITY_MAX,
+  OVERBOOK_LIMIT_MAX,
+  type TripCapacitySnapshot,
+} from "@/lib/trip-capacity";
 
 const inputClasses =
   "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 transition-colors placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20";
@@ -37,6 +44,8 @@ export type TripEditorInitial = {
   gallery: string[];
   difficulty: Difficulty;
   departureDates: string[];
+  maxCapacity: number;
+  overbookLimit: number;
   featured: boolean;
   published: boolean;
   hu: TripTranslationInput;
@@ -45,6 +54,7 @@ export type TripEditorInitial = {
 
 type Props = {
   initial?: TripEditorInitial;
+  occupancy?: TripCapacitySnapshot | null;
 };
 
 function linesToText(values: string[]) {
@@ -260,7 +270,7 @@ function TranslationEditor({
   );
 }
 
-export function TripEditorForm({ initial }: Props) {
+export function TripEditorForm({ initial, occupancy }: Props) {
   const t = useTranslations("admin");
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -274,6 +284,8 @@ export function TripEditorForm({ initial }: Props) {
       gallery: [],
       difficulty: "Moderate",
       departureDates: [],
+      maxCapacity: DEFAULT_MAX_CAPACITY,
+      overbookLimit: DEFAULT_OVERBOOK_LIMIT,
       featured: false,
       published: true,
       hu: emptyTranslation(),
@@ -304,6 +316,8 @@ export function TripEditorForm({ initial }: Props) {
       gallery: form.gallery,
       difficulty: form.difficulty,
       departureDates: form.departureDates,
+      maxCapacity: form.maxCapacity,
+      overbookLimit: form.overbookLimit,
       featured: form.featured,
       published: form.published,
       hu: form.hu,
@@ -385,7 +399,59 @@ export function TripEditorForm({ initial }: Props) {
               required
             />
           </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium">
+              {t("fieldMaxCapacity")}
+            </label>
+            <input
+              type="number"
+              min={1}
+              max={MAX_CAPACITY_MAX}
+              className={inputClasses}
+              value={form.maxCapacity}
+              onChange={(e) =>
+                setForm({ ...form, maxCapacity: Number(e.target.value) })
+              }
+              required
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium">
+              {t("fieldOverbookLimit")}
+            </label>
+            <input
+              type="number"
+              min={0}
+              max={OVERBOOK_LIMIT_MAX}
+              className={inputClasses}
+              value={form.overbookLimit}
+              onChange={(e) =>
+                setForm({ ...form, overbookLimit: Number(e.target.value) })
+              }
+              required
+            />
+            <p className="mt-1 text-xs text-slate-500">{t("overbookHint")}</p>
+          </div>
         </div>
+
+        {occupancy ? (
+          <p
+            className={`rounded-xl px-4 py-3 text-sm ${
+              occupancy.isFull
+                ? "bg-red-50 text-red-800"
+                : occupancy.isOverbooked
+                  ? "bg-amber-50 text-amber-800"
+                  : "bg-slate-50 text-slate-700"
+            }`}
+          >
+            {t("occupancySummary", {
+              occupied: occupancy.occupiedSeats,
+              capacity: occupancy.maxCapacity,
+              allowed: occupancy.allowedSeats,
+              remaining: occupancy.remainingSeats,
+            })}
+          </p>
+        ) : null}
 
         <ImageUploadField
           label={t("fieldHeroImage")}

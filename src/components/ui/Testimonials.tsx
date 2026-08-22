@@ -30,7 +30,7 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
             </p>
             <div className="mt-6 flex items-center gap-3">
               <Image
-                src={testimonial.avatar}
+                src={testimonial.avatar || "/profile-placeholder.svg"}
                 alt={testimonial.name}
                 width={48}
                 height={48}

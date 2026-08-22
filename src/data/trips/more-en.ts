@@ -14,8 +14,6 @@ export const moreTripsEn = [
       "Whitewashed villages, volcanic sunsets, and ancient wonders of the Acropolis.",
     description:
       "Experience the magic of Greece from the iconic caldera views of Santorini to the historic heart of Athens. Stroll through Oia at golden hour, sail the Aegean, and walk in the footsteps of philosophers beneath the Parthenon.",
-    heroImage:
-      "https://images.unsplash.com/photo-1613395877344-13d4a8e0d325?w=1920&q=80",
     meetingPoint: "Athens International Airport, Arrivals Hall",
     programDays: [
       { title: "Arrival in Athens", description: "Welcome dinner in Plaka with views of the Acropolis." },
@@ -38,8 +36,6 @@ export const moreTripsEn = [
       "Tile-lined streets, riverfront wine cellars, and Atlantic coastal charm.",
     description:
       "Discover Portugal's soul in two magnificent cities. Ride Lisbon's historic trams, taste port wine in Vila Nova de Gaia, and explore colorful neighborhoods where tradition meets modern creativity.",
-    heroImage:
-      "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1920&q=80",
     meetingPoint: "Lisbon Humberto Delgado Airport, Terminal 1",
     programDays: [
       { title: "Arrival in Lisbon", description: "Check-in and evening fado dinner in Alfama." },
@@ -64,8 +60,6 @@ export const moreTripsEn = [
       "Lavender fields, hilltop villages, and the glamour of the Côte d'Azur.",
     description:
       "From the markets of Aix-en-Provence to the azure waters of Nice, this journey captures the art de vivre of southern France. Visit Van Gogh's Arles, the papal city of Avignon, and the cliffside villages of the Riviera.",
-    heroImage:
-      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1920&q=80",
     meetingPoint: "Marseille Provence Airport, Arrivals",
     programDays: [
       { title: "Arrival in Marseille", description: "Welcome dinner in the Old Port district." },
@@ -90,8 +84,6 @@ export const moreTripsEn = [
       "Imperial palaces, alpine lakes, and Sound of Music landscapes.",
     description:
       "Combine Vienna's elegance with the natural drama of the Austrian Alps. Attend a classical concert, visit Schönbrunn Palace, and cruise the turquoise waters of Lake Wolfgang.",
-    heroImage:
-      "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=1920&q=80",
     meetingPoint: "Vienna International Airport, Arrivals",
     programDays: [
       { title: "Arrival in Vienna", description: "Evening stroll along the Ringstrasse." },
@@ -114,8 +106,6 @@ export const moreTripsEn = [
       "Canals, tulip fields, windmills, and world-class museums.",
     description:
       "Pedal through Amsterdam's canals, visit the Rijksmuseum and Anne Frank House, then escape to the countryside for tulip season, cheese markets, and iconic Dutch windmills.",
-    heroImage:
-      "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=1920&q=80",
     meetingPoint: "Amsterdam Schiphol Airport, Arrivals Plaza",
     programDays: [
       { title: "Arrival in Amsterdam", description: "Canal cruise and welcome dinner." },
@@ -137,8 +127,6 @@ export const moreTripsEn = [
       "Gothic spires, medieval squares, and fairytale castles beyond Prague.",
     description:
       "Fall in love with Prague's Old Town, Charles Bridge, and Prague Castle, then venture into Bohemia for Cesky Krumlov — one of Europe's most picturesque medieval towns.",
-    heroImage:
-      "https://images.unsplash.com/photo-1541849546-216549ae216d?w=1920&q=80",
     meetingPoint: "Prague Václav Havel Airport, Terminal 1",
     programDays: [
       { title: "Arrival in Prague", description: "Evening walk across Charles Bridge." },
@@ -161,8 +149,6 @@ export const moreTripsEn = [
       "Waterfalls, glaciers, geysers, and midnight sun on the edge of the Arctic.",
     description:
       "Explore Iceland's raw natural power along the Golden Circle and south coast. Witness erupting geysers, black sand beaches, glacier lagoons, and soak in the Blue Lagoon before you fly home.",
-    heroImage:
-      "https://images.unsplash.com/photo-1504829857797-ddb29a287b8f?w=1920&q=80",
     meetingPoint: "Keflavík International Airport, Arrivals",
     programDays: [
       { title: "Arrival in Reykjavik", description: "City walk and welcome seafood dinner." },
@@ -186,8 +172,6 @@ export const moreTripsEn = [
       "Dramatic fjords, scenic railways, and Nordic coastal villages.",
     description:
       "Cruise through Norway's deepest fjords, ride the Flåm Railway, and hike to panoramic viewpoints above Bergen. A journey through some of the most spectacular landscapes on Earth.",
-    heroImage:
-      "https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=1920&q=80",
     meetingPoint: "Bergen Flesland Airport, Arrivals",
     programDays: [
       { title: "Arrival in Bergen", description: "Bryggen wharf and funicular to Mount Fløyen." },
@@ -212,8 +196,6 @@ export const moreTripsEn = [
       "Bazaars, Byzantine mosques, fairy chimneys, and hot air balloon skies.",
     description:
       "Bridge Europe and Asia in Istanbul, then fly to Cappadocia for underground cities, cave hotels, and an optional sunrise balloon ride over surreal rock formations.",
-    heroImage:
-      "https://images.unsplash.com/photo-1527838832700-5059252407fa?w=1920&q=80",
     meetingPoint: "Istanbul Airport, International Arrivals",
     programDays: [
       { title: "Arrival in Istanbul", description: "Bosphorus dinner cruise at sunset." },
@@ -239,8 +221,6 @@ export const moreTripsEn = [
       "Vibrant souks, riad courtyards, Atlas Mountains, and camel treks at dusk.",
     description:
       "Immerse yourself in Morocco's colors and rhythms. Explore Marrakech's medina, cross the High Atlas, and camp under the stars in the Sahara after a sunset camel caravan.",
-    heroImage:
-      "https://images.unsplash.com/photo-1489749791425-33a4a4cb8e10?w=1920&q=80",
     meetingPoint: "Marrakech Menara Airport, Arrivals",
     programDays: [
       { title: "Arrival in Marrakech", description: "Riad check-in and Jemaa el-Fnaa at night." },
@@ -265,8 +245,6 @@ export const moreTripsEn = [
       "Lochs, whisky distilleries, rugged glens, and Isle of Skye drama.",
     description:
       "Trace Scotland's wild beauty from Edinburgh's Royal Mile to the misty peaks of Skye. Visit castles, sample single malt whisky, and hear tales of clans and legends along the way.",
-    heroImage:
-      "https://images.unsplash.com/photo-1506377554403-9d6d218509bf?w=1920&q=80",
     meetingPoint: "Edinburgh Airport, Arrivals Hall",
     programDays: [
       { title: "Arrival in Edinburgh", description: "Castle viewpoint and traditional pub dinner." },
@@ -290,8 +268,6 @@ export const moreTripsEn = [
       "Glacier Express views, alpine lakes, and chocolate-box mountain towns.",
     description:
       "Ride legendary mountain railways, cruise Lake Lucerne, and breathe crisp alpine air in Zermatt beneath the Matterhorn. Switzerland's precision meets nature at its finest.",
-    heroImage:
-      "https://images.unsplash.com/photo-1530122037265-a5fd1f786d24?w=1920&q=80",
     meetingPoint: "Zurich Airport, Arrivals",
     programDays: [
       { title: "Arrival in Zurich", description: "Lakefront walk and Swiss fondue dinner." },
@@ -314,8 +290,6 @@ export const moreTripsEn = [
       "Medieval canals, Grand Place grandeur, and world-famous Belgian chocolate.",
     description:
       "A compact cultural escape to Belgium's finest cities. Wander Bruges' fairy-tale canals, admire Brussels' Art Nouveau, and indulge in waffles, chocolate, and Trappist beer.",
-    heroImage:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=80",
     meetingPoint: "Brussels Zaventem Airport, Arrivals",
     programDays: [
       { title: "Arrival in Brussels", description: "Grand Place evening illumination." },
@@ -336,8 +310,6 @@ export const moreTripsEn = [
       "Cliffs of Moher, Galway culture, rugged coastlines, and warm pub evenings.",
     description:
       "Drive Ireland's legendary Wild Atlantic Way from Dublin to the west coast. Hear live music in Galway, stand atop the Cliffs of Moher, and kiss the Blarney Stone for the gift of eloquence.",
-    heroImage:
-      "https://images.unsplash.com/photo-1590089415225-32f835bc36b3?w=1920&q=80",
     meetingPoint: "Dublin Airport, Terminal 2 Arrivals",
     programDays: [
       { title: "Arrival in Dublin", description: "Temple Bar music and Guinness experience." },
@@ -361,8 +333,6 @@ export const moreTripsEn = [
       "Neuschwanstein fairy tales, beer gardens, and Alpine lake serenity.",
     description:
       "Discover Bavaria's romantic castles, Munich's lively beer halls, and the crystal-clear waters of Lake Königssee. A perfect introduction to southern Germany's culture and scenery.",
-    heroImage:
-      "https://images.unsplash.com/photo-1467269206134-0da4c2a0d36b?w=1920&q=80",
     meetingPoint: "Munich Airport, Terminal 2 Arrivals",
     programDays: [
       { title: "Arrival in Munich", description: "Marienplatz and welcome beer garden dinner." },
@@ -385,8 +355,6 @@ export const moreTripsEn = [
       "Royal Krakow, Wieliczka salt mine, and Zakopane mountain culture.",
     description:
       "Explore Poland's cultural jewel Krakow with its grand square and Wawel Castle, descend into the Wieliczka salt mine, and breathe mountain air in the Tatra foothills at Zakopane.",
-    heroImage:
-      "https://images.unsplash.com/photo-1555992336-fb0d2c8b2473?w=1920&q=80",
     meetingPoint: "Krakow John Paul II Airport, Arrivals",
     programDays: [
       { title: "Arrival in Krakow", description: "Old Town square and pierogi dinner." },
@@ -409,8 +377,6 @@ export const moreTripsEn = [
       "Storybook lake island, alpine trails, and one of Europe's greenest capitals.",
     description:
       "Slovenia packs enormous beauty into a small country. Cruise to Bled's island church, hike Vintgar Gorge, explore Ljubljana's riverside cafés, and taste local honey and wine.",
-    heroImage:
-      "https://images.unsplash.com/photo-1565008576549-57569a49371d?w=1920&q=80",
     meetingPoint: "Ljubljana Jože Pučnik Airport, Arrivals",
     programDays: [
       { title: "Arrival in Ljubljana", description: "Castle hill viewpoint and riverside dinner." },

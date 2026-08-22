@@ -7,6 +7,7 @@ import {
   isValidEmail,
   isValidPhone,
   normalizeEmail,
+  parseCompanion,
 } from "@/lib/form-validation";
 import {
   BOOKING_CURRENCY,
@@ -18,7 +19,10 @@ import {
   toStripeUnitAmount,
 } from "@/lib/stripe";
 import type { Locale } from "@/i18n/routing";
+import { parseLocale } from "@/lib/locale";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
+import { isTripCapacityFullError } from "@/lib/trip-capacity";
+import { assertTripHasCapacity } from "@/lib/trip-capacity-db";
 
 export type BookingCheckoutInput = {
   fullName: string;
@@ -28,6 +32,9 @@ export type BookingCheckoutInput = {
   tripSlug: string;
   message: string;
   requestInsurance: boolean;
+  hasCompanion?: boolean;
+  companionName?: string;
+  companionPhone?: string;
   acceptPrivacy: boolean;
   locale?: Locale;
 };
@@ -42,11 +49,19 @@ export type BookingCheckoutResult =
         | "RATE_LIMITED"
         | "AUTH_REQUIRED"
         | "TRIP_NOT_FOUND"
+        | "TRIP_FULL"
         | "STRIPE_NOT_CONFIGURED"
         | "CHECKOUT_FAILED";
       fieldErrors?: Partial<
         Record<
-          "fullName" | "email" | "phone" | "participants" | "tripSlug" | "message",
+          | "fullName"
+          | "email"
+          | "phone"
+          | "participants"
+          | "tripSlug"
+          | "message"
+          | "companionName"
+          | "companionPhone",
           string
         >
       >;
@@ -66,7 +81,7 @@ export async function createBookingCheckout(
   const tripSlug = input.tripSlug.trim();
   const message = input.message.trim() || null;
   const participants = Number(input.participants);
-  const locale = input.locale ?? "hu";
+  const locale = parseLocale(input.locale);
 
   const fieldErrors: NonNullable<
     Extract<BookingCheckoutResult, { ok: false }>["fieldErrors"]
@@ -82,9 +97,18 @@ export async function createBookingCheckout(
   }
   if (!tripSlug) fieldErrors.tripSlug = "tripSlug";
 
+  const companion = parseCompanion(input);
+  if (!companion.ok) {
+    fieldErrors[companion.field] = companion.field;
+  }
+
   if (Object.keys(fieldErrors).length > 0) {
     return { ok: false, code: "VALIDATION", fieldErrors };
   }
+
+  const companionValue = companion.ok
+    ? companion.value
+    : { companionName: null, companionPhone: null };
 
   if (!input.acceptPrivacy) {
     return { ok: false, code: "PRIVACY_REQUIRED" };
@@ -132,49 +156,64 @@ export async function createBookingCheckout(
   const currency = BOOKING_CURRENCY.toUpperCase();
 
   try {
-    const application = await prisma.tripApplication.create({
-      data: {
-        fullName,
-        email,
-        phone,
-        participants,
-        tripSlug,
-        tripId: trip.id,
-        message,
-        requestInsurance: Boolean(input.requestInsurance),
-        userId: session.user.id,
-      },
-    });
+    const { booking, payment } = await prisma.$transaction(async (tx) => {
+      await assertTripHasCapacity(tx, trip.id);
 
-    const booking = await prisma.booking.create({
-      data: {
-        tripId: trip.id,
-        userId: session.user.id,
-        participants,
-        amount: totalAmount,
-        currency,
-        status: "pending",
-        customerName: fullName,
-        customerEmail: email,
-        customerPhone: phone,
-        notes: [
-          message ? `Üzenet: ${message}` : null,
-          input.requestInsurance ? "Utasbiztosítás kérve" : null,
-          `Jelentkezés: ${application.id}`,
-          `Előleg: ${depositPercent}%`,
-        ]
-          .filter(Boolean)
-          .join("\n"),
-      },
-    });
+      const application = await tx.tripApplication.create({
+        data: {
+          fullName,
+          email,
+          phone,
+          participants,
+          tripSlug,
+          tripId: trip.id,
+          message,
+          requestInsurance: Boolean(input.requestInsurance),
+          companionName: companionValue.companionName,
+          companionPhone: companionValue.companionPhone,
+          locale,
+          userId: session.user.id,
+        },
+      });
 
-    const payment = await prisma.payment.create({
-      data: {
-        bookingId: booking.id,
-        amount: depositAmount,
-        currency,
-        status: "pending",
-      },
+      const booking = await tx.booking.create({
+        data: {
+          tripId: trip.id,
+          userId: session.user.id,
+          participants,
+          amount: totalAmount,
+          currency,
+          status: "pending",
+          locale,
+          customerName: fullName,
+          customerEmail: email,
+          customerPhone: phone,
+          companionName: companionValue.companionName,
+          companionPhone: companionValue.companionPhone,
+          notes: [
+            message ? `Üzenet: ${message}` : null,
+            input.requestInsurance ? "Utasbiztosítás kérve" : null,
+            companionValue.companionName
+              ? `Társ (ülőhely): ${companionValue.companionName}${companionValue.companionPhone ? `, ${companionValue.companionPhone}` : ""}`
+              : null,
+            `Jelentkezés: ${application.id}`,
+            `Előleg: ${depositPercent}%`,
+          ]
+            .filter(Boolean)
+            .join("\n"),
+        },
+      });
+
+      const payment = await tx.payment.create({
+        data: {
+          bookingId: booking.id,
+          amount: depositAmount,
+          currency,
+          status: "pending",
+        },
+      });
+
+      return { booking, payment };
     });
 
     const stripe = requireStripe();
@@ -235,6 +274,9 @@ export async function createBookingCheckout(
       bookingId: booking.id,
     };
   } catch (error) {
+    if (isTripCapacityFullError(error)) {
+      return { ok: false, code: "TRIP_FULL" };
+    }
     Sentry.captureException(error);
     if (process.env.NODE_ENV === "development") {
       console.error(

@@ -103,6 +103,8 @@ model Trip {
   gallery        String[]
   difficulty     Difficulty @default(Moderate)
   departureDates DateTime[]
+  maxCapacity    Int        @default(16)
+  overbookLimit  Int        @default(0)
   featured       Boolean    @default(false)
   published      Boolean    @default(true)
   createdAt      DateTime   @default(now())
@@ -193,36 +195,52 @@ model SiteSetting {
 
 // ─── Inbound ─────────────────────────────────────────────────────────────────
 
+enum EmailSendStatus {
+  pending
+  sent
+  failed
+}
+
 model ContactMessage {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  subject   String
-  message   String
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now())
+  id                String          @id @default(cuid())
+  name              String
+  email             String
+  subject           String
+  message           String
+  locale            String          @default("hu")
+  read              Boolean         @default(false)
+  guestEmailStatus  EmailSendStatus @default(pending)
+  officeEmailStatus EmailSendStatus @default(pending)
+  createdAt         DateTime        @default(now())
 
   @@index([createdAt])
+  @@index([officeEmailStatus])
   @@map("contact_message")
 }
 
 model TripApplication {
-  id               String   @id @default(cuid())
-  fullName         String
-  email            String
-  phone            String
-  participants     Int      @default(1)
-  tripSlug         String
-  tripId           String?
-  trip             Trip?    @relation(fields: [tripId], references: [id], onDelete: SetNull)
-  message          String?
-  requestInsurance Boolean  @default(false)
-  userId           String?
-  user             User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  read             Boolean  @default(false)
-  createdAt        DateTime @default(now())
+  id                String          @id @default(cuid())
+  fullName          String
+  email             String
+  phone             String
+  participants      Int             @default(1)
+  tripSlug          String
+  tripId            String?
+  trip              Trip?           @relation(fields: [tripId], references: [id], onDelete: SetNull)
+  message           String?
+  requestInsurance  Boolean         @default(false)
+  companionName     String?
+  companionPhone    String?
+  locale            String          @default("hu")
+  userId            String?
+  user              User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  read              Boolean         @default(false)
+  guestEmailStatus  EmailSendStatus @default(pending)
+  officeEmailStatus EmailSendStatus @default(pending)
+  createdAt         DateTime        @default(now())
 
   @@index([createdAt])
+  @@index([officeEmailStatus])
   @@map("trip_application")
 }
 
@@ -255,16 +273,22 @@ model Booking {
   customerEmail String?
   customerPhone String?
   billingAddress String?
-  taxId        String?
-  notes        String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  taxId             String?
+  notes             String?
+  companionName     String?
+  companionPhone    String?
+  locale            String          @default("hu")
+  guestEmailStatus  EmailSendStatus @default(pending)
+  officeEmailStatus EmailSendStatus @default(pending)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   payments Payment[]
   invoice  Invoice?
 
   @@index([userId])
   @@index([status])
+  @@index([officeEmailStatus])
   @@map("booking")
 }
 

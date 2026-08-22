@@ -12,6 +12,7 @@ import {
   serializeBillingAddress,
   type BillingAddress,
 } from "@/lib/billing-address";
+import { sendBookingPaidEmails } from "@/lib/bookings";
 import { ensureUploadDir } from "@/lib/uploads";
 import {
   isSzamlazzConfigured,
@@ -42,7 +43,8 @@ export type AdminBookingActionResult =
         | "ALREADY_ISSUED"
         | "NOT_CONFIGURED"
         | "MISSING_EXCHANGE_RATE"
-        | "ISSUE_FAILED";
+        | "ISSUE_FAILED"
+        | "RESEND_FAILED";
       message?: string;
     };
 
@@ -310,5 +312,30 @@ export async function issueBookingInvoice(
       },
     });
     return { ok: false, code: "ISSUE_FAILED" };
+  }
+}
+
+export async function resendBookingNotifyEmails(
+  id: string
+): Promise<AdminBookingActionResult> {
+  if (!(await requireAdminSession())) {
+    return { ok: false, code: "UNAUTHORIZED" };
+  }
+
+  const booking = await prisma.booking.findUnique({
+    where: { id },
+    select: { id: true, status: true },
+  });
+  if (!booking) return { ok: false, code: "NOT_FOUND" };
+  if (booking.status !== "paid") return { ok: false, code: "NOT_PAID" };
+
+  try {
+    const sent = await sendBookingPaidEmails(booking.id);
+    revalidateBookingPages();
+    revalidatePath("/[locale]/admin", "layout");
+    return sent ? { ok: true } : { ok: false, code: "RESEND_FAILED" };
+  } catch (error) {
+    Sentry.captureException(error);
+    return { ok: false, code: "RESEND_FAILED" };
   }
 }

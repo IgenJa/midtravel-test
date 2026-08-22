@@ -3,6 +3,8 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { TripRowActions } from "@/components/admin/TripRowActions";
 import { getAllTripsForAdmin } from "@/lib/content/trips";
+import { buildCapacitySnapshot } from "@/lib/trip-capacity";
+import { getOccupiedSeatsByTripIds } from "@/lib/trip-capacity-db";
 import { formatPrice } from "@/lib/utils";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -12,6 +14,7 @@ export default async function AdminTripsPage({ params }: Props) {
   setRequestLocale(locale);
   const t = await getTranslations("admin");
   const trips = await getAllTripsForAdmin();
+  const occupancy = await getOccupiedSeatsByTripIds(trips.map((trip) => trip.id));
 
   return (
     <>
@@ -32,6 +35,7 @@ export default async function AdminTripsPage({ params }: Props) {
               <th className="px-4 py-3 font-semibold">{t("fieldTitle")}</th>
               <th className="px-4 py-3 font-semibold">{t("fieldSlug")}</th>
               <th className="px-4 py-3 font-semibold">{t("fieldPrice")}</th>
+              <th className="px-4 py-3 font-semibold">{t("fieldOccupancy")}</th>
               <th className="px-4 py-3 font-semibold">{t("status")}</th>
               <th className="px-4 py-3 font-semibold">{t("actions")}</th>
             </tr>
@@ -42,6 +46,12 @@ export default async function AdminTripsPage({ params }: Props) {
                 trip.translations.find((item) => item.locale === "hu")?.title ??
                 trip.translations[0]?.title ??
                 trip.slug;
+              const capacity = buildCapacitySnapshot(
+                trip.id,
+                trip.maxCapacity,
+                trip.overbookLimit,
+                occupancy.get(trip.id) ?? 0
+              );
 
               return (
                 <tr key={trip.id} className="border-b border-slate-100">
@@ -56,6 +66,22 @@ export default async function AdminTripsPage({ params }: Props) {
                   <td className="px-4 py-3 text-slate-600">{trip.slug}</td>
                   <td className="px-4 py-3 text-slate-600">
                     {formatPrice(trip.price)}
+                  </td>
+                  <td className="px-4 py-3 text-slate-600">
+                    <span
+                      className={
+                        capacity.isFull
+                          ? "text-red-700"
+                          : capacity.isOverbooked
+                            ? "text-amber-700"
+                            : undefined
+                      }
+                    >
+                      {capacity.occupiedSeats}/{capacity.maxCapacity}
+                      {capacity.overbookLimit > 0
+                        ? ` +${capacity.overbookLimit}`
+                        : ""}
+                    </span>
                   </td>
                   <td className="px-4 py-3">
                     <span
@@ -76,7 +102,7 @@ export default async function AdminTripsPage({ params }: Props) {
             })}
             {trips.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-slate-500">
+                <td colSpan={6} className="px-4 py-8 text-center text-slate-500">
                   {t("emptyTrips")}
                 </td>
               </tr>

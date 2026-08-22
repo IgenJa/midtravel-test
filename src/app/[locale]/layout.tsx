@@ -6,6 +6,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { routing, type Locale } from "@/i18n/routing";
+import { CookieConsentBanner } from "@/components/legal/CookieConsentBanner";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { organizationJsonLd } from "@/lib/json-ld";
 import { createMetadata } from "@/lib/seo";
@@ -13,13 +14,13 @@ import "../globals.css";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   display: "swap",
 });
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   display: "swap",
 });
 
@@ -61,12 +62,15 @@ export default async function LocaleLayout({ children, params }: Props) {
       className={`${playfair.variable} ${dmSans.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-slate-50 text-slate-900">
-        <JsonLd data={organizationJsonLd(locale as Locale)} />
+        <JsonLd data={await organizationJsonLd(locale as Locale)} />
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
             <Navbar />
             <main className="flex-1">{children}</main>
             <Footer />
+            <CookieConsentBanner
+              enabled={Boolean(process.env.NEXT_PUBLIC_SENTRY_DSN)}
+            />
           </AuthProvider>
         </NextIntlClientProvider>
       </body>

@@ -3,6 +3,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { BookingInvoicePanel } from "@/components/admin/BookingInvoicePanel";
+import { EmailDeliveryPanel } from "@/components/admin/EmailDeliveryPanel";
+import { ResendNotifyEmailsButton } from "@/components/admin/ResendNotifyEmailsButton";
 import { prisma } from "@/lib/prisma";
 import { parseBillingAddress } from "@/lib/billing-address";
 import { createMetadata } from "@/lib/seo";
@@ -136,11 +138,55 @@ export default async function AdminBookingDetailPage({ params }: Props) {
         </div>
       </div>
 
+      <div className="mt-4 grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 sm:grid-cols-2">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            {t("fieldCompanion")}
+          </p>
+          {booking.companionName ? (
+            <>
+              <p className="mt-2 font-medium text-slate-900">
+                {booking.companionName}
+              </p>
+              {booking.companionPhone && (
+                <a
+                  href={`tel:${booking.companionPhone}`}
+                  className="text-sm font-medium text-teal-700 hover:text-teal-800"
+                >
+                  {booking.companionPhone}
+                </a>
+              )}
+            </>
+          ) : (
+            <p className="mt-2 text-slate-600">{t("companionNone")}</p>
+          )}
+        </div>
+      </div>
+
       {booking.notes && (
         <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700 whitespace-pre-wrap">
           {booking.notes}
         </div>
       )}
+
+      <EmailDeliveryPanel
+        guestEmailStatus={booking.guestEmailStatus}
+        officeEmailStatus={booking.officeEmailStatus}
+        labels={{
+          guest: t("emailGuestStatus"),
+          office: t("emailOfficeStatus"),
+          pending: t("emailSendStatus.pending"),
+          sent: t("emailSendStatus.sent"),
+          failed: t("emailSendStatus.failed"),
+          warning: t("emailFailedWarning"),
+        }}
+      >
+        {booking.status === "paid" ? (
+          <ResendNotifyEmailsButton kind="booking" id={booking.id} />
+        ) : (
+          <p className="text-sm text-slate-600">{t("emailResendOnlyPaid")}</p>
+        )}
+      </EmailDeliveryPanel>
 
       <BookingInvoicePanel
         bookingId={booking.id}

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
+import { OfficialDocuments } from "@/components/legal/OfficialDocuments";
 import { createMetadata } from "@/lib/seo";
-import { getCompany } from "@/data/company";
+import { getPrivacySupplement } from "@/data/privacy-supplement";
+import { getResolvedCompany } from "@/lib/content/company";
 import type { Locale } from "@/i18n/routing";
 
 type Props = { params: Promise<{ locale: Locale }> };
@@ -25,75 +27,82 @@ export default async function PrivacyPolicyPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("privacy");
-  const company = getCompany(locale);
-
-  const isHu = locale === "hu";
+  const company = await getResolvedCompany(locale);
+  const supplement = getPrivacySupplement(locale, company);
 
   return (
     <div className="py-16 sm:py-24">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <AnimatedSection>
-          <h1 className="font-display text-4xl font-bold text-slate-900">
-            {t("title")}
-          </h1>
-          <p className="mt-4 text-slate-500">{t("lastUpdated")}</p>
+          <div className="grid gap-12 lg:grid-cols-12 lg:items-start">
+            <article className="lg:col-span-8">
+              <h1 className="font-display text-4xl font-bold text-slate-900">
+                {t("title")}
+              </h1>
+              <p className="mt-4 text-slate-500">{supplement.lastUpdated}</p>
+              <p className="mt-6 text-slate-600 leading-relaxed">
+                {supplement.intro}
+              </p>
 
-          <div className="prose prose-slate mt-12 max-w-none space-y-8 text-slate-600">
-            {isHu ? (
-              <>
-                <section>
-                  <h2 className="font-display text-2xl font-bold text-slate-900">1. Bevezetés</h2>
-                  <p className="mt-4 leading-relaxed">
-                    A {company.name} elkötelezett személyes adataid védelme iránt. Ez az adatvédelmi irányelv
-                    ismerteti, hogyan gyűjtjük, használjuk és védjük adataidat, amikor weboldalunkat látogatod
-                    vagy szolgáltatásainkat igénybe veszed.
-                  </p>
-                </section>
-                <section>
-                  <h2 className="font-display text-2xl font-bold text-slate-900">2. Gyűjtött adatok</h2>
-                  <p className="mt-4 leading-relaxed">
-                    Személyes adatokat gyűjtünk, amelyeket önként adsz meg regisztráció, jelentkezés
-                    vagy kapcsolatfelvétel során — például nevet, e-mail címet, telefonszámot és utazási preferenciákat.
-                  </p>
-                </section>
-                <section>
-                  <h2 className="font-display text-2xl font-bold text-slate-900">3. Kapcsolat</h2>
-                  <p className="mt-4 leading-relaxed">
-                    Kérdéseiddel fordulj hozzánk:{" "}
-                    <a href={`mailto:${company.email}`} className="text-teal-600 hover:underline">
-                      {company.email}
-                    </a>
-                  </p>
-                </section>
-              </>
-            ) : (
-              <>
-                <section>
-                  <h2 className="font-display text-2xl font-bold text-slate-900">1. Introduction</h2>
-                  <p className="mt-4 leading-relaxed">
-                    {company.name} is committed to protecting your privacy. This Privacy Policy explains how we
-                    collect, use, disclose, and safeguard your information when you visit our website or use our services.
-                  </p>
-                </section>
-                <section>
-                  <h2 className="font-display text-2xl font-bold text-slate-900">2. Information We Collect</h2>
-                  <p className="mt-4 leading-relaxed">
-                    We may collect personal information you voluntarily provide when registering for a trip,
-                    applying for a journey, or contacting us — including name, email, phone number, and travel preferences.
-                  </p>
-                </section>
-                <section>
-                  <h2 className="font-display text-2xl font-bold text-slate-900">3. Contact Us</h2>
-                  <p className="mt-4 leading-relaxed">
-                    If you have questions about this Privacy Policy, please contact us at{" "}
-                    <a href={`mailto:${company.email}`} className="text-teal-600 hover:underline">
-                      {company.email}
-                    </a>
-                  </p>
-                </section>
-              </>
-            )}
+              <div className="mt-12 space-y-10">
+                {supplement.sections.map((section) => (
+                  <section
+                    key={section.title}
+                    id={section.id}
+                    className={section.id ? "scroll-mt-28" : undefined}
+                  >
+                    <h2 className="font-display text-2xl font-bold text-slate-900">
+                      {section.title}
+                    </h2>
+                    {section.paragraphs.map((paragraph, index) => (
+                      <p
+                        key={`${section.title}-${index}`}
+                        className="mt-4 text-slate-600 leading-relaxed"
+                      >
+                        {paragraph}
+                      </p>
+                    ))}
+                  </section>
+                ))}
+              </div>
+            </article>
+
+            <aside className="lg:sticky lg:top-24 lg:col-span-4">
+              <h2 className="font-display text-lg font-bold text-slate-900">
+                {t("documentsHeading")}
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                {t("documentsIntro")}
+              </p>
+              <ul className="mt-5 space-y-3">
+                <li>
+                  <a
+                    href="#adatkezelesi-tajekoztato"
+                    className="block rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-teal-700 transition-colors hover:border-teal-200 hover:bg-teal-50"
+                  >
+                    {t("privacyPdfTitle")}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#utazasi-szerzodes"
+                    className="block rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-teal-700 transition-colors hover:border-teal-200 hover:bg-teal-50"
+                  >
+                    {t("contractPdfTitle")}
+                  </a>
+                </li>
+              </ul>
+            </aside>
           </div>
+
+          <OfficialDocuments
+            documentsHeading={t("documentsHeading")}
+            privacyTitle={t("privacyPdfTitle")}
+            privacyCaption={t("privacyPdfCaption")}
+            contractTitle={t("contractPdfTitle")}
+            contractCaption={t("contractPdfCaption")}
+            downloadLabel={t("downloadPdf")}
+          />
         </AnimatedSection>
       </div>
     </div>

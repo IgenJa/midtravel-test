@@ -40,7 +40,7 @@ export async function saveTestimonial(
   const locationEn = input.locationEn.trim();
   const textHu = input.textHu.trim();
   const textEn = input.textEn.trim();
-  const avatar = input.avatar.trim();
+  const avatar = input.avatar.trim() || "/profile-placeholder.svg";
   const rating = Math.round(Number(input.rating));
 
   if (
@@ -49,7 +49,6 @@ export async function saveTestimonial(
     !locationEn ||
     !textHu ||
     !textEn ||
-    !avatar ||
     !Number.isFinite(rating) ||
     rating < 1 ||
     rating > 5

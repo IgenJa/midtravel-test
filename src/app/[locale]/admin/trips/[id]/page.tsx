@@ -6,6 +6,7 @@ import {
   type TripEditorInitial,
 } from "@/components/admin/TripEditorForm";
 import { getTripByIdForAdmin } from "@/lib/content/trips";
+import { getTripCapacitySnapshot } from "@/lib/trip-capacity-db";
 import type { TripDay, TripFaq } from "@/types";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
@@ -26,6 +27,7 @@ export default async function AdminEditTripPage({ params }: Props) {
   const t = await getTranslations("admin");
   const trip = await getTripByIdForAdmin(id);
   if (!trip) notFound();
+  const occupancy = await getTripCapacitySnapshot(trip.id);
 
   const hu = trip.translations.find((item) => item.locale === "hu");
   const en = trip.translations.find((item) => item.locale === "en");
@@ -41,6 +43,8 @@ export default async function AdminEditTripPage({ params }: Props) {
     departureDates: trip.departureDates.map((date) =>
       date.toISOString().slice(0, 10)
     ),
+    maxCapacity: trip.maxCapacity,
+    overbookLimit: trip.overbookLimit,
     featured: trip.featured,
     published: trip.published,
     hu: {
@@ -76,7 +80,7 @@ export default async function AdminEditTripPage({ params }: Props) {
         align="left"
       />
       <div className="mt-8">
-        <TripEditorForm initial={initial} />
+        <TripEditorForm initial={initial} occupancy={occupancy} />
       </div>
     </>
   );

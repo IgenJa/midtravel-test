@@ -6,6 +6,7 @@ import {
   MapPin,
   Mountain,
   Check,
+  Users,
   X,
   ArrowRight,
 } from "lucide-react";
@@ -16,7 +17,7 @@ import { FaqAccordion } from "@/components/ui/FaqAccordion";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { AnimatedSection, FadeIn } from "@/components/ui/AnimatedSection";
-import { getTripBySlug, getAllTripSlugs } from "@/data/trips";
+import { getTripBySlug, getAllTripSlugs, getTripCapacityForSlug } from "@/data/trips";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { touristTripJsonLd } from "@/lib/json-ld";
 import { createMetadata } from "@/lib/seo";
@@ -70,6 +71,7 @@ export default async function TripDetailPage({ params }: Props) {
   const tCommon = await getTranslations("common");
 
   if (!trip) notFound();
+  const capacity = await getTripCapacityForSlug(trip.slug);
 
   return (
     <>
@@ -79,7 +81,7 @@ export default async function TripDetailPage({ params }: Props) {
         subtitle={trip.shortDescription}
         image={trip.heroImage}
         ctaPrimary={{
-          label: t("applyForTrip"),
+          label: capacity?.isFull ? t("tripFull") : t("applyForTrip"),
           href: `/apply?trip=${trip.slug}`,
         }}
         compact
@@ -232,15 +234,33 @@ export default async function TripDetailPage({ params }: Props) {
                       {getDifficultyLabel(trip.difficulty, locale)}
                     </span>
                   </div>
+                  {capacity ? (
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900">
+                        {t("capacity")}
+                      </p>
+                      <p
+                        className={`mt-1 flex items-center gap-2 text-sm ${
+                          capacity.isFull ? "text-red-600" : "text-slate-600"
+                        }`}
+                      >
+                        <Users className="h-3.5 w-3.5 text-teal-500" />
+                        {capacity.isFull
+                          ? t("tripFull")
+                          : t("spotsLeft", { count: capacity.remainingSeats })}
+                      </p>
+                    </div>
+                  ) : null}
                 </div>
 
                 <Button
-                  href={`/apply?trip=${trip.slug}`}
+                  href={capacity?.isFull ? undefined : `/apply?trip=${trip.slug}`}
                   size="lg"
                   className="mt-8 w-full"
+                  disabled={capacity?.isFull}
                 >
-                  {t("applyNow")}
-                  <ArrowRight className="h-4 w-4" />
+                  {capacity?.isFull ? t("tripFull") : t("applyNow")}
+                  {capacity?.isFull ? null : <ArrowRight className="h-4 w-4" />}
                 </Button>
               </Card>
             </div>

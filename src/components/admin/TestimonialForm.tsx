@@ -30,7 +30,7 @@ export function TestimonialForm({ initial }: Props) {
       textHu: "",
       textEn: "",
       rating: 5,
-      avatar: "",
+      avatar: "/profile-placeholder.svg",
       sortOrder: 0,
       published: true,
     }

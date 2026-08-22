@@ -1,81 +1,19 @@
 import { prisma } from "@/lib/prisma";
-import { withTripImageFallback } from "@/lib/trip-images";
+import { mapTripToLocale } from "@/lib/content/trip-map";
 import type { Locale } from "@/i18n/routing";
-import type { Trip, TripDay, TripFaq } from "@/types";
+import type { Trip } from "@/types";
 import type { Difficulty, Prisma } from "@/generated/prisma";
+import { buildCapacitySnapshot, type TripCapacitySnapshot } from "@/lib/trip-capacity";
+import {
+  getOccupiedSeatsByTripIds,
+  getTripCapacitySnapshot,
+} from "@/lib/trip-capacity-db";
 
 type TripWithTranslations = Prisma.TripGetPayload<{
   include: { translations: true };
 }>;
 
-function asTripDays(value: unknown): TripDay[] {
-  if (!Array.isArray(value)) return [];
-  return value
-    .map((item) => {
-      if (!item || typeof item !== "object") return null;
-      const day = item as Record<string, unknown>;
-      const dayNum = Number(day.day);
-      const title = typeof day.title === "string" ? day.title : "";
-      const description =
-        typeof day.description === "string" ? day.description : "";
-      if (!title) return null;
-      return {
-        day: Number.isFinite(dayNum) ? dayNum : 0,
-        title,
-        description,
-      };
-    })
-    .filter((item): item is TripDay => item !== null);
-}
-
-function asTripFaqs(value: unknown): TripFaq[] {
-  if (!Array.isArray(value)) return [];
-  return value
-    .map((item) => {
-      if (!item || typeof item !== "object") return null;
-      const faq = item as Record<string, unknown>;
-      const question = typeof faq.question === "string" ? faq.question : "";
-      const answer = typeof faq.answer === "string" ? faq.answer : "";
-      if (!question || !answer) return null;
-      return { question, answer };
-    })
-    .filter((item): item is TripFaq => item !== null);
-}
-
-export function mapTripToLocale(
-  trip: TripWithTranslations,
-  locale: Locale
-): Trip | null {
-  const translation =
-    trip.translations.find((item) => item.locale === locale) ??
-    trip.translations.find((item) => item.locale === "en") ??
-    trip.translations[0];
-
-  if (!translation) return null;
-
-  return withTripImageFallback({
-    id: trip.id,
-    slug: trip.slug,
-    title: translation.title,
-    country: translation.country,
-    price: trip.price,
-    duration: trip.duration,
-    shortDescription: translation.shortDescription,
-    description: translation.description,
-    heroImage: trip.heroImage,
-    gallery: trip.gallery,
-    program: asTripDays(translation.program),
-    included: translation.included,
-    notIncluded: translation.notIncluded,
-    departureDates: trip.departureDates.map(
-      (date) => date.toISOString().slice(0, 10)
-    ),
-    meetingPoint: translation.meetingPoint,
-    difficulty: trip.difficulty,
-    faq: asTripFaqs(translation.faq),
-    featured: trip.featured,
-  });
-}
+export { mapTripToLocale };
 
 export async function getTrips(locale: Locale): Promise<Trip[]> {
   const rows = await prisma.trip.findMany({
@@ -132,19 +70,56 @@ export async function getAllTripSlugs(): Promise<string[]> {
   return rows.map((row) => row.slug);
 }
 
-export async function getTripOptions(
-  locale: Locale
-): Promise<
-  { slug: string; title: string; country: string; duration: number; price: number }[]
-> {
-  const trips = await getTrips(locale);
-  return trips.map((trip) => ({
-    slug: trip.slug,
-    title: trip.title,
-    country: trip.country,
-    duration: trip.duration,
-    price: trip.price,
-  }));
+export type TripOption = {
+  slug: string;
+  title: string;
+  country: string;
+  duration: number;
+  price: number;
+  remainingSeats: number;
+  isFull: boolean;
+};
+
+export async function getTripOptions(locale: Locale): Promise<TripOption[]> {
+  const rows = await prisma.trip.findMany({
+    where: { published: true },
+    include: { translations: true },
+    orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
+  });
+  const occupancy = await getOccupiedSeatsByTripIds(rows.map((row) => row.id));
+
+  return rows
+    .map((trip) => {
+      const mapped = mapTripToLocale(trip, locale);
+      if (!mapped) return null;
+      const snapshot = buildCapacitySnapshot(
+        trip.id,
+        trip.maxCapacity,
+        trip.overbookLimit,
+        occupancy.get(trip.id) ?? 0
+      );
+      return {
+        slug: mapped.slug,
+        title: mapped.title,
+        country: mapped.country,
+        duration: mapped.duration,
+        price: mapped.price,
+        remainingSeats: snapshot.remainingSeats,
+        isFull: snapshot.isFull,
+      };
+    })
+    .filter((trip): trip is TripOption => trip !== null);
+}
+
+export async function getTripCapacityForSlug(
+  slug: string
+): Promise<TripCapacitySnapshot | null> {
+  const trip = await prisma.trip.findFirst({
+    where: { slug, published: true },
+    select: { id: true },
+  });
+  if (!trip) return null;
+  return getTripCapacitySnapshot(trip.id);
 }
 
 export type { TripWithTranslations, Difficulty };

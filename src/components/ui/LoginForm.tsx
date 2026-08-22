@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
-import { motion, AnimatePresence } from "framer-motion";
-import { LogIn, AlertCircle } from "lucide-react";
+import { motion } from "framer-motion";
+import { LogIn, AlertCircle, Mail } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
+import { authClient } from "@/lib/auth-client";
+import type { Locale } from "@/i18n/routing";
 import type { LoginFormData } from "@/types";
 
 interface FormErrors {
@@ -22,6 +24,7 @@ const errorInputClasses = "border-red-300 focus:border-red-500 focus:ring-red-50
 
 export function LoginForm({ nextPath = "/profile" }: { nextPath?: string }) {
   const t = useTranslations("accountLogin");
+  const locale = useLocale() as Locale;
   const { login } = useAuth();
   const router = useRouter();
 
@@ -32,6 +35,10 @@ export function LoginForm({ nextPath = "/profile" }: { nextPath?: string }) {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent" | "error">(
+    "idle"
+  );
 
   const validateForm = (data: LoginFormData): FormErrors => {
     const errs: FormErrors = {};
@@ -49,12 +56,19 @@ export function LoginForm({ nextPath = "/profile" }: { nextPath?: string }) {
 
     setIsSubmitting(true);
     setErrors({});
+    setUnverifiedEmail(null);
+    setResendState("idle");
 
     try {
-      await login(formData.email, formData.password);
+      await login(formData.email, formData.password, formData.rememberMe);
       router.push(nextPath);
-    } catch {
-      setErrors({ general: t("errors.invalidCredentials") });
+    } catch (error) {
+      if (error instanceof Error && error.message === "EMAIL_NOT_VERIFIED") {
+        setUnverifiedEmail(formData.email.trim().toLowerCase());
+        setErrors({ general: t("errors.emailNotVerified") });
+      } else {
+        setErrors({ general: t("errors.invalidCredentials") });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -68,6 +82,24 @@ export function LoginForm({ nextPath = "/profile" }: { nextPath?: string }) {
     if (errors[field as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [field]: undefined, general: undefined }));
     }
+    if (unverifiedEmail) {
+      setUnverifiedEmail(null);
+      setResendState("idle");
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!unverifiedEmail || resendState === "sending") return;
+    setResendState("sending");
+    try {
+      const { error } = await authClient.sendVerificationEmail({
+        email: unverifiedEmail,
+        callbackURL: `/${locale}/verify-email`,
+      });
+      setResendState(error ? "error" : "sent");
+    } catch {
+      setResendState("error");
+    }
   };
 
   return (
@@ -79,7 +111,29 @@ export function LoginForm({ nextPath = "/profile" }: { nextPath?: string }) {
           className="flex items-center gap-3 rounded-xl bg-red-50 p-4 text-red-800"
         >
           <AlertCircle className="h-5 w-5 shrink-0" />
-          <p className="text-sm font-medium">{errors.general}</p>
+          <div>
+            <p className="text-sm font-medium">{errors.general}</p>
+            {unverifiedEmail && (
+              <div className="mt-2">
+                <button
+                  type="button"
+                  onClick={handleResendVerification}
+                  disabled={resendState === "sending" || resendState === "sent"}
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-red-700 underline disabled:no-underline disabled:opacity-70"
+                >
+                  <Mail className="h-3.5 w-3.5" />
+                  {resendState === "sending"
+                    ? t("resendSending")
+                    : resendState === "sent"
+                      ? t("resendSent")
+                      : t("resendVerification")}
+                </button>
+                {resendState === "error" && (
+                  <p className="mt-1 text-sm">{t("errors.resendFailed")}</p>
+                )}
+              </div>
+            )}
+          </div>
         </motion.div>
       )}
 

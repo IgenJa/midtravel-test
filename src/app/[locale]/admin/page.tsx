@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
+import { failedEmailWhere } from "@/lib/email-delivery";
 import { prisma } from "@/lib/prisma";
 import { createMetadata } from "@/lib/seo";
 import type { Locale } from "@/i18n/routing";
@@ -27,7 +28,17 @@ export default async function AdminPage({ params }: Props) {
   setRequestLocale(locale);
   const t = await getTranslations("admin");
 
-  const [tripCount, teamCount, testimonialCount, contactCount, applicationCount, bookingCount] =
+  const [
+    tripCount,
+    teamCount,
+    testimonialCount,
+    contactCount,
+    applicationCount,
+    bookingCount,
+    failedContacts,
+    failedApplications,
+    failedBookings,
+  ] =
     await Promise.all([
       prisma.trip.count(),
       prisma.teamMember.count(),
@@ -35,7 +46,13 @@ export default async function AdminPage({ params }: Props) {
       prisma.contactMessage.count({ where: { read: false } }),
       prisma.tripApplication.count({ where: { read: false } }),
       prisma.booking.count(),
+      prisma.contactMessage.count({ where: failedEmailWhere }),
+      prisma.tripApplication.count({ where: failedEmailWhere }),
+      prisma.booking.count({ where: failedEmailWhere }),
     ]);
+
+  const failedInbound = failedContacts + failedApplications;
+  const failedEmails = failedInbound + failedBookings;
 
   const cards = [
     {
@@ -90,6 +107,29 @@ export default async function AdminPage({ params }: Props) {
         ))}
       </div>
 
+      {failedEmails > 0 ? (
+        <div className="mt-8 rounded-2xl border border-red-200 bg-red-50 p-6">
+          <h2 className="font-display text-xl font-bold text-red-900">
+            {t("emailFailedTitle")}
+          </h2>
+          <p className="mt-2 text-red-800">
+            {t("emailFailedSummary", { count: failedEmails })}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            {failedInbound > 0 ? (
+              <Button href="/admin/inbound" size="sm">
+                {t("emailFailedInbound", { count: failedInbound })}
+              </Button>
+            ) : null}
+            {failedBookings > 0 ? (
+              <Button href="/admin/bookings" size="sm" variant="outline">
+                {t("emailFailedBookings", { count: failedBookings })}
+              </Button>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+
       <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
         <h2 className="font-display text-xl font-bold text-slate-900">
           {t("inboundTitle")}
@@ -100,6 +140,19 @@ export default async function AdminPage({ params }: Props) {
             applications: applicationCount,
           })}
         </p>
+        <Button href="/admin/inbound" size="sm" className="mt-4">
+          {t("manageInbound")}
+        </Button>
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
+        <h2 className="font-display text-xl font-bold text-slate-900">
+          {t("settingsTitle")}
+        </h2>
+        <p className="mt-2 text-slate-600">{t("settingsDescription")}</p>
+        <Button href="/admin/settings" size="sm" className="mt-4">
+          {t("manageSettings")}
+        </Button>
       </div>
     </>
   );

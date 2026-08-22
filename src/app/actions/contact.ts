@@ -2,13 +2,10 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { prisma } from "@/lib/prisma";
-import {
-  contactConfirmationHtml,
-  contactNotificationHtml,
-  getNotifyEmail,
-  sendEmail,
-} from "@/lib/email";
+import { deliverContactEmails } from "@/lib/inbound-emails";
 import { isValidEmail, normalizeEmail } from "@/lib/form-validation";
+import type { Locale } from "@/i18n/routing";
+import { parseLocale } from "@/lib/locale";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
 
 export type ContactActionInput = {
@@ -17,6 +14,7 @@ export type ContactActionInput = {
   subject: string;
   message: string;
   acceptPrivacy: boolean;
+  locale?: Locale;
 };
 
 export type ContactActionResult =
@@ -41,6 +39,7 @@ export async function submitContactMessage(
   const email = normalizeEmail(input.email);
   const subject = input.subject.trim();
   const message = input.message.trim();
+  const locale = parseLocale(input.locale);
 
   const fieldErrors: NonNullable<
     Extract<ContactActionResult, { ok: false }>["fieldErrors"]
@@ -59,28 +58,29 @@ export async function submitContactMessage(
     return { ok: false, code: "PRIVACY_REQUIRED" };
   }
 
+  let createdId: string;
   try {
-    await prisma.contactMessage.create({
-      data: { name, email, subject, message },
+    const created = await prisma.contactMessage.create({
+      data: { name, email, subject, message, locale },
     });
+    createdId = created.id;
   } catch (error) {
     Sentry.captureException(error);
     return { ok: false, code: "SAVE_FAILED" };
   }
 
-  await Promise.all([
-    sendEmail({
-      to: email,
-      subject: "Megkaptuk az üzenetedet — MidTravel",
-      html: contactConfirmationHtml(name),
-    }),
-    sendEmail({
-      to: getNotifyEmail(),
-      subject: `Kapcsolat: ${subject}`,
-      html: contactNotificationHtml({ name, email, subject, message }),
-      replyTo: email,
-    }),
-  ]);
+  try {
+    await deliverContactEmails(createdId);
+  } catch (error) {
+    Sentry.captureException(error);
+    await prisma.contactMessage.update({
+      where: { id: createdId },
+      data: {
+        guestEmailStatus: "failed",
+        officeEmailStatus: "failed",
+      },
+    });
+  }
 
   return { ok: true };
 }

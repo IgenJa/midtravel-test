@@ -12,6 +12,10 @@ interface TeamMemberCardProps {
 }
 
 export function TeamMemberCard({ member }: TeamMemberCardProps) {
+  const hasSocial = Boolean(
+    member.social.linkedin || member.social.instagram || member.social.email
+  );
+
   return (
     <Card padding="none" className="h-full">
       <div className="relative aspect-[4/5] overflow-hidden">
@@ -31,45 +35,47 @@ export function TeamMemberCard({ member }: TeamMemberCardProps) {
         </div>
       </div>
       <div className="p-6">
-        <p className="text-sm leading-relaxed text-slate-600">
+        <p className="whitespace-pre-line text-sm leading-relaxed text-slate-600">
           {member.description}
         </p>
-        <div className="mt-4 flex gap-3">
-          {member.social.linkedin && (
-            <motion.a
-              href={member.social.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.1 }}
-              className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-teal-50 hover:text-teal-600"
-              aria-label={`${member.name} on LinkedIn`}
-            >
-              <LinkedinIcon className="h-4 w-4" />
-            </motion.a>
-          )}
-          {member.social.instagram && (
-            <motion.a
-              href={member.social.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.1 }}
-              className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-teal-50 hover:text-teal-600"
-              aria-label={`${member.name} on Instagram`}
-            >
-              <InstagramIcon className="h-4 w-4" />
-            </motion.a>
-          )}
-          {member.social.email && (
-            <motion.a
-              href={`mailto:${member.social.email}`}
-              whileHover={{ scale: 1.1 }}
-              className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-teal-50 hover:text-teal-600"
-              aria-label={`Email ${member.name}`}
-            >
-              <Mail className="h-4 w-4" />
-            </motion.a>
-          )}
-        </div>
+        {hasSocial ? (
+          <div className="mt-4 flex gap-3">
+            {member.social.linkedin ? (
+              <motion.a
+                href={member.social.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.1 }}
+                className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-teal-50 hover:text-teal-600"
+                aria-label={`${member.name} on LinkedIn`}
+              >
+                <LinkedinIcon className="h-4 w-4" />
+              </motion.a>
+            ) : null}
+            {member.social.instagram ? (
+              <motion.a
+                href={member.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.1 }}
+                className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-teal-50 hover:text-teal-600"
+                aria-label={`${member.name} on Instagram`}
+              >
+                <InstagramIcon className="h-4 w-4" />
+              </motion.a>
+            ) : null}
+            {member.social.email ? (
+              <motion.a
+                href={`mailto:${member.social.email}`}
+                whileHover={{ scale: 1.1 }}
+                className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-teal-50 hover:text-teal-600"
+                aria-label={`Email ${member.name}`}
+              >
+                <Mail className="h-4 w-4" />
+              </motion.a>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </Card>
   );

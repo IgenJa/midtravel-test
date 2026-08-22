@@ -1,9 +1,11 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { EmailFailedBadge } from "@/components/admin/EmailFailedBadge";
+import { hasFailedEmail } from "@/lib/email-delivery";
 import { prisma } from "@/lib/prisma";
 import { createMetadata } from "@/lib/seo";
-import { formatDate, formatPrice } from "@/lib/utils";
+import { cn, formatDate, formatPrice } from "@/lib/utils";
 import type { Locale } from "@/i18n/routing";
 
 type Props = {
@@ -100,9 +102,16 @@ export default async function AdminBookingsPage({ params }: Props) {
                 const hasInvoice = Boolean(
                   booking.invoice?.invoiceNumber && booking.invoice.issuedAt
                 );
+                const emailFailed = hasFailedEmail(booking);
 
                 return (
-                  <tr key={booking.id} className="border-b border-slate-100">
+                  <tr
+                    key={booking.id}
+                    className={cn(
+                      "border-b border-slate-100",
+                      emailFailed && "bg-red-50/60"
+                    )}
+                  >
                     <td className="px-4 py-3">
                       <div className="font-medium text-slate-900">
                         {booking.customerName ?? booking.user.name}
@@ -127,11 +136,18 @@ export default async function AdminBookingsPage({ params }: Props) {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <span
-                        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusBadgeClass(booking.status)}`}
-                      >
-                        {t(`bookingStatus.${booking.status}`)}
-                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        <span
+                          className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusBadgeClass(booking.status)}`}
+                        >
+                          {t(`bookingStatus.${booking.status}`)}
+                        </span>
+                        <EmailFailedBadge
+                          guestEmailStatus={booking.guestEmailStatus}
+                          officeEmailStatus={booking.officeEmailStatus}
+                          label={t("emailFailedBadge")}
+                        />
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-slate-700">
                       {hasInvoice ? (

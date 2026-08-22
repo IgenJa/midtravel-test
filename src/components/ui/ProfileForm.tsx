@@ -38,7 +38,7 @@ export function ProfileForm() {
     confirmPassword: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
-  const [status, setStatus] = useState<"idle" | "success">("idle");
+  const [status, setStatus] = useState<"idle" | "success" | "emailPending">("idle");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
 
@@ -84,7 +84,7 @@ export function ProfileForm() {
     setErrors({});
 
     try {
-      await updateProfile({
+      const result = await updateProfile({
         fullName: formData.fullName,
         email: formData.email,
         phone: formData.phone,
@@ -95,9 +95,10 @@ export function ProfileForm() {
             }
           : {}),
       });
-      setStatus("success");
+      setStatus(result.emailChangePending ? "emailPending" : "success");
       setFormData((prev) => ({
         ...prev,
+        email: result.user.email,
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
@@ -106,6 +107,8 @@ export function ProfileForm() {
     } catch (error) {
       if (error instanceof Error && error.message === "EMAIL_EXISTS") {
         setErrors({ email: t("errors.emailExists") });
+      } else if (error instanceof Error && error.message === "EMAIL_CHANGE_FAILED") {
+        setErrors({ email: t("errors.emailChangeFailed") });
       } else if (error instanceof Error && error.message === "INVALID_CURRENT_PASSWORD") {
         setErrors({ currentPassword: t("errors.currentPasswordInvalid") });
       } else {
@@ -129,13 +132,13 @@ export function ProfileForm() {
     if (errors[field as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [field]: undefined, general: undefined }));
     }
-    if (status === "success") setStatus("idle");
+    if (status !== "idle") setStatus("idle");
   };
 
   return (
     <div className="space-y-8">
       <AnimatePresence mode="wait">
-        {status === "success" && (
+        {(status === "success" || status === "emailPending") && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -143,7 +146,9 @@ export function ProfileForm() {
             className="flex items-center gap-3 rounded-xl bg-teal-50 p-4 text-teal-800"
           >
             <CheckCircle className="h-5 w-5 shrink-0" />
-            <p className="text-sm font-medium">{t("success")}</p>
+            <p className="text-sm font-medium">
+              {status === "emailPending" ? t("emailChangePending") : t("success")}
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -186,11 +191,13 @@ export function ProfileForm() {
             onChange={(e) => updateField("email", e.target.value)}
             className={`${inputClasses} ${errors.email ? errorInputClasses : ""}`}
           />
-          {errors.email && (
+          {errors.email ? (
             <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
               <AlertCircle className="h-3.5 w-3.5" />
               {errors.email}
             </p>
+          ) : (
+            <p className="mt-1 text-sm text-slate-500">{t("emailHint")}</p>
           )}
         </div>
 

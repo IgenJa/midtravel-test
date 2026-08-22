@@ -4,18 +4,17 @@ import * as Sentry from "@sentry/nextjs";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import {
-  applicationConfirmationHtml,
-  applicationNotificationHtml,
-  getNotifyEmail,
-  sendEmail,
-} from "@/lib/email";
-import {
   isValidEmail,
   isValidPhone,
   normalizeEmail,
+  parseCompanion,
 } from "@/lib/form-validation";
+import { deliverApplicationEmails } from "@/lib/inbound-emails";
 import type { Locale } from "@/i18n/routing";
+import { parseLocale } from "@/lib/locale";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
+import { isTripCapacityFullError } from "@/lib/trip-capacity";
+import { assertTripHasCapacity } from "@/lib/trip-capacity-db";
 
 export type ApplyActionInput = {
   fullName: string;
@@ -25,6 +24,9 @@ export type ApplyActionInput = {
   tripSlug: string;
   message: string;
   requestInsurance: boolean;
+  hasCompanion?: boolean;
+  companionName?: string;
+  companionPhone?: string;
   acceptPrivacy: boolean;
   locale?: Locale;
 };
@@ -38,10 +40,18 @@ export type ApplyActionResult =
         | "PRIVACY_REQUIRED"
         | "RATE_LIMITED"
         | "TRIP_NOT_FOUND"
+        | "TRIP_FULL"
         | "SAVE_FAILED";
       fieldErrors?: Partial<
         Record<
-          "fullName" | "email" | "phone" | "participants" | "tripSlug" | "message",
+          | "fullName"
+          | "email"
+          | "phone"
+          | "participants"
+          | "tripSlug"
+          | "message"
+          | "companionName"
+          | "companionPhone",
           string
         >
       >;
@@ -61,7 +71,7 @@ export async function submitTripApplication(
   const tripSlug = input.tripSlug.trim();
   const message = input.message.trim() || null;
   const participants = Number(input.participants);
-  const locale = input.locale ?? "hu";
+  const locale = parseLocale(input.locale);
 
   const fieldErrors: NonNullable<
     Extract<ApplyActionResult, { ok: false }>["fieldErrors"]
@@ -77,9 +87,18 @@ export async function submitTripApplication(
   }
   if (!tripSlug) fieldErrors.tripSlug = "tripSlug";
 
+  const companion = parseCompanion(input);
+  if (!companion.ok) {
+    fieldErrors[companion.field] = companion.field;
+  }
+
   if (Object.keys(fieldErrors).length > 0) {
     return { ok: false, code: "VALIDATION", fieldErrors };
   }
+
+  const companionValue = companion.ok
+    ? companion.value
+    : { companionName: null, companionPhone: null };
 
   if (!input.acceptPrivacy) {
     return { ok: false, code: "PRIVACY_REQUIRED" };
@@ -112,47 +131,48 @@ export async function submitTripApplication(
 
   const session = await getSession();
 
+  let createdId: string;
   try {
-    await prisma.tripApplication.create({
-      data: {
-        fullName,
-        email,
-        phone,
-        participants,
-        tripSlug,
-        tripId: dbTrip.id,
-        message,
-        requestInsurance: Boolean(input.requestInsurance),
-        userId: session?.user.id ?? null,
-      },
+    const created = await prisma.$transaction(async (tx) => {
+      await assertTripHasCapacity(tx, dbTrip.id);
+      return tx.tripApplication.create({
+        data: {
+          fullName,
+          email,
+          phone,
+          participants,
+          tripSlug,
+          tripId: dbTrip.id,
+          message,
+          requestInsurance: Boolean(input.requestInsurance),
+          companionName: companionValue.companionName,
+          companionPhone: companionValue.companionPhone,
+          locale,
+          userId: session?.user.id ?? null,
+        },
+      });
     });
+    createdId = created.id;
   } catch (error) {
+    if (isTripCapacityFullError(error)) {
+      return { ok: false, code: "TRIP_FULL" };
+    }
     Sentry.captureException(error);
     return { ok: false, code: "SAVE_FAILED" };
   }
 
-  await Promise.all([
-    sendEmail({
-      to: email,
-      subject: `Jelentkezésed megérkezett — ${tripTitle}`,
-      html: applicationConfirmationHtml(fullName, tripTitle),
-    }),
-    sendEmail({
-      to: getNotifyEmail(),
-      subject: `Új jelentkezés: ${tripTitle}`,
-      html: applicationNotificationHtml({
-        fullName,
-        email,
-        phone,
-        participants,
-        tripSlug,
-        tripTitle,
-        message,
-        requestInsurance: Boolean(input.requestInsurance),
-      }),
-      replyTo: email,
-    }),
-  ]);
+  try {
+    await deliverApplicationEmails(createdId, tripTitle);
+  } catch (error) {
+    Sentry.captureException(error);
+    await prisma.tripApplication.update({
+      where: { id: createdId },
+      data: {
+        guestEmailStatus: "failed",
+        officeEmailStatus: "failed",
+      },
+    });
+  }
 
   return { ok: true };
 }

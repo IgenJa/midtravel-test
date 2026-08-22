@@ -107,7 +107,7 @@ export function TeamMemberForm({ initial }: Props) {
         </label>
         <textarea
           className={inputClasses}
-          rows={4}
+          rows={10}
           value={form.descriptionHu}
           onChange={(e) => setForm({ ...form, descriptionHu: e.target.value })}
           required
@@ -119,7 +119,7 @@ export function TeamMemberForm({ initial }: Props) {
         </label>
         <textarea
           className={inputClasses}
-          rows={4}
+          rows={10}
           value={form.descriptionEn}
           onChange={(e) => setForm({ ...form, descriptionEn: e.target.value })}
           required

@@ -1,4 +1,5 @@
 import type { Trip } from "@/types";
+import { tripStockImage } from "./images";
 
 export const tripsHu: Trip[] = [
   {
@@ -13,16 +14,8 @@ export const tripsHu: Trip[] = [
       "A Cinque Terre színes partjától Toszkána dombjaiig — élvezd a la dolce vitát.",
     description:
       "Indulj felejthetetlen utazásra Olaszország legbűvösebb régióin keresztül. Barangolj középkori falvakban sziklák tetején, kóstold meg a világszínvonalú konyhát Firenzében, és nézd a naplementét a chianti-i szőlőültetvények felett. Ez a gondosan összeállított túra az ikonikus látnivalókat rejtett kincsekkel ötvözi.",
-    heroImage:
-      "https://images.unsplash.com/photo-1523906834651-6e2e0b0e0b0b?w=1920&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=800&q=80",
-      "https://images.unsplash.com/photo-1523906834651-6e2e0b0e0b0b?w=800&q=80",
-      "https://images.unsplash.com/photo-1534445867742-43195f401b6c?w=800&q=80",
-      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=80",
-      "https://images.unsplash.com/photo-1529260830195-03bfe6d85605?w=800&q=80",
-      "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80",
-    ],
+    heroImage: tripStockImage("italy"),
+    gallery: [tripStockImage("italy")],
     program: [
       { day: 1, title: "Érkezés Milánóba", description: "Üdvözöl Olaszország! Szállás transzfer, esti üdvözlő vacsora a csoporttal." },
       { day: 2, title: "Cinque Terre", description: "Fedezd fel az öt színes halászfalut, amelyeket festői túraútvonalak kötnek össze." },
@@ -69,16 +62,8 @@ export const tripsHu: Trip[] = [
       "Kristálytiszta Adriai-víz, ősi falvárosok és napsütötte szigetek várnak.",
     description:
       "Fedezd fel Horvátország dalmát tengerpartjának lélegzetelállító szépségét. Hajózzál idilli szigetek között, sétálj Dubrovnik óvárosának márványutcáin, és fürödj rejtett öblökben, amelyek csak hajóval érhetők el.",
-    heroImage:
-      "https://images.unsplash.com/photo-1555990793-da0b0b0e0b0b?w=1920&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1555990793-da0b0b0e0b0b?w=800&q=80",
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80",
-      "https://images.unsplash.com/photo-1565008576549-57569a49371d?w=800&q=80",
-      "https://images.unsplash.com/photo-1596436889106-be35e843f974?w=800&q=80",
-      "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&q=80",
-      "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?w=800&q=80",
-    ],
+    heroImage: tripStockImage("croatia"),
+    gallery: [tripStockImage("croatia")],
     program: [
       { day: 1, title: "Érkezés Splitbe", description: "Bejelentkezés a butik szállodába Diocletianus palotájának szívében. Esti séta a Riva mentén." },
       { day: 2, title: "Split és Trogir", description: "Vezetett túra Split ókori palotájában és az UNESCO-listás Trogir óvárosában." },
@@ -124,16 +109,8 @@ export const tripsHu: Trip[] = [
       "Gaudí remekművei, flamenco estek és Dél-Spanyolország lelke egy epikus utazásban.",
     description:
       "Barcelona avantgárd építészetétől Sevilla szenvedélyes ritmusáig — ez a túra megragadja Spanyolország esszenciáját. Csodáld meg a Sagrada Familiát, kóstold meg a tapas-t Madrid rejtett bárjaiban, és fedezd fel az Alhambra mór díszét.",
-    heroImage:
-      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=1920&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=800&q=80",
-      "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&q=80",
-      "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&q=80",
-      "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&q=80",
-      "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=800&q=80",
-      "https://images.unsplash.com/photo-1562883670-4d9d0b8b0b0b?w=800&q=80",
-    ],
+    heroImage: tripStockImage("spain"),
+    gallery: [tripStockImage("spain")],
     program: [
       { day: 1, title: "Érkezés Barcelonába", description: "Szállás transzfer az Eixample negyedben. Esti tapas túra a Gótikus negyedben." },
       { day: 2, title: "Barcelona látnivalói", description: "Sagrada Familia, Park Güell és séta a Ramblán szakértő idegenvezetővel." },

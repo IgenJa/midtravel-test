@@ -14,8 +14,6 @@ export const moreTripsHu = [
       "Fehérre meszelt falvak, vulkáni naplementék és az Akropolisz ősi csodái.",
     description:
       "Éld át Görögország varázsát Szantorini ikonikus kaldera-kilátásaitól Athén történelmi szívéig. Sétálj Oiában aranyórakor, hajózz az Égei-tengeren, és járj a filozófusok nyomában a Parthenon alatt.",
-    heroImage:
-      "https://images.unsplash.com/photo-1613395877344-13d4a8e0d325?w=1920&q=80",
     meetingPoint: "Athén nemzetközi repülőtér, érkezési csarnok",
     included: [
       "Központi szállodák",
@@ -50,8 +48,6 @@ export const moreTripsHu = [
       "Csempeborította utcák, folyóparti borospincék és atlanti parti hangulat.",
     description:
       "Fedezd fel Portugália lelkét két nagyszerű városban. Utazz Lisszabon történelmi villamosain, kóstold meg a portói bort Vila Nova de Gaia-ban, és barangolj színes negyedekben.",
-    heroImage:
-      "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1920&q=80",
     meetingPoint: "Lisszabon Humberto Delgado repülőtér, 1-es terminál",
     programDays: [
       { title: "Érkezés Lisszabonba", description: "Bejelentkezés és esti fado vacsora Alfamában." },
@@ -76,8 +72,6 @@ export const moreTripsHu = [
       "Levendulamezők, dombtetői falvak és a Côte d'Azur ragyogása.",
     description:
       "Aix-en-Provence piacaitól Nice azúr vizéig — ez az út megragadja Dél-Franciaország művészetét. Látogasd meg Van Gogh Arles-ét, Avignon pápai városát és a Riviéra sziklafalú faluit.",
-    heroImage:
-      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1920&q=80",
     meetingPoint: "Marseille Provence repülőtér, érkezések",
     programDays: [
       { title: "Érkezés Marseille-be", description: "Üdvözlő vacsora az Ókikötő negyedben." },
@@ -102,8 +96,6 @@ export const moreTripsHu = [
       "Császári paloták, alpesi tavak és a Sound of Music tájai.",
     description:
       "Ötvözd Bécs eleganciáját az osztrák Alpok természeti drámájával. Klasszikus koncert, Schönbrunn palota és hajózás a türkizkék Wolfgang-tavon.",
-    heroImage:
-      "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=1920&q=80",
     meetingPoint: "Bécs nemzetközi repülőtér, érkezések",
     programDays: [
       { title: "Érkezés Bécsbe", description: "Esti séta a Ringstrasse mentén." },
@@ -126,8 +118,6 @@ export const moreTripsHu = [
       "Csatornák, tulipánmezők, szélmalmok és világszínvonalú múzeumok.",
     description:
       "Tekerj végig Amszterdam csatornáin, látogasd meg a Rijksmuseumot és az Anne Frank Házat, majd fedezd fel a vidéket tulipánokkal, sajtpiacokkal és ikonikus holland szélmalmokkal.",
-    heroImage:
-      "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=1920&q=80",
     meetingPoint: "Amszterdam Schiphol repülőtér, érkezési csarnok",
     programDays: [
       { title: "Érkezés Amszterdamba", description: "Csatorna hajóút és üdvözlő vacsora." },
@@ -149,8 +139,6 @@ export const moreTripsHu = [
       "Gótikus tornyok, középkori terek és meseszép várak Prágán túl.",
     description:
       "Prága Óvárosába, a Károly-hídra és a prágai várba szerelmesedsz, majd Bohemiába utazol Český Krumlov középkori szépségéért.",
-    heroImage:
-      "https://images.unsplash.com/photo-1541849546-216549ae216d?w=1920&q=80",
     meetingPoint: "Prága Václav Havel repülőtér, 1-es terminál",
     programDays: [
       { title: "Érkezés Prágába", description: "Esti séta a Károly-hídon." },
@@ -173,8 +161,6 @@ export const moreTripsHu = [
       "Vízesések, gleccserek, gejzírek és éjféli nap az Arktisz szélén.",
     description:
       "Fedezd fel Izland nyers természeti erejét az Aranykör mentén és a déli parton. Gejzírek, fekete homokos strandok, gleccserlagúnák és a Blue Lagoon pihenő.",
-    heroImage:
-      "https://images.unsplash.com/photo-1504829857797-ddb29a287b8f?w=1920&q=80",
     meetingPoint: "Keflavík nemzetközi repülőtér, érkezések",
     programDays: [
       { title: "Érkezés Reykjavíkba", description: "Városi séta és üdvözlő tengeri vacsora." },
@@ -198,8 +184,6 @@ export const moreTripsHu = [
       "Drámai fjordok, festői vasutak és északi parti falvak.",
     description:
       "Hajózz Norvégia legmélyebb fjordjain, utazz a Flåm vasúton, és túrázz Bergen feletti panoráma kilátókhoz. A Föld egyik leglátványosabb tájain keresztül.",
-    heroImage:
-      "https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=1920&q=80",
     meetingPoint: "Bergen Flesland repülőtér, érkezések",
     programDays: [
       { title: "Érkezés Bergenbe", description: "Bryggen rakpart és felvonó a Fløyen hegyre." },
@@ -224,8 +208,6 @@ export const moreTripsHu = [
       "Bazárok, bizánci mecsetek, tündérségtornyok és hőlégballon egek.",
     description:
       "Kösd össze Európát és Ázsiát Isztanbulban, majd repülj Kapadókiába barlangszállodákért, földalatti városokért és opcionális napfelkelte ballonért.",
-    heroImage:
-      "https://images.unsplash.com/photo-1527838832700-5059252407fa?w=1920&q=80",
     meetingPoint: "Isztanbul repülőtér, nemzetközi érkezések",
     programDays: [
       { title: "Érkezés Isztanbulba", description: "Bosporusz vacsora hajóút naplementekor." },
@@ -251,8 +233,6 @@ export const moreTripsHu = [
       "Élénk szúkok, riad udvarok, Atlasz-hegység és tevemenet naplementekor.",
     description:
       "Merülj el Marokkó színeiben és ritmusában. Fedezd fel Marrákes medináját, keresztüld az Atlaszt, és táborozz a csillagos ég alatt a Szaharában tevekaraván után.",
-    heroImage:
-      "https://images.unsplash.com/photo-1489749791425-33a4a4cb8e10?w=1920&q=80",
     meetingPoint: "Marrákes Menara repülőtér, érkezések",
     programDays: [
       { title: "Érkezés Marrákesbe", description: "Riad bejelentkezés és Jemaa el-Fnaa éjjel." },
@@ -277,8 +257,6 @@ export const moreTripsHu = [
       "Tavak, whisky főzdék, zord völgyek és a Skye sziget drámája.",
     description:
       "Kövesd Skócia vad szépségét Edinburgh Királyi útjától Skye ködös csúcsaiig. Várak, single malt whisky és klánok legendái várnak.",
-    heroImage:
-      "https://images.unsplash.com/photo-1506377554403-9d6d218509bf?w=1920&q=80",
     meetingPoint: "Edinburgh repülőtér, érkezési csarnok",
     programDays: [
       { title: "Érkezés Edinburghba", description: "Vár kilátó és hagyományos kocsmai vacsora." },
@@ -302,8 +280,6 @@ export const moreTripsHu = [
       "Gleccervonat kilátások, alpesi tavak és csokoládédoboz hegyi falvak.",
     description:
       "Utazz legendás hegyi vasutakon, hajózz a Lucerne-i tavon, és lélegezz friss alpesi levegőt Zermattban a Matterhorn alatt.",
-    heroImage:
-      "https://images.unsplash.com/photo-1530122037265-a5fd1f786d24?w=1920&q=80",
     meetingPoint: "Zürich repülőtér, érkezések",
     programDays: [
       { title: "Érkezés Zürichbe", description: "Tóparti séta és svájci fondü vacsora." },
@@ -326,8 +302,6 @@ export const moreTripsHu = [
       "Középkori csatornák, Grand Place nagysága és híres belga csokoládé.",
     description:
       "Kompakt kulturális kiruccanás Belgium legszebb városaiba. Brugge tündérmesés csatornái, Brüsszel szecessziós épületei, waffle, csokoládé és trappista sör.",
-    heroImage:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=80",
     meetingPoint: "Brüsszel Zaventem repülőtér, érkezések",
     programDays: [
       { title: "Érkezés Brüsszelbe", description: "Grand Place esti kivilágítása." },
@@ -348,8 +322,6 @@ export const moreTripsHu = [
       "Moher sziklák, Galway kultúra, zord partvonalak és meleg kocsmai esték.",
     description:
       "Vezess végig Írország legendás Vad Atlanti-útján Dublinból a nyugati partig. Élő zene Galwayben, Moher sziklák, és a Blarney kő csókjáért.",
-    heroImage:
-      "https://images.unsplash.com/photo-1590089415225-32f835bc36b3?w=1920&q=80",
     meetingPoint: "Dublin repülőtér, 2-es terminál érkezések",
     programDays: [
       { title: "Érkezés Dublinba", description: "Temple Bar zene és Guinness élmény." },
@@ -373,8 +345,6 @@ export const moreTripsHu = [
       "Neuschwanstein mesék, sörkertek és alpesi tó nyugalma.",
     description:
       "Fedezd fel Bajorország romantikus várait, München élénk sörtermét és a Königssee kristálytiszta vizét. Tökéletes bevezetés Dél-Németország kultúrájába.",
-    heroImage:
-      "https://images.unsplash.com/photo-1467269206134-0da4c2a0d36b?w=1920&q=80",
     meetingPoint: "München repülőtér, 2-es terminál érkezések",
     programDays: [
       { title: "Érkezés Münchenbe", description: "Marienplatz és üdvözlő sörkert vacsora." },
@@ -397,8 +367,6 @@ export const moreTripsHu = [
       "Királyi Krakkó, Wieliczka sóbánya és zakopanei hegyi kultúra.",
     description:
       "Fedezd fel Lengyelország kulturális gyöngyszemét Krakkót nagy terével és Wawel várral, ereszkedj a Wieliczka sóbányába, és lélegezz hegyi levegőt Zakopane-ban.",
-    heroImage:
-      "https://images.unsplash.com/photo-1555992336-fb0d2c8b2473?w=1920&q=80",
     meetingPoint: "Krakkó II. János Pál repülőtér, érkezések",
     programDays: [
       { title: "Érkezés Krakkóba", description: "Óváros tér és pierogi vacsora." },
@@ -421,8 +389,6 @@ export const moreTripsHu = [
       "Meseszép tósziget, alpesi ösvények és Európa egyik legzöldebb fővárosa.",
     description:
       "Szlovénia hatalmas szépséget rejt kis területen. Hajózz Bled szigettemplomához, túrázz a Vintgar szurdokban, fedezd fel Ljubljana folyóparti kávézóit.",
-    heroImage:
-      "https://images.unsplash.com/photo-1565008576549-57569a49371d?w=1920&q=80",
     meetingPoint: "Ljubljana Jože Pučnik repülőtér, érkezések",
     programDays: [
       { title: "Érkezés Ljubljanába", description: "Várhegy kilátó és folyóparti vacsora." },

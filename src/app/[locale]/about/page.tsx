@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Compass, Sparkles, Headphones, BadgeCheck, Target, Eye } from "lucide-react";
+import { Compass, Sparkles, GraduationCap, BadgeCheck, Target, Eye } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Hero } from "@/components/ui/Hero";
 import { Button } from "@/components/ui/Button";
@@ -16,7 +16,7 @@ type Props = { params: Promise<{ locale: Locale }> };
 const iconMap = {
   compass: Compass,
   sparkles: Sparkles,
-  headphones: Headphones,
+  graduation: GraduationCap,
   badge: BadgeCheck,
 };
 

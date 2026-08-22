@@ -5,13 +5,12 @@ import { getSession } from "@/lib/session";
 
 export type ProfileUpdateInput = {
   fullName: string;
-  email: string;
   phone: string;
 };
 
 export type ProfileUpdateResult =
   | { ok: true; user: { id: string; name: string; email: string; phone: string | null; role: string; createdAt: Date } }
-  | { ok: false; code: "NOT_AUTHENTICATED" | "EMAIL_EXISTS" | "UPDATE_FAILED" };
+  | { ok: false; code: "NOT_AUTHENTICATED" | "UPDATE_FAILED" };
 
 export async function updateUserProfile(
   input: ProfileUpdateInput
@@ -22,23 +21,10 @@ export async function updateUserProfile(
   }
 
   const fullName = input.fullName.trim();
-  const email = input.email.trim().toLowerCase();
   const phone = input.phone.trim() || null;
 
-  if (!fullName || !email) {
+  if (!fullName) {
     return { ok: false, code: "UPDATE_FAILED" };
-  }
-
-  const emailTaken = await prisma.user.findFirst({
-    where: {
-      email,
-      NOT: { id: session.user.id },
-    },
-    select: { id: true },
-  });
-
-  if (emailTaken) {
-    return { ok: false, code: "EMAIL_EXISTS" };
   }
 
   try {
@@ -46,7 +32,6 @@ export async function updateUserProfile(
       where: { id: session.user.id },
       data: {
         name: fullName,
-        email,
         phone,
       },
       select: {

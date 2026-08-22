@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import type { Locale } from "@/i18n/routing";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, CheckCircle, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -33,6 +34,7 @@ const emptyForm: ContactFormData = {
 
 export function ContactForm() {
   const t = useTranslations("contact");
+  const locale = useLocale() as Locale;
   const [formData, setFormData] = useState<ContactFormData>(emptyForm);
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<"idle" | "success">("idle");
@@ -61,7 +63,7 @@ export function ContactForm() {
     setErrors({});
 
     try {
-      const result = await submitContactMessage(formData);
+      const result = await submitContactMessage({ ...formData, locale });
       if (!result.ok) {
         if (result.code === "PRIVACY_REQUIRED") {
           setErrors({ acceptPrivacy: t("errors.privacyRequired") });

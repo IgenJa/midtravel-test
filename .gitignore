@@ -37,6 +37,9 @@ yarn-error.log*
 # local / VPS uploaded media
 /uploads
 
+# local / VPS database + uploads backups (deploy/backup.sh)
+/backups
+
 # prisma generated client
 /src/generated/prisma
 

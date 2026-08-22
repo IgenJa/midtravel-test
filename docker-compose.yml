@@ -13,9 +13,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-    ports:
-      # Optional local access; remove in production if only the app container needs DB.
-      - "${POSTGRES_PORT:-5432}:5432"
+    # No host ports: only services on this Compose network (the app) can reach Postgres.
+    # Local `npm run dev` against this db: `npm run docker:db` (see docker-compose.dev.yml).
 
   app:
     build: .
@@ -35,6 +34,12 @@ services:
       - uploads_data:/app/uploads
     ports:
       - "${APP_PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.mjs"]
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
 
 volumes:
   postgres_data:

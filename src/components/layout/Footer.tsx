@@ -2,15 +2,16 @@ import { getTranslations, getLocale } from "next-intl/server";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { FacebookIcon, InstagramIcon, LinkedinIcon } from "@/components/ui/SocialIcons";
-import { getCompany } from "@/data/company";
+import { FacebookIcon } from "@/components/ui/SocialIcons";
+import { CookieSettingsButton } from "@/components/legal/CookieConsentBanner";
+import { getResolvedCompany } from "@/lib/content/company";
 import type { Locale } from "@/i18n/routing";
 
 export async function Footer() {
   const locale = (await getLocale()) as Locale;
   const t = await getTranslations("footer");
   const tNav = await getTranslations("nav");
-  const company = getCompany(locale);
+  const company = await getResolvedCompany(locale);
 
   const footerLinks = {
     explore: [
@@ -23,6 +24,7 @@ export async function Footer() {
       { href: "/contact" as const, label: t("contact") },
     ],
     legal: [
+      { href: "/impressum" as const, label: t("impressum") },
       { href: "/privacy-policy" as const, label: t("privacyPolicy") },
       { href: "/travel-contract" as const, label: t("travelContract") },
     ],
@@ -57,24 +59,6 @@ export async function Footer() {
                 aria-label="Facebook"
               >
                 <FacebookIcon className="h-5 w-5" />
-              </a>
-              <a
-                href={company.social.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
-                aria-label="Instagram"
-              >
-                <InstagramIcon className="h-5 w-5" />
-              </a>
-              <a
-                href={company.social.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
-                aria-label="LinkedIn"
-              >
-                <LinkedinIcon className="h-5 w-5" />
               </a>
             </div>
           </div>
@@ -112,6 +96,11 @@ export async function Footer() {
                   </Link>
                 </li>
               ))}
+              {process.env.NEXT_PUBLIC_SENTRY_DSN ? (
+                <li>
+                  <CookieSettingsButton label={t("cookieSettings")} />
+                </li>
+              ) : null}
             </ul>
           </div>
 
@@ -126,7 +115,7 @@ export async function Footer() {
               </li>
               <li className="flex items-center gap-3 text-sm">
                 <Phone className="h-4 w-4 shrink-0 text-teal-400" />
-                <a href={`tel:${company.phone}`} className="hover:text-white">
+                <a href={`tel:${company.phoneHref}`} className="hover:text-white">
                   {company.phone}
                 </a>
               </li>
@@ -142,7 +131,14 @@ export async function Footer() {
 
         <div className="mt-12 border-t border-slate-800 pt-8 text-center text-sm text-slate-500">
           <p>
-            &copy; {new Date().getFullYear()} {company.name}. {t("rights")}
+            &copy; {new Date().getFullYear()} {company.legalName}. {t("rights")}
+          </p>
+          <p className="mt-3 leading-relaxed">
+            {t("registeredOffice")}: {company.address}
+            {" · "}
+            {t("taxId")}: {company.taxId}
+            {" · "}
+            {t("companyRegistryNumber")}: {company.companyRegistryNumber}
           </p>
         </div>
       </div>

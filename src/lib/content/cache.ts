@@ -18,3 +18,12 @@ export function revalidateTestimonials() {
   revalidatePath("/[locale]", "page");
   revalidatePath("/[locale]/admin", "layout");
 }
+
+export function revalidateCompany() {
+  revalidatePath("/", "layout");
+  revalidatePath("/[locale]", "layout");
+  revalidatePath("/[locale]/contact", "page");
+  revalidatePath("/[locale]/impressum", "page");
+  revalidatePath("/[locale]/privacy-policy", "page");
+  revalidatePath("/[locale]/admin", "layout");
+}
