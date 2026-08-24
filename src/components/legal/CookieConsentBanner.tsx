@@ -50,7 +50,7 @@ export function CookieConsentBanner({ enabled }: { enabled: boolean }) {
       aria-modal="false"
       aria-labelledby="cookie-consent-title"
       aria-describedby="cookie-consent-description"
-      className="fixed inset-x-0 bottom-0 z-[60] border-t border-slate-200 bg-white/95 p-4 shadow-[0_-8px_30px_rgba(15,23,42,0.08)] backdrop-blur sm:p-6"
+      className="fixed inset-x-0 bottom-0 z-[60] border-t border-teal-200 bg-[#fffdf8]/95 p-4 shadow-[0_-8px_30px_rgba(58,63,102,0.08)] backdrop-blur sm:p-6"
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="max-w-2xl">
@@ -100,7 +100,7 @@ export function CookieSettingsButton({ label }: { label: string }) {
     <button
       type="button"
       onClick={openCookieSettings}
-      className="text-sm transition-colors hover:text-teal-400"
+      className="text-sm transition-colors hover:text-teal-100"
     >
       {label}
     </button>

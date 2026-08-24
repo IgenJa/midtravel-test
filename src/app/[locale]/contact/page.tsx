@@ -111,7 +111,7 @@ export default async function ContactPage({ params }: Props) {
         </div>
       </AnimatedSection>
 
-      <section className="bg-slate-50 py-16">
+      <section className="bg-teal-50 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <h2 className="mb-6 font-display text-2xl font-bold text-slate-900">

@@ -166,9 +166,19 @@ docker compose start app
 - [ ] Resend domain verified, contact/apply e-mail megérkezik
 - [ ] Admin: út szerkesztés, kép feltöltés, foglalás, számla gomb
 - [ ] Admin: cégadatok (e-mail, telefon, cím) a `/hu/admin/settings` oldalon — a seed csak hiányzó kulcsokat tölt, meglévő admin értéket nem ír felül
-- [ ] Privacy + travel-contract oldalak aktuálisak
+- [ ] Privacy + travel-contract oldalak aktuálisak (új szerződés = új fájl, a régit hagyd meg)
 - [ ] Smoke checklist OK (automatikus: GitHub Action `CI` — lint / unit / HTTP smoke)
 - [ ] `/api/health` 200 (külső monitor beállítva)
 - [ ] Napi `deploy/backup.sh` cron + egy próba-restore stagingen
 - [ ] Hozzáférések (VPS, Stripe, Resend, szamlazz, DNS) ügyfélnél
 - [ ] *(VPS után, ügyfél)* Demo utak cseréje valós útvonalra, árra, programra az adminból
+
+### Jogi PDF-ek cseréje
+
+Új utazási szerződés vagy adatkezelési tájékoztató **új fájl**. A régit **ne töröld és ne írd felül** — a régi foglalások hash alapján azt a PDF-et kell tudniuk megnyitni.
+
+1. Tedd fel az új PDF-et új névvel, pl. `public/docs/utazasi_szerzodes_2026.pdf`. A `utazasi_szerzodes_2025.pdf` marad.
+2. `src/data/legal-docs.ts`: a 2025-ös bejegyzést tedd a `LEGAL_DOCUMENT_ARCHIVE.contract` tömbbe; a `LEGAL_DOCUMENTS.contract` legyen a 2026-os fájl + verzió + SHA-256 (`shasum -a 256 public/docs/…`).
+3. Deploy után az új jelentkezések/foglalások az új verziót tárolják. Ugyanez a szabály az adatkezelési tájékoztatóra.
+
+Ugyanannak a fájlnak a felülírása elrontja az audit trailt, és a unit teszt / mentés hash mismatch miatt elhasal.

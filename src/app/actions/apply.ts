@@ -13,8 +13,9 @@ import { deliverApplicationEmails } from "@/lib/inbound-emails";
 import type { Locale } from "@/i18n/routing";
 import { parseLocale } from "@/lib/locale";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
+import { createLegalAcceptanceSnapshot } from "@/lib/legal-acceptance";
 import { isTripCapacityFullError } from "@/lib/trip-capacity";
-import { assertTripHasCapacity } from "@/lib/trip-capacity-db";
+import { assertTripHasCapacity, lockTripForUpdate } from "@/lib/trip-capacity-db";
 
 export type ApplyActionInput = {
   fullName: string;
@@ -104,6 +105,14 @@ export async function submitTripApplication(
     return { ok: false, code: "PRIVACY_REQUIRED" };
   }
 
+  let legalAcceptance;
+  try {
+    legalAcceptance = createLegalAcceptanceSnapshot();
+  } catch (error) {
+    Sentry.captureException(error);
+    return { ok: false, code: "SAVE_FAILED" };
+  }
+
   const dbTrip = await prisma.trip.findFirst({
     where: { slug: tripSlug, published: true },
     select: {
@@ -130,27 +139,72 @@ export async function submitTripApplication(
     tripSlug;
 
   const session = await getSession();
+  const applicationFields = {
+    fullName,
+    email,
+    phone,
+    participants,
+    tripSlug,
+    tripId: dbTrip.id,
+    message,
+    requestInsurance: Boolean(input.requestInsurance),
+    companionName: companionValue.companionName,
+    companionPhone: companionValue.companionPhone,
+    locale,
+    userId: session?.user.id ?? null,
+    ...legalAcceptance,
+  };
 
   let createdId: string;
   try {
     const created = await prisma.$transaction(async (tx) => {
-      await assertTripHasCapacity(tx, dbTrip.id);
-      return tx.tripApplication.create({
-        data: {
-          fullName,
-          email,
-          phone,
-          participants,
-          tripSlug,
+      await lockTripForUpdate(tx, dbTrip.id);
+
+      const existing = await tx.tripApplication.findFirst({
+        where: {
           tripId: dbTrip.id,
-          message,
-          requestInsurance: Boolean(input.requestInsurance),
-          companionName: companionValue.companionName,
-          companionPhone: companionValue.companionPhone,
-          locale,
-          userId: session?.user.id ?? null,
+          status: "open",
+          OR: [
+            { email },
+            ...(session?.user.id ? [{ userId: session.user.id }] : []),
+          ],
         },
+        orderBy: { createdAt: "desc" },
       });
+
+      if (existing) {
+        await assertTripHasCapacity(tx, dbTrip.id, {
+          requestedSeats: participants,
+          alreadyHeldSeats: existing.participants,
+        });
+        return tx.tripApplication.update({
+          where: { id: existing.id },
+          data: { ...applicationFields, read: false },
+        });
+      }
+
+      await assertTripHasCapacity(tx, dbTrip.id, {
+        requestedSeats: participants,
+      });
+      try {
+        return await tx.tripApplication.create({
+          data: applicationFields,
+        });
+      } catch (error) {
+        if (!isUniqueConstraintError(error)) throw error;
+        const raced = await tx.tripApplication.findFirst({
+          where: { tripId: dbTrip.id, status: "open", email },
+        });
+        if (!raced) throw error;
+        await assertTripHasCapacity(tx, dbTrip.id, {
+          requestedSeats: participants,
+          alreadyHeldSeats: raced.participants,
+        });
+        return tx.tripApplication.update({
+          where: { id: raced.id },
+          data: { ...applicationFields, read: false },
+        });
+      }
     });
     createdId = created.id;
   } catch (error) {
@@ -175,4 +229,13 @@ export async function submitTripApplication(
   }
 
   return { ok: true };
+}
+
+function isUniqueConstraintError(error: unknown) {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === "P2002"
+  );
 }

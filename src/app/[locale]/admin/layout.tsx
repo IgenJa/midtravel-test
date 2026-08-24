@@ -16,7 +16,9 @@ export default async function AdminLayout({ children, params }: Props) {
 
   const [unreadContacts, unreadApplications] = await Promise.all([
     prisma.contactMessage.count({ where: { read: false } }),
-    prisma.tripApplication.count({ where: { read: false } }),
+    prisma.tripApplication.count({
+      where: { read: false, status: "open" },
+    }),
   ]);
 
   return (

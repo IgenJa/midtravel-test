@@ -11,6 +11,7 @@ import { AnimatedSection, FadeIn, StaggerContainer, StaggerItem } from "@/compon
 import { getCompany } from "@/data/company";
 import { getTrips, getFeaturedTrips } from "@/data/trips";
 import { getTestimonials } from "@/data/testimonials";
+import { fillTileGrid, HERO_TILE_MIN, tripHeroTiles } from "@/lib/hero-tiles";
 import type { Locale } from "@/i18n/routing";
 
 const iconMap = {
@@ -37,7 +38,7 @@ export default async function HomePage({ params }: Props) {
       <HomeHero
         title={t("heroTitle")}
         subtitle={t("heroSubtitle")}
-        image="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&q=80"
+        tiles={fillTileGrid(tripHeroTiles(trips), HERO_TILE_MIN)}
         exploreLabel={t("exploreTrips")}
         signUpLabel={t("signUp")}
       />
@@ -72,7 +73,7 @@ export default async function HomePage({ params }: Props) {
         </div>
       </AnimatedSection>
 
-      <section className="bg-gradient-to-b from-slate-50 to-white py-20 sm:py-28">
+      <section className="bg-gradient-to-b from-teal-50 to-cream py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <SectionHeading
@@ -108,8 +109,8 @@ export default async function HomePage({ params }: Props) {
               const Icon = iconMap[item.icon as keyof typeof iconMap];
               return (
                 <StaggerItem key={item.title} className="h-full">
-                  <div className="flex h-full flex-col rounded-2xl bg-white p-6 shadow-md ring-1 ring-slate-200/60 transition-shadow hover:shadow-lg">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-teal-400 text-white">
+                  <div className="flex h-full flex-col rounded-2xl bg-[#fffdf8] p-6 shadow-md ring-1 ring-teal-200/50 transition-shadow hover:shadow-lg">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-teal-500 text-white">
                       <Icon className="h-6 w-6" />
                     </div>
                     <h3 className="mt-4 font-display text-lg font-bold text-slate-900">
@@ -153,12 +154,12 @@ export default async function HomePage({ params }: Props) {
       <section className="py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 to-slate-800 px-8 py-16 text-center sm:px-16">
-              <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-teal-500/20 blur-3xl" />
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-teal-700 to-teal-600 px-8 py-16 text-center sm:px-16">
+              <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-teal-200/25 blur-3xl" />
               <h2 className="relative font-display text-3xl font-bold text-white sm:text-4xl">
                 {t("ctaTitle")}
               </h2>
-              <p className="relative mx-auto mt-4 max-w-xl text-slate-300">
+              <p className="relative mx-auto mt-4 max-w-xl text-teal-100/90">
                 {t("ctaDescription")}
               </p>
               <div className="relative mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -174,7 +175,7 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
 
-      <section className="bg-white py-20 sm:py-28">
+      <section className="bg-teal-50/70 py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <SectionHeading

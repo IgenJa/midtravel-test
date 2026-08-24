@@ -33,11 +33,32 @@ export function wwwApexHosts(hostname: string): string[] {
   return [...new Set([apex, `www.${apex}`])];
 }
 
+const LOCAL_DEV_PORTS = ["3000", "3001", "3002"];
+
+function localDevOrigins(url: string): string[] {
+  const origin = originOf(url);
+  if (!origin) return [];
+  const parsed = new URL(origin);
+  if (!isLocalHostname(parsed.hostname)) return [];
+  if (process.env.NODE_ENV === "production") return [origin];
+
+  const configuredPort = parsed.port || (parsed.protocol === "https:" ? "443" : "80");
+  const ports = [...new Set([configuredPort, ...LOCAL_DEV_PORTS])];
+  const origins: string[] = [];
+  for (const host of ["localhost", "127.0.0.1"]) {
+    for (const port of ports) {
+      const portPart = port && port !== "80" && port !== "443" ? `:${port}` : "";
+      origins.push(`${parsed.protocol}//${host}${portPart}`);
+    }
+  }
+  return origins;
+}
+
 function wwwApexOrigins(url: string): string[] {
   const origin = originOf(url);
   if (!origin) return [];
   const parsed = new URL(origin);
-  if (isLocalHostname(parsed.hostname)) return [origin];
+  if (isLocalHostname(parsed.hostname)) return localDevOrigins(url);
   return wwwApexHosts(parsed.hostname).map((host) => originForHost(parsed, host));
 }
 

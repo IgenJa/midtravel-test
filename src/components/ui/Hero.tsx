@@ -39,7 +39,7 @@ export function Hero({
         className="object-cover"
       />
       {overlay && (
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-900/40 to-slate-900/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-teal-900/40 via-teal-800/25 to-teal-900/50" />
       )}
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">

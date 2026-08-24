@@ -61,7 +61,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       lang={locale}
       className={`${playfair.variable} ${dmSans.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-slate-50 text-slate-900">
+      <body className="flex min-h-full flex-col bg-background text-foreground">
         <JsonLd data={await organizationJsonLd(locale as Locale)} />
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>

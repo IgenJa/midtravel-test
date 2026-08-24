@@ -114,8 +114,15 @@ export function TripApplicationForm({
     if (!data.participants || data.participants < 1) errs.participants = t("errors.participantsMin");
     else if (data.participants > 20) errs.participants = t("errors.participantsMax");
     if (!data.tripSlug) errs.tripSlug = t("errors.tripRequired");
-    else if (trips.find((trip) => trip.slug === data.tripSlug)?.isFull) {
-      errs.general = t("errors.tripFull");
+    else {
+      const trip = trips.find((item) => item.slug === data.tripSlug);
+      if (trip?.isFull) {
+        errs.general = t("errors.tripFull");
+      } else if (trip && data.participants > trip.remainingSeats) {
+        errs.participants = t("errors.notEnoughSeats", {
+          count: trip.remainingSeats,
+        });
+      }
     }
     if (data.hasCompanion) {
       if (!data.companionName.trim()) errs.companionName = t("errors.companionNameRequired");
@@ -153,7 +160,7 @@ export function TripApplicationForm({
       return { general: t("errors.rateLimited") };
     }
     if (result.code === "TRIP_FULL") {
-      return { general: t("errors.tripFull") };
+      return { participants: t("errors.tripFull") };
     }
     if (result.fieldErrors?.companionName) {
       return { companionName: t("errors.companionNameRequired") };

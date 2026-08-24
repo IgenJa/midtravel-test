@@ -37,7 +37,7 @@ export function TripCard({ trip, featured = false, compact = false }: TripCardPr
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
           {(featured || trip.featured) && (
-            <span className="absolute left-2 top-2 rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-semibold text-white sm:left-4 sm:top-4 sm:px-3 sm:py-1 sm:text-xs">
+            <span className="absolute left-2 top-2 rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-semibold text-teal-800 sm:left-4 sm:top-4 sm:px-3 sm:py-1 sm:text-xs">
               {t("featured")}
             </span>
           )}

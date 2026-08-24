@@ -1,12 +1,13 @@
 "use client";
 
-import { Hero } from "@/components/ui/Hero";
+import { HexagonHero } from "@/components/ui/HexagonHero";
 import { useAuth } from "@/contexts/AuthContext";
+import type { HeroTile } from "@/lib/hero-tiles";
 
 interface HomeHeroProps {
   title: string;
   subtitle: string;
-  image: string;
+  tiles: HeroTile[];
   exploreLabel: string;
   signUpLabel: string;
 }
@@ -14,23 +15,19 @@ interface HomeHeroProps {
 export function HomeHero({
   title,
   subtitle,
-  image,
+  tiles,
   exploreLabel,
   signUpLabel,
 }: HomeHeroProps) {
   const { isAuthenticated, isLoading } = useAuth();
 
   return (
-    <Hero
+    <HexagonHero
       title={title}
       subtitle={subtitle}
-      image={image}
-      ctaPrimary={{ label: exploreLabel, href: "/trips" }}
-      ctaSecondary={
-        !isLoading && !isAuthenticated
-          ? { label: signUpLabel, href: "/register" }
-          : undefined
-      }
+      tiles={tiles}
+      exploreLabel={exploreLabel}
+      signUpLabel={!isLoading && !isAuthenticated ? signUpLabel : undefined}
     />
   );
 }

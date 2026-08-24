@@ -21,8 +21,10 @@ import {
 import type { Locale } from "@/i18n/routing";
 import { parseLocale } from "@/lib/locale";
 import { RATE_LIMITS, rateLimit } from "@/lib/rate-limit";
+import { abandonPendingCheckout } from "@/lib/bookings";
+import { createLegalAcceptanceSnapshot } from "@/lib/legal-acceptance";
 import { isTripCapacityFullError } from "@/lib/trip-capacity";
-import { assertTripHasCapacity } from "@/lib/trip-capacity-db";
+import { assertTripHasCapacity, lockTripForUpdate } from "@/lib/trip-capacity-db";
 
 export type BookingCheckoutInput = {
   fullName: string;
@@ -114,6 +116,14 @@ export async function createBookingCheckout(
     return { ok: false, code: "PRIVACY_REQUIRED" };
   }
 
+  let legalAcceptance;
+  try {
+    legalAcceptance = createLegalAcceptanceSnapshot();
+  } catch (error) {
+    Sentry.captureException(error);
+    return { ok: false, code: "CHECKOUT_FAILED" };
+  }
+
   const session = await getSession();
   if (!session?.user?.id) {
     return { ok: false, code: "AUTH_REQUIRED" };
@@ -157,24 +167,61 @@ export async function createBookingCheckout(
 
   try {
     const { booking, payment } = await prisma.$transaction(async (tx) => {
-      await assertTripHasCapacity(tx, trip.id);
+      await lockTripForUpdate(tx, trip.id);
 
-      const application = await tx.tripApplication.create({
-        data: {
-          fullName,
-          email,
-          phone,
-          participants,
-          tripSlug,
+      const existingOpen = await tx.tripApplication.findFirst({
+        where: {
           tripId: trip.id,
-          message,
-          requestInsurance: Boolean(input.requestInsurance),
-          companionName: companionValue.companionName,
-          companionPhone: companionValue.companionPhone,
-          locale,
-          userId: session.user.id,
+          status: "open",
+          OR: [{ email }, { userId: session.user.id }],
         },
+        orderBy: { createdAt: "desc" },
       });
+
+      await assertTripHasCapacity(tx, trip.id, {
+        requestedSeats: participants,
+        alreadyHeldSeats: existingOpen?.participants ?? 0,
+      });
+
+      const application = existingOpen
+        ? await tx.tripApplication.update({
+            where: { id: existingOpen.id },
+            data: {
+              fullName,
+              email,
+              phone,
+              participants,
+              tripSlug,
+              message,
+              requestInsurance: Boolean(input.requestInsurance),
+              companionName: companionValue.companionName,
+              companionPhone: companionValue.companionPhone,
+              locale,
+              userId: session.user.id,
+              status: "converted",
+              read: true,
+              ...legalAcceptance,
+            },
+          })
+        : await tx.tripApplication.create({
+            data: {
+              fullName,
+              email,
+              phone,
+              participants,
+              tripSlug,
+              tripId: trip.id,
+              message,
+              requestInsurance: Boolean(input.requestInsurance),
+              companionName: companionValue.companionName,
+              companionPhone: companionValue.companionPhone,
+              locale,
+              userId: session.user.id,
+              status: "converted",
+              read: true,
+              ...legalAcceptance,
+            },
+          });
 
       const booking = await tx.booking.create({
         data: {
@@ -185,6 +232,7 @@ export async function createBookingCheckout(
           currency,
           status: "pending",
           locale,
+          ...legalAcceptance,
           customerName: fullName,
           customerEmail: email,
           customerPhone: phone,
@@ -204,6 +252,11 @@ export async function createBookingCheckout(
         },
       });
 
+      await tx.tripApplication.update({
+        where: { id: application.id },
+        data: { bookingId: booking.id },
+      });
+
       const payment = await tx.payment.create({
         data: {
           bookingId: booking.id,
@@ -220,46 +273,45 @@ export async function createBookingCheckout(
     const appUrl = getAppUrl();
     const localePrefix = `/${locale}`;
 
-    const checkoutSession = await stripe.checkout.sessions.create({
-      mode: "payment",
-      customer_email: email,
-      client_reference_id: booking.id,
-      line_items: [
-        {
-          quantity: 1,
-          price_data: {
-            currency: BOOKING_CURRENCY,
-            unit_amount: toStripeUnitAmount(depositAmount, BOOKING_CURRENCY),
-            product_data: {
-              name: `${tripTitle} — ${depositPercent}% előleg / deposit`,
-              description: `${participants} résztvevő · teljes ár ${totalAmount} ${currency}`,
+    let checkoutSession;
+    try {
+      checkoutSession = await stripe.checkout.sessions.create({
+        mode: "payment",
+        customer_email: email,
+        client_reference_id: booking.id,
+        line_items: [
+          {
+            quantity: 1,
+            price_data: {
+              currency: BOOKING_CURRENCY,
+              unit_amount: toStripeUnitAmount(depositAmount, BOOKING_CURRENCY),
+              product_data: {
+                name: `${tripTitle} — ${depositPercent}% előleg / deposit`,
+                description: `${participants} résztvevő · teljes ár ${totalAmount} ${currency}`,
+              },
             },
           },
+        ],
+        metadata: {
+          bookingId: booking.id,
+          paymentId: payment.id,
+          tripId: trip.id,
+          tripSlug: trip.slug,
+          userId: session.user.id,
+          participants: String(participants),
+          depositPercent: String(depositPercent),
+          locale,
         },
-      ],
-      metadata: {
-        bookingId: booking.id,
-        paymentId: payment.id,
-        tripId: trip.id,
-        tripSlug: trip.slug,
-        userId: session.user.id,
-        participants: String(participants),
-        depositPercent: String(depositPercent),
-        locale,
-      },
-      success_url: `${appUrl}${localePrefix}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}${localePrefix}/booking/cancel?booking_id=${booking.id}`,
-    });
+        success_url: `${appUrl}${localePrefix}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${appUrl}${localePrefix}/booking/cancel?booking_id=${booking.id}`,
+      });
+    } catch (error) {
+      await abandonPendingCheckout(booking.id);
+      throw error;
+    }
 
     if (!checkoutSession.url) {
-      await prisma.booking.update({
-        where: { id: booking.id },
-        data: { status: "cancelled" },
-      });
-      await prisma.payment.update({
-        where: { id: payment.id },
-        data: { status: "failed" },
-      });
+      await abandonPendingCheckout(booking.id);
       return { ok: false, code: "CHECKOUT_FAILED" };
     }
 

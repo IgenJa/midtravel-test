@@ -54,6 +54,8 @@ A publikus GET-ek egy része automatikus: GitHub Action `CI` → `npm run smoke:
 - [ ] „Számla kiállítása” (stagingen szamlazz teszt / sandbox ha van)
 - [ ] Dupla kiállítás védelem
 - [ ] Beérkező: kapcsolatüzenetek és jelentkezések listája, részlet, olvasott jelölés
+- [ ] Jelentkezés státusz: nyitott jelentkezés a megadott résztvevőszámot foglalja; „Hely felszabadítása” után a létszám csökken; foglaláshoz kötött jelentkezés nem számít külön helynek
+- [ ] Többfős foglalás/jelentkezés: 8 fő 8 helyet foglal; 15 szabad helynél 20 fős checkout/jelentkezés TRIP_FULL
 - [ ] Olvasatlan számláló frissül a dashboardon és a navon
 - [ ] Sikertelen Resend: admin dashboard piros figyelmeztetés, inbound/foglalás badge, újraküldés gomb
 

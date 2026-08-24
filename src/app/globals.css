@@ -1,14 +1,34 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --teal-50: #f0fdfa;
-  --teal-100: #ccfbf1;
-  --teal-400: #2dd4bf;
-  --teal-500: #14b8a6;
-  --teal-600: #0d9488;
-  --teal-700: #0f766e;
+  --cream: #faebd6;
+  --gold: #efe6c4;
+  --navy: #3a3f66;
+  --background: #faebd6;
+  --foreground: #2a2a38;
+}
+
+@theme {
+  --color-cream: #faebd6;
+  --color-gold: #efe6c4;
+  --color-navy: #3a3f66;
+
+  --color-teal-50: #f7f3e6;
+  --color-teal-100: #efe6c4;
+  --color-teal-200: #e4d8a8;
+  --color-teal-300: #d4c88a;
+  --color-teal-400: #c8b87a;
+  --color-teal-500: #4a5078;
+  --color-teal-600: #3a3f66;
+  --color-teal-700: #313554;
+  --color-teal-800: #292d48;
+  --color-teal-900: #22263c;
+
+  --color-slate-50: #f6edd8;
+  --color-slate-100: #efe3c8;
+  --color-slate-200: #e4d4b4;
+  --color-slate-800: #313554;
+  --color-slate-900: #3a3f66;
 }
 
 @theme inline {
@@ -33,8 +53,8 @@ body {
 }
 
 ::selection {
-  background-color: #ccfbf1;
-  color: #0f766e;
+  background-color: #efe6c4;
+  color: #3a3f66;
 }
 
 .price-range-thumb::-webkit-slider-thumb {
@@ -44,8 +64,8 @@ body {
   width: 1.125rem;
   border-radius: 9999px;
   border: 2px solid #ffffff;
-  background: #0d9488;
-  box-shadow: 0 1px 4px rgb(15 23 42 / 0.2);
+  background: #3a3f66;
+  box-shadow: 0 1px 4px rgb(58 63 102 / 0.2);
   cursor: pointer;
   pointer-events: auto;
 }
@@ -55,8 +75,164 @@ body {
   width: 1.125rem;
   border-radius: 9999px;
   border: 2px solid #ffffff;
-  background: #0d9488;
-  box-shadow: 0 1px 4px rgb(15 23 42 / 0.2);
+  background: #3a3f66;
+  box-shadow: 0 1px 4px rgb(58 63 102 / 0.2);
   cursor: pointer;
   pointer-events: auto;
+}
+
+.hex-slider {
+  --hex-size: 7.5rem;
+  --hex-gap: 0.4rem;
+  --hex-cols: 10;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .hex-slider {
+    --hex-size: 9.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hex-slider {
+    --hex-size: 11rem;
+  }
+}
+
+.hex-track {
+  display: flex;
+  width: max-content;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.hex-set {
+  display: flex;
+  width: calc(var(--hex-cols) * (var(--hex-size) + var(--hex-gap)));
+  flex-shrink: 0;
+  flex-direction: column;
+  overflow: visible;
+  padding: 1.5rem 0;
+}
+
+.hex-row {
+  display: flex;
+  width: max-content;
+  gap: var(--hex-gap);
+}
+
+.hex-row + .hex-row {
+  margin-top: calc(var(--hex-size) * -0.29 + var(--hex-gap));
+}
+
+.hex-row-offset {
+  margin-left: calc((var(--hex-size) + var(--hex-gap)) / 2);
+}
+
+.hex-cell {
+  width: var(--hex-size);
+  height: calc(var(--hex-size) * 1.1547);
+  flex-shrink: 0;
+  transition:
+    filter 280ms ease,
+    opacity 280ms ease,
+    transform 280ms ease;
+}
+
+.hex-track:has(.hex-cell:hover) .hex-cell {
+  opacity: 0.42;
+  filter: blur(3px) brightness(0.72) saturate(0.75);
+  transform: scale(0.94);
+}
+
+.hex-track:has(.hex-cell:hover) .hex-cell:hover {
+  z-index: 40;
+  opacity: 1;
+  filter: drop-shadow(0 18px 26px rgb(42 42 56 / 0.4));
+  transform: scale(1.32);
+}
+
+.hex-cell:hover .hex-frame {
+  background: #e8d56b;
+  padding: 3px;
+}
+
+.hex-cell:hover .hex-label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hex-frame,
+.hex-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hex-frame {
+  position: relative;
+  background: #c8b87a;
+  padding: 2px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  transform: translateZ(0);
+  transition:
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 280ms ease,
+    padding 280ms ease,
+    filter 280ms ease;
+}
+
+.hex-photo {
+  position: relative;
+  overflow: hidden;
+  background: #efe3c8;
+}
+
+.hex-photo img {
+  inset: -14% !important;
+  width: 128% !important;
+  height: 128% !important;
+  max-width: none;
+  object-fit: cover;
+  object-position: center;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.hex-label {
+  position: absolute;
+  inset: auto 12% 16%;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  border-radius: 0.5rem;
+  background: rgb(42 42 56 / 0.72);
+  padding: 0.35rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #fffdf8;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hex-track:has(.hex-cell:hover) .hex-cell,
+  .hex-track:has(.hex-cell:hover) .hex-cell:hover,
+  .hex-cell,
+  .hex-frame,
+  .hex-label {
+    transition: none;
+    transform: none;
+    filter: none;
+  }
 }

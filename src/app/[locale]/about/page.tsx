@@ -82,12 +82,12 @@ export default async function AboutPage({ params }: Props) {
       </AnimatedSection>
 
       {/* Mission & Vision */}
-      <section className="bg-slate-50 py-20 sm:py-28">
+      <section className="bg-teal-50 py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <StaggerContainer className="grid gap-8 md:grid-cols-2">
             <StaggerItem>
-              <div className="h-full rounded-2xl bg-white p-8 shadow-md ring-1 ring-slate-200/60">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-teal-400 text-white">
+              <div className="h-full rounded-2xl bg-[#fffdf8] p-8 shadow-md ring-1 ring-teal-200/50">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-teal-500 text-white">
                   <Target className="h-6 w-6" />
                 </div>
                 <h3 className="mt-4 font-display text-2xl font-bold text-slate-900">
@@ -99,8 +99,8 @@ export default async function AboutPage({ params }: Props) {
               </div>
             </StaggerItem>
             <StaggerItem>
-              <div className="h-full rounded-2xl bg-white p-8 shadow-md ring-1 ring-slate-200/60">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-teal-400 text-white">
+              <div className="h-full rounded-2xl bg-[#fffdf8] p-8 shadow-md ring-1 ring-teal-200/50">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-teal-500 text-white">
                   <Eye className="h-6 w-6" />
                 </div>
                 <h3 className="mt-4 font-display text-2xl font-bold text-slate-900">
@@ -126,7 +126,7 @@ export default async function AboutPage({ params }: Props) {
           <StaggerContainer className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {company.about.values.map((value) => (
               <StaggerItem key={value.title}>
-                <div className="h-full rounded-2xl bg-white p-6 shadow-md ring-1 ring-slate-200/60">
+                <div className="h-full rounded-2xl bg-[#fffdf8] p-6 shadow-md ring-1 ring-teal-200/50">
                   <h3 className="font-display text-lg font-bold text-slate-900">
                     {value.title}
                   </h3>
@@ -141,7 +141,7 @@ export default async function AboutPage({ params }: Props) {
       </AnimatedSection>
 
       {/* Why Choose Us */}
-      <section className="bg-gradient-to-b from-slate-50 to-white py-20 sm:py-28">
+      <section className="bg-gradient-to-b from-teal-50 to-cream py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow={t("whyEyebrow")}
@@ -153,8 +153,8 @@ export default async function AboutPage({ params }: Props) {
               const Icon = iconMap[item.icon as keyof typeof iconMap];
               return (
                 <StaggerItem key={item.title} className="h-full">
-                  <div className="flex h-full flex-col rounded-2xl bg-white p-6 shadow-md ring-1 ring-slate-200/60">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-teal-400 text-white">
+                  <div className="flex h-full flex-col rounded-2xl bg-[#fffdf8] p-6 shadow-md ring-1 ring-teal-200/50">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-teal-500 text-white">
                       <Icon className="h-6 w-6" />
                     </div>
                     <h3 className="mt-4 font-display text-lg font-bold text-slate-900">
@@ -186,12 +186,12 @@ export default async function AboutPage({ params }: Props) {
       {/* CTA */}
       <AnimatedSection className="py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 to-slate-800 px-8 py-16 text-center sm:px-16">
-            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-teal-500/20 blur-3xl" />
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-teal-700 to-teal-600 px-8 py-16 text-center sm:px-16">
+            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-teal-200/25 blur-3xl" />
             <h2 className="relative font-display text-3xl font-bold text-white sm:text-4xl">
               {t("ctaTitle")}
             </h2>
-            <p className="relative mx-auto mt-4 max-w-xl text-slate-300">
+            <p className="relative mx-auto mt-4 max-w-xl text-teal-100/90">
               {t("ctaDescription")}
             </p>
             <div className="relative mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">

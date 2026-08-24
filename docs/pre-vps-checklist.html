@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MidTravel — teendők a VPS előtt</title>
+  <style>
+    :root {
+      --bg-editor: #141414;
+      --bg-chrome: #1b1b1b;
+      --text: #f0f0f0;
+      --text-2: rgba(240, 240, 240, 0.74);
+      --text-3: rgba(240, 240, 240, 0.60);
+      --text-4: rgba(240, 240, 240, 0.36);
+      --fill-1: rgba(240, 240, 240, 0.20);
+      --fill-2: rgba(240, 240, 240, 0.14);
+      --fill-3: rgba(240, 240, 240, 0.08);
+      --fill-4: rgba(240, 240, 240, 0.06);
+      --stroke-1: rgba(240, 240, 240, 0.20);
+      --stroke-2: rgba(240, 240, 240, 0.12);
+      --stroke-3: rgba(240, 240, 240, 0.08);
+      --accent: #82a7ff;
+      --green: #3d9b74;
+      --red: #e06c75;
+      --orange: #d19a66;
+      --blue: #61afef;
+      --gray: #8a8a8a;
+      --warn-bg: rgba(209, 154, 102, 0.10);
+      --info-bg: rgba(97, 175, 239, 0.10);
+      --radius: 8px;
+    }
+
+    html[data-theme="light"] {
+      --bg-editor: #f7f7f4;
+      --bg-chrome: #ffffff;
+      --text: #141414;
+      --text-2: rgba(20, 20, 20, 0.74);
+      --text-3: rgba(20, 20, 20, 0.60);
+      --text-4: rgba(20, 20, 20, 0.36);
+      --fill-1: rgba(20, 20, 20, 0.12);
+      --fill-2: rgba(20, 20, 20, 0.08);
+      --fill-3: rgba(20, 20, 20, 0.05);
+      --fill-4: rgba(20, 20, 20, 0.035);
+      --stroke-1: rgba(20, 20, 20, 0.16);
+      --stroke-2: rgba(20, 20, 20, 0.10);
+      --stroke-3: rgba(20, 20, 20, 0.08);
+      --accent: #3b6cf0;
+      --green: #1f8a65;
+      --red: #c04848;
+      --orange: #c06028;
+      --blue: #2e79b5;
+      --gray: #6b6b6b;
+      --warn-bg: rgba(192, 96, 40, 0.08);
+      --info-bg: rgba(46, 121, 181, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+      background: var(--bg-editor);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 24px 24px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .stack { display: flex; flex-direction: column; }
+    .stack-8 { gap: 8px; }
+    .stack-6 { gap: 6px; }
+    .stack-10 { gap: 10px; }
+
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 24px; line-height: 30px; font-weight: 590; }
+    h2 { font-size: 18px; line-height: 24px; font-weight: 590; }
+    h3 { font-size: 16px; line-height: 22px; font-weight: 590; }
+    .secondary { color: var(--text-2); }
+    .tertiary { color: var(--text-3); }
+    .small { font-size: 12px; line-height: 16px; }
+
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin: -8px 0 -16px;
+    }
+    .theme-btn {
+      appearance: none;
+      border: 1px solid var(--stroke-2);
+      background: transparent;
+      color: var(--text-3);
+      font: inherit;
+      font-size: 12px;
+      line-height: 16px;
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 9999px;
+      cursor: pointer;
+    }
+    .theme-btn:hover { background: var(--fill-3); color: var(--text-2); }
+
+    .callout {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      background: var(--fill-3);
+      break-inside: avoid;
+    }
+    .callout.warn { background: var(--warn-bg); }
+    .callout.info { background: var(--info-bg); }
+    .callout svg { flex: none; margin-top: 2px; }
+    .callout .title { font-weight: 590; margin-bottom: 2px; }
+    .callout .body { color: var(--text-2); }
+
+    .frame {
+      border: 1px solid var(--stroke-3);
+      border-radius: var(--radius);
+      overflow: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      line-height: 18px;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--stroke-3);
+    }
+    th {
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 590;
+      color: var(--text-3);
+      background: var(--bg-editor);
+    }
+    tr:last-child td { border-bottom: 0; }
+    tbody tr:nth-child(even) td { background: var(--fill-4); }
+    .tone {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: 1px;
+    }
+    .tone.success { background: var(--green); }
+    .tone.danger { background: var(--red); }
+    .tone.warning { background: var(--orange); }
+    .tone.info { background: var(--blue); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .stat .value {
+      font-size: 24px;
+      line-height: 30px;
+      font-weight: 590;
+    }
+    .stat .label { font-size: 12px; line-height: 16px; color: var(--text-3); }
+    .stat.success .value { color: var(--green); }
+    .stat.danger .value { color: var(--red); }
+    .stat.warning .value { color: var(--orange); }
+    .stat.info .value { color: var(--blue); }
+
+    .usage-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--text-3);
+      margin-bottom: 6px;
+    }
+    .usage {
+      display: flex;
+      gap: 3px;
+      height: 6px;
+    }
+    .usage i {
+      display: block;
+      height: 100%;
+      border-radius: 9999px;
+    }
+    .usage .done { width: 65.91%; background: var(--green); }
+    .usage .high { width: 9.09%; background: var(--orange); }
+    .usage .med { width: 9.09%; background: var(--blue); }
+    .usage .vps { width: 15.91%; background: var(--gray); }
+
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill {
+      appearance: none;
+      border: 1px solid var(--stroke-2);
+      background: transparent;
+      color: var(--text-2);
+      font: inherit;
+      font-size: 12px;
+      line-height: 16px;
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 9999px;
+      cursor: pointer;
+    }
+    .pill:hover { background: var(--fill-3); }
+    .pill.active {
+      background: var(--fill-1);
+      border-color: transparent;
+      color: var(--text);
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid var(--stroke-3);
+      margin: 0;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .card {
+      border: 1px solid var(--stroke-3);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--bg-editor);
+      break-inside: avoid;
+    }
+    .card-h {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      height: 28px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--stroke-3);
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 590;
+    }
+    .card-h span { color: var(--text-3); font-weight: 400; }
+    .card-b { padding: 12px 16px; }
+    .card-b p + p { margin-top: 6px; }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.92em;
+      background: var(--fill-3);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    .hidden { display: none; }
+
+    @media (max-width: 720px) {
+      .page { padding: 16px 16px 40px; }
+      .stats, .cards { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      :root, html[data-theme="dark"] {
+        --bg-editor: #ffffff;
+        --bg-chrome: #ffffff;
+        --text: #141414;
+        --text-2: rgba(20, 20, 20, 0.74);
+        --text-3: rgba(20, 20, 20, 0.60);
+        --text-4: rgba(20, 20, 20, 0.36);
+        --fill-1: rgba(20, 20, 20, 0.12);
+        --fill-3: rgba(20, 20, 20, 0.05);
+        --fill-4: rgba(20, 20, 20, 0.035);
+        --stroke-2: rgba(20, 20, 20, 0.10);
+        --stroke-3: rgba(20, 20, 20, 0.10);
+        --green: #1f8a65;
+        --red: #c04848;
+        --orange: #c06028;
+        --blue: #2e79b5;
+        --gray: #6b6b6b;
+        --warn-bg: rgba(192, 96, 40, 0.08);
+        --info-bg: rgba(46, 121, 181, 0.08);
+      }
+      .topbar { display: none; }
+      .page { padding: 0; max-width: none; }
+      .callout, .card, .frame, .stat { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <button type="button" class="theme-btn" id="theme-btn">Világos</button>
+    </div>
+
+    <div class="stack stack-8">
+      <h1>MidTravel — teendők a VPS előtt</h1>
+      <p class="secondary">
+        A stack (Next.js standalone, Docker, Stripe előleg, Resend, szamlazz.hu,
+        admin CRUD, HU/EN, SEO) megvan. A cégadatok adminból szerkeszthetők, a
+        jogi szövegek és a demo katalógus kész. Az opcionális utastárs
+        (ülőhely), a kapacitás / overbook (résztvevőszámmal), a foglaláskori
+        szerződés-elfogadás (checkbox + timestamp/verzió/hash) és a
+        profil e-mailcsere megerősítés kész.
+        Nyitva maradt: számla B2C, dupla foglalás, utasnevek.
+      </p>
+    </div>
+
+    <div class="callout warn">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M8 2.4 14.2 13H1.8L8 2.4Z" stroke="var(--orange)" stroke-width="1.3" stroke-linejoin="round"/>
+        <path d="M8 6.4v3.2M8 11.3v.2" stroke="var(--orange)" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="title">A VPS maradjon utoljára</div>
+        <div class="body">
+          DNS, TLS, Docker, élő Stripe/Resend/szamlazz kulcsok, firewall: ezek a
+          szerverre tartoznak. Security headerek, /api/health, deploy/backup.sh és a zárt
+          Postgres (nincs host 5432) kódja kész — nginx/Certbot, napi cron,
+          UptimeRobot és a 5432 ellenőrzése a VPS utáni listában.
+        </div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="8" cy="8" r="6.2" stroke="var(--blue)" stroke-width="1.3"/>
+        <path d="M8 7.2v4M8 5.1v.2" stroke="var(--blue)" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="title">Demo utak szándékosak</div>
+        <div class="body">
+          A 20 kitalált út (ár, program, stock kép) nem blocker. Az ügyfél a
+          VPS után, az adminból cseréli valós útvonalra — a seed nem írja felül
+          a szerkesztett sorokat.
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="8" cy="8" r="6.2" stroke="var(--text-3)" stroke-width="1.3"/>
+        <path d="M5.4 8h5.2" stroke="var(--text-3)" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="title">Szándékosan nem került fel</div>
+        <div class="body">
+          GDPR fióktörlés / adatexport: a privacy kiegészítés e-mailre és postára
+          viszi a kérelmet — self-service nem ígért. Számla-PDF a uploads/invoices
+          alatt: a publikus /api/uploads csak képet szolgál, PDF 404. Stripe
+          összeg-ellenőrzés a webhookban, admin 2FA, CAPTCHA, Unsplash hero,
+          árformátum (en-US), SiteContent modell, jelszókomplexitás, User.banned
+          enforcement, in-memory rate limit: utáni backlog.
+        </div>
+      </div>
+    </div>
+
+    <div class="stack stack-10">
+      <h2>VPS után — ezzel foglalkozz</h2>
+      <p class="secondary">App-oldalon kész, szerveren kell megcsinálni. Addig nincs teendő.</p>
+      <div class="frame">
+        <table>
+          <thead>
+            <tr><th>Feladat</th><th>Mikor</th><th>Lépések</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>HTTP security headerek élőre</td>
+              <td>nginx + első TLS után</td>
+              <td>sudo cp deploy/nginx-http.conf /etc/nginx/conf.d/midtravel-zones.conf · sudo cp deploy/nginx-security-headers.conf /etc/nginx/snippets/midtravel-security-headers.conf · sudo cp deploy/nginx.conf /etc/nginx/sites-available/midtravel. Első Certbot előtt kommentezd a két listen 443 blokkot, majd nginx -t && reload. Ellenőrzés: curl -I https://midtravel.hu — kell HSTS, CSP, X-Frame-Options, nosniff, Referrer-Policy. Főoldal + /hu/contact Maps iframe + privacy PDF iframe ne törjön.</td>
+            </tr>
+            <tr>
+              <td>Napi backup cron</td>
+              <td>Compose fut, volume-ok megvannak</td>
+              <td>Első próba: BACKUP_DIR=/var/backups/midtravel BACKUP_RETENTION_DAYS=14 /var/www/midtravel/deploy/backup.sh — nem üres db.dump + uploads.tar.gz + SHA256SUMS. Cron: 15 3 * * * /var/www/midtravel/deploy/backup.sh &gt;&gt; /var/log/midtravel-backup.log 2&gt;&amp;1. Egyszer próba-restore helyi gépen vagy más VPS-en (HANDOFF). Off-server másolat, ha van hova.</td>
+            </tr>
+            <tr>
+              <td>/api/health monitor</td>
+              <td>HTTPS él</td>
+              <td>curl -fsS https://midtravel.hu/api/health → 200, checks.database=ok. docker compose ps: app + db healthy. UptimeRobot / Better Stack: GET https://midtravel.hu/api/health, riasztás ha nem 200. Ha a DB le van állítva: 503 + app unhealthy.</td>
+            </tr>
+            <tr>
+              <td>Postgres 5432 ne legyen a hoston</td>
+              <td>első docker compose up után, még a DNS/TLS előtt is lehet</td>
+              <td>A kód kész, de a régi konténer addig publikálja a 5432-t, amíg nem cseréled. git pull + docker compose up -d (volume megmarad). Ellenőrzés: ss -lnt | grep 5432 üres; docker compose ps app+db healthy; curl /api/health 200. Dump/SQL: docker compose exec db … — ne localhost:5432. Firewallon se legyen nyitva a 5432.</td>
+            </tr>
+            <tr>
+              <td>Valós utak, árak, programok</td>
+              <td>ügyfél, adminból</td>
+              <td>A 20 demo út stock képpel maradhat. Az ügyfél a VPS után viszi fel a valós útvonalat / árat / programot. A seed nem írja felül a szerkesztett sorokat.</td>
+            </tr>
+            <tr>
+              <td>Env lábak: SITE_URL + EMAIL_OVERRIDE</td>
+              <td>első production .env írásakor</td>
+              <td>NEXT_PUBLIC_SITE_URL és NEXT_PUBLIC_APP_URL legyen https://midtravel.hu — a kód fallbackje midtravel.com, ha az env hiányzik. EMAIL_OVERRIDE ne legyen bent: minden kimenő levél oda megy, production guard nincs. CONTACT_NOTIFY_EMAIL legyen kitöltve (különben midtravel2019@gmail.com). BETTER_AUTH_SECRET legyen erős — üresen is elindul az app.</td>
+            </tr>
+            <tr>
+              <td>Stripe webhook: completed + expired</td>
+              <td>élő Stripe webhook felvételekor</td>
+              <td>A kód kezeli a checkout.session.expired-et (cancelExpiredStripeSession), a HANDOFF csak a completed-et említi. Dashboardban mindkettő kell, különben a félbehagyott checkout örök pending foglalás (helyfoglalás) marad. URL: https://midtravel.hu/api/stripe/webhook.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat success"><div class="value">29</div><div class="label">Kész (app-oldali)</div></div>
+      <div class="stat danger"><div class="value">0</div><div class="label">Blocker (élés előtt kell)</div></div>
+      <div class="stat warning"><div class="value">4</div><div class="label">Magas</div></div>
+      <div class="stat info"><div class="value">4</div><div class="label">Közepes</div></div>
+    </div>
+
+    <div>
+      <div class="usage-head">
+        <span>Hátralévő munka megoszlása</span>
+        <span>8 app-oldali + 7 VPS után · 29 kész</span>
+      </div>
+      <div class="usage" aria-hidden="true">
+        <i class="done"></i><i class="high"></i><i class="med"></i><i class="vps"></i>
+      </div>
+    </div>
+
+    <div class="stack stack-8">
+      <h2>Ajánlott sorrend</h2>
+      <p>1. Először fizetés előtt: számla B2C, félbehagyott / dupla foglalás. A kapacitás = résztvevők (33), a szerződés-checkbox, az elfogadás mentése (35) és a profil e-mailcsere kész.</p>
+      <p>2. Utána: indulási dátum, utasnevek — vagy tudatos „e-mailben intézzük” döntés. Az utastárs (ülőhely), a jelentkezés-státusz / helyfelszabadítás és a kapacitás résztvevőszámmal kész.</p>
+      <p>3. A 70% hátralék, lemondás/refund és a biztosítás checkbox termékdöntés: vagy építitek, vagy a szerződéses szöveget igazítjátok.</p>
+      <p>4. Smoke checklist lokálisan, aztán VPS (nginx/Certbot, backup cron, /api/health, 5432 zárva, EMAIL_OVERRIDE nélkül).</p>
+    </div>
+
+    <hr />
+
+    <div class="stack stack-10">
+      <h2>Hátralévő app-oldali feladatok</h2>
+      <div class="pills" id="filters">
+        <button type="button" class="pill active" data-filter="all">Összes</button>
+        <button type="button" class="pill" data-filter="blocker">Blocker</button>
+        <button type="button" class="pill" data-filter="legal">Jogi</button>
+        <button type="button" class="pill" data-filter="product">Termék</button>
+        <button type="button" class="pill" data-filter="ops">Ops / biztonság</button>
+      </div>
+      <div class="frame">
+        <table>
+          <thead>
+            <tr><th>Prio</th><th>Terület</th><th>Feladat</th><th>Miért</th></tr>
+          </thead>
+          <tbody id="open-rows">
+            <tr data-filter="product">
+              <td><span class="tone warning"></span>Magas</td>
+              <td>Termék</td>
+              <td>Indulási dátum a foglaláson / jelentkezésen</td>
+              <td>Az utaknak van dátumlistájuk, de a vendég nem választ. A booking/application sémában sincs departure date. A szamlazz XML teljesítés dátuma ezért mindig a kiállítás napja — utazási szolgáltatásnál gyakran az indulás kellene.</td>
+            </tr>
+            <tr data-filter="product">
+              <td><span class="tone warning"></span>Magas</td>
+              <td>Termék</td>
+              <td>Maradék 70% fizetés</td>
+              <td>A szerződés 45 nappal indulás előtt kéri a hátralékot. A Stripe csak az előleget kezeli; második checkout / emlékeztető nincs.</td>
+            </tr>
+            <tr data-filter="product">
+              <td><span class="tone info"></span>Közepes</td>
+              <td>Termék</td>
+              <td>Lemondás / visszatérítés folyamat</td>
+              <td>A szerződésben vannak refund sávok, Stripe refund és admin lemondás UI nincs. Az admin foglalás oldalon státuszváltás sincs: nincs paid/cancelled, nincs „mark paid”, csak számlázási adat + kiállítás + e-mail újraküldés.</td>
+            </tr>
+            <tr data-filter="product">
+              <td><span class="tone info"></span>Közepes</td>
+              <td>Termék</td>
+              <td>Utasbiztosítás: csak checkbox</td>
+              <td>A flag mentődik, de nincs ajánlat, partner, ár vagy follow-up. Vagy kössétek be, vagy vegyétek ki a szöveget.</td>
+            </tr>
+            <tr data-filter="product legal">
+              <td><span class="tone warning"></span>Magas</td>
+              <td>Termék</td>
+              <td>Számla: magánszemély + cím a vendégtől</td>
+              <td>A checkout csak nevet/e-mailt/telefont kér. billingAddress és taxId adminból megy utólag. Kiállítás kötelezőnek veszi a taxId-t, a szamlazz XML mindig adoalany=1. Magánszemélynek nincs adószáma; a vendég a számlát sem kapja (sendEmail=false, PDF csak admin).</td>
+            </tr>
+            <tr data-filter="product">
+              <td><span class="tone warning"></span>Magas</td>
+              <td>Termék</td>
+              <td>Félbehagyott / dupla foglalás</td>
+              <td>Minden Book &amp; pay új Booking + Payment + TripApplication. Nincs dedup ugyanarra a user+útra. A profilon nincs „előleg fizetése” gomb. A /booking/cancel csak UI — a pending foglalást nem oldja. Ha a Stripe session.create dob, a booking pending marad session nélkül (nincs expiry webhook). Lejárt session után a booking cancelled, a jelentkezés megmarad és helyet fog.</td>
+            </tr>
+            <tr data-filter="product">
+              <td><span class="tone info"></span>Közepes</td>
+              <td>Termék</td>
+              <td>Utasnevek a foglaláson</td>
+              <td>Booking és TripApplication csak participants: Int. Nincs utaslista, útlevéladat, admin manifest. Az opcionális utastárs (ülőhely) kész — ez a tétel a többi utas nevéről szól. Kis irodánál e-mailben is gyűjthető.</td>
+            </tr>
+            <tr data-filter="product">
+              <td><span class="tone info"></span>Közepes</td>
+              <td>Termék</td>
+              <td>Foglalás success csak fizetés után</td>
+              <td>/booking/success session_id nélkül is zöld pipát és „Köszönjük a foglalást!” szöveget mutat. Nincs auth/ownership check; a session_id-s ág fulfill-t is futtat.</td>
+            </tr>
+            <tr id="empty-row" class="hidden">
+              <td colspan="4" class="tertiary">Nincs nyitott tétel ebben a szűrőben.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small tertiary" id="open-caption">Forrás: kódátnézés 2026-08-24 · 8 nyitott / 8 hátralévő a szűrőben · 29 kész</p>
+    </div>
+
+    <div class="stack stack-8">
+      <h2>Kész</h2>
+      <div class="frame">
+        <table>
+          <thead>
+            <tr><th>Terület</th><th>Feladat</th><th>Állapot</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="tone success"></span>Tartalom</td><td>Valós cégadatok + impresszum</td><td>Kész: Mid Travel Bt., 6727 Szeged Délceg u. 11., +36 20 431 2094, midtravel2019@gmail.com, adószám, cégjegyzékszám, Facebook, /impressum. Nincs utazásszervezői nyilvántartási szám — nem kell.</td></tr>
+            <tr><td><span class="tone success"></span>Jogi</td><td>GDPR adatvédelmi nyilatkozat</td><td>Kész: weboldal-kiegészítés (Stripe, Resend, szamlazz.hu, fiók, Sentry, sütik) sima szövegként a /privacy-policy oldalon, mellettük a 2024-es tájékoztató és a 2025-ös szerződés PDF.</td></tr>
+            <tr><td><span class="tone success"></span>Jogi</td><td>Utazási szerződés / ÁSZF jogásszal</td><td>Kész: a 2025-ös hivatalos utazási szerződés PDF változtatás nélkül a /travel-contract oldalon (472/2017, lemondás, vagyoni biztosíték).</td></tr>
+            <tr><td><span class="tone success"></span>Tartalom</td><td>Demo tartalom cseréje</td><td>Kész: 3 valós csapattag (Mihály Illés, Péter, Orsolya Éva), Unsplash vélemények törölve, statisztikák 2019 / 35+ év / 3 szakember / Szeged. Fotók adminból tölthetők fel. Az utak külön pont.</td></tr>
+            <tr><td><span class="tone success"></span>Tartalom</td><td>Seed utak stock képei</td><td>Kész: a 20 kitalált út megmaradt; Unsplash URL-ek helyi stock képre cserélve (<code>public/trips/{slug}.jpg</code>), seed újrafuttatva. Saját fotók később, adminból.</td></tr>
+            <tr><td><span class="tone success"></span>Tartalom</td><td>Valós utak, árak, programok</td><td>Nem blocker: a 20 kitalált út stock képpel szándékosan demo marad. Az ügyfél a VPS után viszi fel a valós útvonalakat, árakat és programot az adminból. A seed nem írja felül a szerkesztett sorokat.</td></tr>
+            <tr><td><span class="tone success"></span>Termék</td><td>Elfelejtett jelszó oldal + e-mail</td><td>Kész: /forgot-password és /reset-password oldal, Better Auth sendResetPassword → Resend. A helyi .env-ben a RESEND_API_KEY már bent van (EMAIL_OVERRIDE-re megy a tesztlevél).</td></tr>
+            <tr><td><span class="tone success"></span>Termék</td><td>Admin: kapcsolat + jelentkezés lista</td><td>Kész: /admin/inbound lista + részlet, olvasott/olvasatlan jelölés, nav számláló. A <code>read</code> mezőt az admin most írja.</td></tr>
+            <tr><td><span class="tone success"></span>Ops</td><td>Seed production-safe legyen</td><td>Kész: újrafuttatás csak hiányzó utat/admin/csapatot/cégadat-kulcsot hoz létre. Adminban szerkesztett sorok és SiteSetting cégadatok megmaradnak. Teljes reset csak --force (local/staging) — a cégadatokat a --force sem írja felül. Figyelem: seedAdmin a meglévő SEED_ADMIN_EMAIL usert mindig adminná teszi.</td></tr>
+            <tr><td><span class="tone success"></span>Termék</td><td>E-mail megerősítés + jelszócsere e-mail</td><td>Kész: requireEmailVerification + Resend megerősítő levél (HU/EN), /verify-email oldal, újraküldés. Remember me: session cookie vs 30 nap. Jelszó-reset korábban kész.</td></tr>
+            <tr><td><span class="tone success"></span>Termék</td><td>Magyar ékezetes fontok (latin-ext)</td><td>Kész: Playfair Display és DM Sans <code>latin</code> + <code>latin-ext</code> subset (root és locale layout). Az ő/ű karakterek nem fallbackelnek.</td></tr>
+            <tr><td><span class="tone success"></span>Biztonság</td><td>Feltöltés biztonság (SVG)</td><td>Kész: SVG tiltva feltöltéskor (MIME + fájlnév + magic-byte/markup sniff). <code>/api/uploads</code> csak JPEG/PNG/WebP/GIF, nosniff; <code>.svg</code> 404. A kiterjesztés a MIME-ből jön, nem a fájlnévből.</td></tr>
+            <tr><td><span class="tone success"></span>Biztonság</td><td>HTTP security headerek</td><td>Kód kész: next.config + src/lib/security-headers.ts (HSTS, CSP, X-Frame-Options SAMEORIGIN, nosniff, Referrer-Policy). nginx sablonban TLS és limit_req bekapcsolva. VPS után: 3 fájl másolása, Certbot, curl -I — lásd a „VPS után” szekciót.</td></tr>
+            <tr><td><span class="tone success"></span>Biztonság</td><td>www + apex trusted origins</td><td>Kész: trustedOrigins = apex + www (+ opcionális BETTER_AUTH_TRUSTED_ORIGINS). Middleware 308 www→apex. nginx 301 www→midtravel.hu, hogy a host-only session cookie ne essen szét.</td></tr>
+            <tr><td><span class="tone success"></span>Termék</td><td>Sikertelen e-mail jelezve legyen</td><td>Kész: guest/office EmailSendStatus a contact/apply/booking rekordon. Resend hiba után a vendég továbbra is sikert lát; az admin piros figyelmeztetés + badge + újraküldés.</td></tr>
+            <tr><td><span class="tone success"></span>Jogi</td><td>Cookie / Sentry hozzájárulás</td><td>Kész: Sentry DSN esetén süti-sáv (elfogad / elutasít). Kliens SDK csak hozzájárulás után küld; szerveroldali hibák DSN-nel továbbra is mennek. DSN nélkül nincs banner. Visszavonás: lábléc Sütibeállítások.</td></tr>
+            <tr><td><span class="tone success"></span>Ops</td><td>Backup script + healthcheck</td><td>Kód kész: GET /api/health (app + SELECT 1), deploy/healthcheck.mjs, Dockerfile + Compose HEALTHCHECK, deploy/backup.sh (pg_dump custom + uploads, 14 nap retention). VPS után: napi cron, UptimeRobot, próba-restore — lásd a „VPS után” szekciót.</td></tr>
+            <tr><td><span class="tone success"></span>Termék</td><td>E-mailek kétnyelvűek legyenek</td><td>Kész: vendég visszaigazolás (kapcsolat, jelentkezés, foglalás) a kitöltéskori nyelven (HU/EN), locale mentve a rekordon — admin újraküldés is ezt használja. Irodai értesítő magyar marad. Auth levelek (verify / reset) már korábban locale-osak.</td></tr>
+            <tr><td><span class="tone success"></span>Ops</td><td>Tesztek + CI</td><td>Kész: <code>.github/workflows/ci.yml</code> — typecheck + 118 Vitest (ÁFA, előleg, feltöltés/SVG, e-mail XSS, locale, robots, billing, utastárs parse, kapacitás/overbook + többfős helyfoglalás, e-mailcsere URL, jelentkezés-státusz). HTTP smoke: health, /hu /en, robots/sitemap, admin/profile redirect (Postgres + build). A kézi SMOKE_CHECKLIST (Stripe, Resend, auth) megmarad; Stripe webhook idempotencia szándékosan nincs automata tesztben.</td></tr>
+            <tr><td><span class="tone success"></span>Ops</td><td>Compose: Postgres ne legyen publikus</td><td>Kód kész: a docker-compose.yml db service-ről levettük a ports: 5432 mappinget — élesen csak az app konténer látja a DB-t (db:5432). Helyi npm run dev: npm run docker:db (docker-compose.dev.yml). VPS után még ellenőrizd: docker compose up -d, majd ss -lnt | grep 5432 üres — lásd a „VPS után” szekciót.</td></tr>
+            <tr><td><span class="tone success"></span>Termék</td><td>Cégadatok adminból szerkeszthetők</td><td>Kész: /admin/settings, SiteSetting kulcsok (e-mail, telefon, cím, cégazonosítók, Facebook). Footer, kapcsolat, impresszum, privacy kiegészítés és JSON-LD a DB-ből. A COMPANY fallback marad; a seed csak hiányzó kulcsot tölt.</td></tr>
+            <tr><td><span class="tone success"></span>Jogi</td><td>Utazási szerződés elfogadása foglaláskor</td><td>Kész: jelentkezés / Book &amp; pay összevont kötelező checkbox (adatkezelési tájékoztató + 2025-ös utazási szerződés), ugyanúgy mint a regisztrációnál. Kliens + apply.ts / booking.ts elutasítja pipa nélkül. A kapcsolat űrlap csak privacy-t kér.</td></tr>
+            <tr><td><span class="tone success"></span>Biztonság</td><td>Profil e-mail csere megerősítés nélkül</td><td>Kész: updateUserProfile csak nevet/telefont ír. E-mailcsere Better Auth changeEmail: megerősítő az új címre, a User.email csak a link után cserélődik. Profil hint + pending üzenet. Foglalás/számla/jelszóreset addig a régi, igazolt címet használja.</td></tr>
+            <tr><td><span class="tone success"></span>Termék</td><td>Kapacitás / overbooking</td><td>Kész: Trip.maxCapacity + overbookLimit, lock + TRIP_FULL, checkout nem számol kétszer ugyanarra a user/emailre. A résztvevőszámot a 33-as tétel számolja.</td></tr>
+            <tr><td><span class="tone success"></span>Termék</td><td>Opcionális utastárs (ülőhely)</td><td>Kész: jelentkezéskor pipa → társ neve + telefon. Mentődik a TripApplication és a Booking rekordon, látszik az admin jelentkezés/foglalás részleten és az irodai e-mailben. Migráció (20260822120000_companion_seat) a helyi DB-n lefutott.</td></tr>
+            <tr><td><span class="tone success"></span>Termék</td><td>Kapacitás számolja a résztvevőket</td><td>Kész: foglalás/jelentkezés a participants mezőt foglalja (8 fő = 8 hely). assertTripHasCapacity a kért létszámot nézi; saját tartott hely nem számít kétszer. 15 szabad helynél 20 fős checkout TRIP_FULL. Unit + helyi DB teszt (tranzakció visszavonva). trip-capacity.ts, booking.ts, apply.ts.</td></tr>
+            <tr><td><span class="tone success"></span>Termék</td><td>Jelentkezés státusz / helyfelszabadítás</td><td>Kész (adminban ellenőrizve): open / converted / released. Csak a nyitott érdeklődés foglal helyet; ugyanaz az e-mail a participants szerint, nem külön rekordként. A gomb a jelentkezés részletezőjén van (inbound → Megnyitás), nyitott státusznál. Book &amp; pay converted + bookingId; checkout-hiba vagy lejárt session released.</td></tr>
+            <tr><td><span class="tone success"></span>Jogi</td><td>Szerződés-elfogadás mentése</td><td>Kész: apply/booking ment termsAcceptedAt + privacy/contract verzió + SHA-256. Admin foglalás/jelentkezés részleten látszik. Migráció 20260824120000_legal_acceptance. Új szerződés = új fájl + verzióbump (legal-docs.ts); a régit hagyd meg public/docs-ban és tedd LEGAL_DOCUMENT_ARCHIVE-ba. Ne írd felül ugyanazt a PDF-et — lásd HANDOFF.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="cards">
+      <section class="card">
+        <div class="card-h">VPS — utolsó fázis <span>ne nyúlj hozzá most</span></div>
+        <div class="card-b stack stack-6">
+          <p>nginx security: 3 fájl másolása + Certbot + curl -I (HSTS, CSP)</p>
+          <p>Domain A rekord + www→apex 301</p>
+          <p>Docker Compose, erős POSTGRES_PASSWORD / BETTER_AUTH_SECRET</p>
+          <p>Stripe live kulcs + webhook <code>/api/stripe/webhook</code> (completed és expired)</p>
+          <p>Resend domain (SPF/DKIM), CONTACT_NOTIFY_EMAIL</p>
+          <p>szamlazz.hu Agent kulcs, ÁFA, EUR/HUF árfolyam</p>
+          <p>Firewall: 80/443. Compose után: ss -lnt | grep 5432 üres (Postgres csak db:5432, ne localhost)</p>
+          <p>Napi deploy/backup.sh cron → /var/backups/midtravel + próba-restore</p>
+          <p>UptimeRobot: GET /api/health · docker compose ps app+db healthy</p>
+          <p>Seed admin jelszó csere az első belépés után</p>
+        </div>
+      </section>
+      <section class="card">
+        <div class="card-h">Kész alapok <span>már a kódban van</span></div>
+        <div class="card-b stack stack-6">
+          <p>Next.js 16 standalone, Dockerfile, nginx/PM2 sablon</p>
+          <p>Better Auth + admin szerepkör, Prisma migrációk</p>
+          <p>Stripe előleg Checkout + webhook + success fallback</p>
+          <p>Resend: kapcsolat, jelentkezés, foglalás, jelszó-reset, e-mail megerősítés + profil e-mailcsere — vendég HU/EN, iroda magyar</p>
+          <p>Admin: utak (létszám + overbook) / csapat / vélemények / foglalás + számla / beérkező inbox (jelentkezés-státusz, hely felszabadítása) + sikertelen e-mail jelzés / cégadatok</p>
+          <p>HU/EN, latin-ext fontok (ő/ű), sitemap, robots, JSON-LD, OG kép</p>
+          <p>Cégadatok adminból (SiteSetting) + impresszum; publikus oldalak a DB-t olvassák</p>
+          <p>20 seed út helyi stock képekkel; seed újrafuttatás production-safe</p>
+          <p>Hivatalos adatkezelési tájékoztató (2024) és utazási szerződés (2025) PDF; foglaláskor összevont elfogadó checkbox</p>
+          <p>HTTP security headerek a Next.js válaszokon; nginx TLS/limit_req sablon kész</p>
+          <p>GET /api/health + Docker HEALTHCHECK + deploy/backup.sh (cron a VPS-en)</p>
+          <p>Compose: Postgres nincs kitéve a hoston; helyi access: npm run docker:db</p>
+          <p>IP rate limit, local uploads volume, SVG feltöltés tiltva (stored XSS)</p>
+          <p>Handoff + smoke checklist a docs/ alatt</p>
+          <p>CI: typecheck + 118 unit teszt + HTTP smoke (GitHub Action, Postgres service)</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="stack stack-8">
+      <h2>Üzleti / jogi, ami nem kód</h2>
+      <p>
+        Magyarországi csomagutazás-szervezés engedélyköteles. Kell utazásszervezői
+        engedély, vagyoni biztosíték, és a weboldalon feltüntetett valós cégadatok.
+        Ezt ügyvéddel / könyvelővel érdemes a tartalomírás előtt tisztázni — különben
+        a szép ÁSZF sem elég.
+      </p>
+      <p class="secondary">
+        Hírlevél (Brevo) szándékosan nincs a kódban — a HANDOFF szerint későbbi fázis.
+      </p>
+    </div>
+
+    <div class="stack stack-8">
+      <h3>Első három lépés, ha holnap kezded</h3>
+      <p>1. Kódban: számla B2C, dupla foglalás tiltása. A kapacitás = résztvevők, a szerződés-checkbox és a profil e-mailcsere kész.</p>
+      <p>2. Döntés: indulási dátum + utasnevek most, vagy iroda e-mailben. Az utastárs (ülőhely) és a jelentkezés-státusz kész.</p>
+      <p>3. Smoke checklist lokálisan, aztán VPS. A valós utakat az ügyfél viszi fel.</p>
+    </div>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const btn = document.getElementById("theme-btn");
+    const stored = localStorage.getItem("pre-vps-theme");
+    const start = stored || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+    function applyTheme(theme) {
+      root.dataset.theme = theme;
+      btn.textContent = theme === "dark" ? "Világos" : "Sötét";
+    }
+    applyTheme(start);
+    btn.addEventListener("click", () => {
+      const next = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("pre-vps-theme", next);
+      applyTheme(next);
+    });
+
+    const pills = document.querySelectorAll("#filters .pill");
+    const rows = [...document.querySelectorAll("#open-rows tr[data-filter]")];
+    const empty = document.getElementById("empty-row");
+    const caption = document.getElementById("open-caption");
+    pills.forEach((pill) => {
+      pill.addEventListener("click", () => {
+        pills.forEach((p) => p.classList.toggle("active", p === pill));
+        const filter = pill.dataset.filter;
+        let visible = 0;
+        rows.forEach((row) => {
+          const show = filter === "all" || row.dataset.filter.split(" ").includes(filter);
+          row.classList.toggle("hidden", !show);
+          if (show) visible += 1;
+        });
+        empty.classList.toggle("hidden", visible > 0);
+        caption.textContent =
+          "Forrás: kódátnézés 2026-08-24 · " +
+          visible + " nyitott / 8 hátralévő a szűrőben · 29 kész";
+      });
+    });
+  </script>
+</body>
+</html>

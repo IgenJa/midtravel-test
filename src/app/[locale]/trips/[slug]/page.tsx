@@ -87,7 +87,7 @@ export default async function TripDetailPage({ params }: Props) {
         compact
       />
 
-      <div className="border-b border-slate-200 bg-white">
+      <div className="border-b border-teal-200 bg-[#fffdf8]">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-6 px-4 py-4 sm:gap-10 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2 text-sm text-slate-600">
             <Calendar className="h-4 w-4 text-teal-600" />
@@ -122,7 +122,7 @@ export default async function TripDetailPage({ params }: Props) {
         </div>
       </AnimatedSection>
 
-      <section className="bg-slate-50 py-16 sm:py-20">
+      <section className="bg-teal-50 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <h2 className="mb-8 font-display text-3xl font-bold text-slate-900">
@@ -145,7 +145,7 @@ export default async function TripDetailPage({ params }: Props) {
         </div>
       </AnimatedSection>
 
-      <section className="bg-slate-50 py-16 sm:py-20">
+      <section className="bg-teal-50 py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-8 md:grid-cols-2">
             <FadeIn direction="left">

@@ -4,11 +4,13 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { BookingInvoicePanel } from "@/components/admin/BookingInvoicePanel";
 import { EmailDeliveryPanel } from "@/components/admin/EmailDeliveryPanel";
+import { LegalAcceptancePanel } from "@/components/admin/LegalAcceptancePanel";
 import { ResendNotifyEmailsButton } from "@/components/admin/ResendNotifyEmailsButton";
+import { legalDocumentHref } from "@/data/legal-docs";
 import { prisma } from "@/lib/prisma";
 import { parseBillingAddress } from "@/lib/billing-address";
 import { createMetadata } from "@/lib/seo";
-import { formatDate, formatPrice } from "@/lib/utils";
+import { formatDate, formatDateTime, formatPrice } from "@/lib/utils";
 import type { Locale } from "@/i18n/routing";
 
 type Props = {
@@ -61,6 +63,7 @@ export default async function AdminBookingDetailPage({ params }: Props) {
         take: 3,
       },
       invoice: true,
+      tripApplication: { select: { id: true } },
     },
   });
 
@@ -162,6 +165,45 @@ export default async function AdminBookingDetailPage({ params }: Props) {
           )}
         </div>
       </div>
+
+      <LegalAcceptancePanel
+        acceptedAt={
+          booking.termsAcceptedAt
+            ? formatDateTime(booking.termsAcceptedAt.toISOString(), locale)
+            : null
+        }
+        privacy={{
+          label: t("legalPrivacyDoc"),
+          version: booking.privacyDocVersion,
+          sha256: booking.privacyDocSha256,
+          href: legalDocumentHref("privacy", booking.privacyDocVersion),
+        }}
+        contract={{
+          label: t("legalContractDoc"),
+          version: booking.contractDocVersion,
+          sha256: booking.contractDocSha256,
+          href: legalDocumentHref("contract", booking.contractDocVersion),
+        }}
+        labels={{
+          title: t("legalAcceptanceTitle"),
+          acceptedAt: t("legalAcceptedAt"),
+          hash: t("legalDocHash"),
+          missing: t("legalAcceptanceMissing"),
+          openPdf: t("legalOpenPdf"),
+        }}
+      />
+
+      {booking.tripApplication ? (
+        <div className="mt-4">
+          <Button
+            href={`/admin/inbound/applications/${booking.tripApplication.id}`}
+            size="sm"
+            variant="outline"
+          >
+            {t("openLinkedApplication")}
+          </Button>
+        </div>
+      ) : null}
 
       {booking.notes && (
         <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700 whitespace-pre-wrap">

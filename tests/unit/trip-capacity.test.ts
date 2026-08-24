@@ -3,6 +3,7 @@ import {
   allowedSeats,
   buildCapacitySnapshot,
   countOccupiedSeatsFromRecords,
+  hasCapacityFor,
   parseCapacityField,
 } from "@/lib/trip-capacity";
 
@@ -87,7 +88,7 @@ describe("countOccupiedSeatsFromRecords", () => {
     ).toBe(1);
   });
 
-  it("counts two inquiries from the same email as two seats", () => {
+  it("counts two inquiries from the same email as one seat", () => {
     expect(
       countOccupiedSeatsFromRecords({
         bookings: [],
@@ -96,7 +97,86 @@ describe("countOccupiedSeatsFromRecords", () => {
           { email: "repeat@mid.hu", userId: null },
         ],
       })
+    ).toBe(1);
+  });
+
+  it("counts two inquiries from different emails as two seats", () => {
+    expect(
+      countOccupiedSeatsFromRecords({
+        bookings: [],
+        applications: [
+          { email: "one@mid.hu", userId: null },
+          { email: "two@mid.hu", userId: null },
+        ],
+      })
     ).toBe(2);
+  });
+
+  it("counts a multi-person booking by participants, not as one seat", () => {
+    expect(
+      countOccupiedSeatsFromRecords({
+        bookings: [{ email: "group@mid.hu", userId: "u8", participants: 8 }],
+        applications: [],
+      })
+    ).toBe(8);
+  });
+
+  it("counts a multi-person inquiry by participants", () => {
+    expect(
+      countOccupiedSeatsFromRecords({
+        bookings: [],
+        applications: [{ email: "group@mid.hu", userId: null, participants: 12 }],
+      })
+    ).toBe(12);
+  });
+
+  it("does not add an inquiry on top of a same-person multi-person booking", () => {
+    expect(
+      countOccupiedSeatsFromRecords({
+        bookings: [{ email: "ada@mid.hu", userId: "u1", participants: 8 }],
+        applications: [{ email: "Ada@mid.hu", userId: "u1", participants: 8 }],
+      })
+    ).toBe(8);
+  });
+
+  it("sums participants across separate groups", () => {
+    expect(
+      countOccupiedSeatsFromRecords({
+        bookings: [
+          { email: "a@mid.hu", userId: "u1", participants: 8 },
+          { email: "b@mid.hu", userId: "u2", participants: 3 },
+        ],
+        applications: [{ email: "c@mid.hu", userId: null, participants: 2 }],
+      })
+    ).toBe(13);
+  });
+
+  it("treats missing or invalid participants as one seat", () => {
+    expect(
+      countOccupiedSeatsFromRecords({
+        bookings: [
+          { email: "a@mid.hu", userId: "u1" },
+          { email: "b@mid.hu", userId: "u2", participants: 0 },
+        ],
+        applications: [],
+      })
+    ).toBe(2);
+  });
+});
+
+describe("hasCapacityFor", () => {
+  it("rejects a group larger than remaining seats", () => {
+    expect(hasCapacityFor(15, 20)).toBe(false);
+    expect(hasCapacityFor(15, 15)).toBe(true);
+    expect(hasCapacityFor(1, 1)).toBe(true);
+    expect(hasCapacityFor(0, 1)).toBe(false);
+  });
+
+  it("lets a holder keep or shrink their existing seats when the trip is otherwise full", () => {
+    expect(hasCapacityFor(0, 8, 8)).toBe(true);
+    expect(hasCapacityFor(0, 5, 8)).toBe(true);
+    expect(hasCapacityFor(0, 9, 8)).toBe(false);
+    expect(hasCapacityFor(2, 10, 8)).toBe(true);
   });
 });
 

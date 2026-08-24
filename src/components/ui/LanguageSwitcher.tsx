@@ -22,7 +22,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "flex items-center rounded-full border border-slate-200 bg-slate-50 p-0.5",
+        "flex items-center rounded-full border border-teal-600/20 bg-white/70 p-0.5",
         className
       )}
       role="group"

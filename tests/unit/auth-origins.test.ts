@@ -81,6 +81,36 @@ describe("getAuthBaseUrl / getTrustedOrigins", () => {
       { BETTER_AUTH_URL: undefined, NEXT_PUBLIC_APP_URL: undefined },
       () => {
         expect(getAuthBaseUrl()).toBe("http://localhost:3000");
+        expect(getTrustedOrigins()).toEqual(
+          expect.arrayContaining([
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "http://127.0.0.1:3000",
+          ])
+        );
+      }
+    );
+  });
+
+  it("trusts local alternate ports in development", () => {
+    withEnv({ BETTER_AUTH_URL: "http://localhost:3000" }, () => {
+      expect(getTrustedOrigins()).toEqual(
+        expect.arrayContaining([
+          "http://localhost:3000",
+          "http://localhost:3001",
+          "http://127.0.0.1:3001",
+        ])
+      );
+    });
+  });
+
+  it("does not add extra local ports in production", () => {
+    withEnv(
+      {
+        BETTER_AUTH_URL: "http://localhost:3000",
+        NODE_ENV: "production",
+      },
+      () => {
         expect(getTrustedOrigins()).toEqual(["http://localhost:3000"]);
       }
     );

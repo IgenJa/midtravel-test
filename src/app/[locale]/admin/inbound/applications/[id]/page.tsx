@@ -2,10 +2,14 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
+import { ApplicationStatusActions } from "@/components/admin/ApplicationStatusActions";
+import { ApplicationStatusBadge } from "@/components/admin/ApplicationStatusBadge";
 import { EmailDeliveryPanel } from "@/components/admin/EmailDeliveryPanel";
 import { InboundReadToggle } from "@/components/admin/InboundReadToggle";
 import { InboundStatusBadge } from "@/components/admin/InboundStatusBadge";
+import { LegalAcceptancePanel } from "@/components/admin/LegalAcceptancePanel";
 import { ResendNotifyEmailsButton } from "@/components/admin/ResendNotifyEmailsButton";
+import { legalDocumentHref } from "@/data/legal-docs";
 import { prisma } from "@/lib/prisma";
 import { createMetadata } from "@/lib/seo";
 import { formatDateTime } from "@/lib/utils";
@@ -84,6 +88,14 @@ export default async function AdminTripApplicationPage({ params }: Props) {
       />
 
       <div className="mt-8 flex flex-wrap items-center gap-3">
+        <ApplicationStatusBadge
+          status={application.status}
+          labels={{
+            open: t("applicationStatus.open"),
+            converted: t("applicationStatus.converted"),
+            released: t("applicationStatus.released"),
+          }}
+        />
         <InboundStatusBadge
           read={application.read}
           readLabel={t("readStatus")}
@@ -94,12 +106,26 @@ export default async function AdminTripApplicationPage({ params }: Props) {
           id={application.id}
           read={application.read}
         />
+        <ApplicationStatusActions
+          id={application.id}
+          status={application.status}
+          participants={application.participants}
+        />
         <a
           href={`mailto:${application.email}?subject=${encodeURIComponent(title)}`}
           className="inline-flex items-center justify-center rounded-full border-2 border-teal-600 px-4 py-2 text-sm font-semibold text-teal-700 hover:bg-teal-50"
         >
           {t("replyByEmail")}
         </a>
+        {application.bookingId ? (
+          <Button
+            href={`/admin/bookings/${application.bookingId}`}
+            size="sm"
+            variant="ghost"
+          >
+            {t("openLinkedBooking")}
+          </Button>
+        ) : null}
       </div>
 
       <dl className="mt-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 sm:grid-cols-2">
@@ -208,20 +234,53 @@ export default async function AdminTripApplicationPage({ params }: Props) {
         </div>
       </dl>
 
-      <EmailDeliveryPanel
-        guestEmailStatus={application.guestEmailStatus}
-        officeEmailStatus={application.officeEmailStatus}
-        labels={{
-          guest: t("emailGuestStatus"),
-          office: t("emailOfficeStatus"),
-          pending: t("emailSendStatus.pending"),
-          sent: t("emailSendStatus.sent"),
-          failed: t("emailSendStatus.failed"),
-          warning: t("emailFailedWarning"),
+      <LegalAcceptancePanel
+        acceptedAt={
+          application.termsAcceptedAt
+            ? formatDateTime(application.termsAcceptedAt.toISOString(), locale)
+            : null
+        }
+        privacy={{
+          label: t("legalPrivacyDoc"),
+          version: application.privacyDocVersion,
+          sha256: application.privacyDocSha256,
+          href: legalDocumentHref("privacy", application.privacyDocVersion),
         }}
-      >
-        <ResendNotifyEmailsButton kind="application" id={application.id} />
-      </EmailDeliveryPanel>
+        contract={{
+          label: t("legalContractDoc"),
+          version: application.contractDocVersion,
+          sha256: application.contractDocSha256,
+          href: legalDocumentHref("contract", application.contractDocVersion),
+        }}
+        labels={{
+          title: t("legalAcceptanceTitle"),
+          acceptedAt: t("legalAcceptedAt"),
+          hash: t("legalDocHash"),
+          missing: t("legalAcceptanceMissing"),
+          openPdf: t("legalOpenPdf"),
+        }}
+      />
+
+      {application.status === "converted" ? (
+        <p className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+          {t("convertedApplicationNote")}
+        </p>
+      ) : (
+        <EmailDeliveryPanel
+          guestEmailStatus={application.guestEmailStatus}
+          officeEmailStatus={application.officeEmailStatus}
+          labels={{
+            guest: t("emailGuestStatus"),
+            office: t("emailOfficeStatus"),
+            pending: t("emailSendStatus.pending"),
+            sent: t("emailSendStatus.sent"),
+            failed: t("emailSendStatus.failed"),
+            warning: t("emailFailedWarning"),
+          }}
+        >
+          <ResendNotifyEmailsButton kind="application" id={application.id} />
+        </EmailDeliveryPanel>
+      )}
     </>
   );
 }

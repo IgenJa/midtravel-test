@@ -91,7 +91,7 @@ export function TripFilters({ trips, filters, onChange }: TripFiltersProps) {
   };
 
   return (
-    <div className="rounded-2xl bg-white p-5 shadow-md ring-1 ring-slate-200/60 sm:p-6">
+    <div className="rounded-2xl bg-[#fffdf8] p-5 shadow-md ring-1 ring-teal-200/50 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2 text-slate-900">
           <SlidersHorizontal className="h-5 w-5 text-teal-600" />

@@ -20,7 +20,7 @@ export function FaqAccordion({ items }: FaqAccordionProps) {
         return (
           <div
             key={item.question}
-            className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+            className="overflow-hidden rounded-2xl border border-teal-200/70 bg-[#fffdf8]"
           >
             <button
               type="button"

@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { ApplicationStatusBadge } from "@/components/admin/ApplicationStatusBadge";
 import { EmailFailedBadge } from "@/components/admin/EmailFailedBadge";
 import { InboundReadToggle } from "@/components/admin/InboundReadToggle";
 import { InboundStatusBadge } from "@/components/admin/InboundStatusBadge";
@@ -65,7 +66,15 @@ export default async function AdminInboundPage({ params }: Props) {
   ]);
 
   const unreadContacts = contacts.filter((item) => !item.read).length;
-  const unreadApplications = applications.filter((item) => !item.read).length;
+  const unreadApplications = applications.filter(
+    (item) => !item.read && item.status === "open"
+  ).length;
+
+  const applicationStatusLabels = {
+    open: t("applicationStatus.open"),
+    converted: t("applicationStatus.converted"),
+    released: t("applicationStatus.released"),
+  };
 
   return (
     <>
@@ -224,6 +233,10 @@ export default async function AdminInboundPage({ params }: Props) {
                     >
                       <td className="px-4 py-3">
                         <div className="flex flex-wrap gap-1.5">
+                          <ApplicationStatusBadge
+                            status={item.status}
+                            labels={applicationStatusLabels}
+                          />
                           <InboundStatusBadge
                             read={item.read}
                             readLabel={t("readStatus")}

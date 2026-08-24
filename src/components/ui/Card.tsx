@@ -28,7 +28,7 @@ export function Card({
     <motion.div
       whileHover={hover ? { y: -4, transition: { duration: 0.2 } } : undefined}
       className={cn(
-        "overflow-hidden rounded-2xl bg-white shadow-md ring-1 ring-slate-200/60",
+        "overflow-hidden rounded-2xl bg-[#fffdf8] shadow-md ring-1 ring-teal-200/50",
         paddingMap[padding],
         className
       )}

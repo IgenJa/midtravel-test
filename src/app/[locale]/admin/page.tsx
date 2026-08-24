@@ -44,7 +44,9 @@ export default async function AdminPage({ params }: Props) {
       prisma.teamMember.count(),
       prisma.testimonial.count(),
       prisma.contactMessage.count({ where: { read: false } }),
-      prisma.tripApplication.count({ where: { read: false } }),
+      prisma.tripApplication.count({
+        where: { read: false, status: "open" },
+      }),
       prisma.booking.count(),
       prisma.contactMessage.count({ where: failedEmailWhere }),
       prisma.tripApplication.count({ where: failedEmailWhere }),

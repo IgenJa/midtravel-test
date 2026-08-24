@@ -41,22 +41,22 @@ export function Navbar() {
     cn(
       "rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
       isActivePath(pathname, href)
-        ? "bg-teal-50 font-semibold text-teal-700"
-        : "text-slate-600 hover:bg-teal-50/60 hover:text-teal-600"
+        ? "bg-teal-600 font-semibold text-white"
+        : "text-slate-900 hover:bg-white/50 hover:text-teal-700"
     );
 
   const mobileLinkClass = (href: string) =>
     cn(
       "block rounded-lg px-4 py-3 text-base font-medium transition-colors",
       isActivePath(pathname, href)
-        ? "bg-teal-50 text-teal-700"
-        : "text-slate-700 hover:bg-teal-50 hover:text-teal-700"
+        ? "bg-teal-600 text-white"
+        : "text-slate-800 hover:bg-white/60 hover:text-teal-700"
     );
 
   return (
     <header className="sticky top-0 z-50 w-full">
       <nav
-        className="border-b border-white/10 bg-white/80 backdrop-blur-xl"
+        className="border-b border-navy/20 bg-[#f4efd8]/90 backdrop-blur-xl"
         aria-label="Main navigation"
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -104,7 +104,7 @@ export function Navbar() {
                     "flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors",
                     isActivePath(pathname, "/profile")
                       ? "bg-teal-600 text-white"
-                      : "bg-teal-50 text-teal-700 hover:bg-teal-100"
+                      : "bg-white/70 text-teal-800 hover:bg-white"
                   )}
                   aria-current={isActivePath(pathname, "/profile") ? "page" : undefined}
                 >
@@ -137,7 +137,7 @@ export function Navbar() {
               href="/apply"
               size="sm"
               variant={isActivePath(pathname, "/apply") ? "secondary" : "primary"}
-              className={isActivePath(pathname, "/apply") ? "ring-2 ring-amber-400 ring-offset-2" : ""}
+              className={isActivePath(pathname, "/apply") ? "ring-2 ring-teal-200 ring-offset-2 ring-offset-teal-100" : ""}
             >
               {t("applyTrip")}
             </Button>
@@ -147,7 +147,7 @@ export function Navbar() {
             <LanguageSwitcher />
             <button
               type="button"
-              className="inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100"
+              className="inline-flex items-center justify-center rounded-lg p-2 text-slate-800 hover:bg-white/60"
               onClick={() => setIsOpen(!isOpen)}
               aria-expanded={isOpen}
               aria-label={t("toggleMenu")}
@@ -164,7 +164,7 @@ export function Navbar() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="overflow-hidden border-t border-slate-100 bg-white md:hidden"
+              className="overflow-hidden border-t border-teal-600/20 bg-teal-50 md:hidden"
             >
               <div className="space-y-1 px-4 py-4">
                 {navLinks.map((link) => (
@@ -219,7 +219,7 @@ export function Navbar() {
                         "inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-base font-semibold",
                         isActivePath(pathname, "/profile")
                           ? "bg-teal-600 text-white"
-                          : "bg-teal-50 text-teal-700 hover:bg-teal-100"
+                          : "bg-white text-teal-800 hover:bg-teal-100"
                       )}
                       aria-current={isActivePath(pathname, "/profile") ? "page" : undefined}
                     >
@@ -234,7 +234,7 @@ export function Navbar() {
                     href="/apply"
                     className={cn(
                       "w-full",
-                      isActivePath(pathname, "/apply") && "ring-2 ring-amber-400 ring-offset-2"
+                      isActivePath(pathname, "/apply") && "ring-2 ring-teal-600 ring-offset-2 ring-offset-teal-50"
                     )}
                     variant={isActivePath(pathname, "/apply") ? "secondary" : "primary"}
                     onClick={() => setIsOpen(false)}

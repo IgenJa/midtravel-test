@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma";
+import { SEAT_HOLDING_APPLICATION_STATUS } from "@/lib/trip-application-status";
 import {
   buildCapacitySnapshot,
   countOccupiedSeatsFromRecords,
+  hasCapacityFor,
   TripCapacityFullError,
   type SeatHolder,
   type TripCapacitySnapshot,
@@ -24,11 +26,14 @@ async function loadOccupiedRecords(db: CapacityDb, tripIds: string[]) {
   const [bookings, applications] = await Promise.all([
     db.booking.findMany({
       where: { tripId: { in: tripIds }, status: { in: ["pending", "paid"] } },
-      select: { tripId: true, customerEmail: true, userId: true },
+      select: { tripId: true, customerEmail: true, userId: true, participants: true },
     }),
     db.tripApplication.findMany({
-      where: { tripId: { in: tripIds } },
-      select: { tripId: true, email: true, userId: true },
+      where: {
+        tripId: { in: tripIds },
+        status: SEAT_HOLDING_APPLICATION_STATUS,
+      },
+      select: { tripId: true, email: true, userId: true, participants: true },
     }),
   ]);
 
@@ -39,8 +44,13 @@ function toSeatHolder(row: {
   customerEmail?: string | null;
   email?: string | null;
   userId: string | null;
+  participants?: number;
 }): SeatHolder {
-  return { email: row.customerEmail ?? row.email ?? null, userId: row.userId };
+  return {
+    email: row.customerEmail ?? row.email ?? null,
+    userId: row.userId,
+    participants: row.participants,
+  };
 }
 
 export async function getOccupiedSeatsByTripIds(
@@ -98,11 +108,20 @@ export async function lockTripForUpdate(
 
 export async function assertTripHasCapacity(
   tx: Prisma.TransactionClient,
-  tripId: string
+  tripId: string,
+  options?: {
+    requestedSeats?: number;
+    alreadyHeldSeats?: number;
+  }
 ): Promise<TripCapacitySnapshot> {
   await lockTripForUpdate(tx, tripId);
   const snapshot = await getTripCapacitySnapshot(tripId, tx);
-  if (!snapshot || snapshot.isFull) {
+  const requestedSeats = Math.max(1, options?.requestedSeats ?? 1);
+  const alreadyHeldSeats = Math.max(0, options?.alreadyHeldSeats ?? 0);
+  if (
+    !snapshot ||
+    !hasCapacityFor(snapshot.remainingSeats, requestedSeats, alreadyHeldSeats)
+  ) {
     throw new TripCapacityFullError();
   }
   return snapshot;

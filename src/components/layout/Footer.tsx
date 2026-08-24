@@ -31,7 +31,7 @@ export async function Footer() {
   };
 
   return (
-    <footer className="bg-slate-900 text-slate-300">
+    <footer className="bg-navy text-white/80">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">
@@ -47,7 +47,7 @@ export async function Footer() {
                 {company.name}
               </span>
             </Link>
-            <p className="mt-4 text-sm leading-relaxed text-slate-400">
+            <p className="mt-4 text-sm leading-relaxed text-white/65">
               {company.tagline}. {company.footerTagline}
             </p>
             <div className="mt-6 flex gap-4">
@@ -55,7 +55,7 @@ export async function Footer() {
                 href={company.social.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
+                className="rounded-lg p-2 text-teal-200 transition-colors hover:bg-teal-700 hover:text-white"
                 aria-label="Facebook"
               >
                 <FacebookIcon className="h-5 w-5" />
@@ -72,7 +72,7 @@ export async function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm transition-colors hover:text-teal-400"
+                    className="text-sm transition-colors hover:text-teal-100"
                   >
                     {link.label}
                   </Link>
@@ -90,7 +90,7 @@ export async function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm transition-colors hover:text-teal-400"
+                    className="text-sm transition-colors hover:text-teal-100"
                   >
                     {link.label}
                   </Link>
@@ -110,17 +110,17 @@ export async function Footer() {
             </h3>
             <ul className="mt-4 space-y-4">
               <li className="flex items-start gap-3 text-sm">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-teal-400" />
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-teal-200" />
                 {company.address}
               </li>
               <li className="flex items-center gap-3 text-sm">
-                <Phone className="h-4 w-4 shrink-0 text-teal-400" />
+                <Phone className="h-4 w-4 shrink-0 text-teal-200" />
                 <a href={`tel:${company.phoneHref}`} className="hover:text-white">
                   {company.phone}
                 </a>
               </li>
               <li className="flex items-center gap-3 text-sm">
-                <Mail className="h-4 w-4 shrink-0 text-teal-400" />
+                <Mail className="h-4 w-4 shrink-0 text-teal-200" />
                 <a href={`mailto:${company.email}`} className="hover:text-white">
                   {company.email}
                 </a>
@@ -129,7 +129,7 @@ export async function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-slate-800 pt-8 text-center text-sm text-slate-500">
+        <div className="mt-12 border-t border-white/15 pt-8 text-center text-sm text-white/50">
           <p>
             &copy; {new Date().getFullYear()} {company.legalName}. {t("rights")}
           </p>

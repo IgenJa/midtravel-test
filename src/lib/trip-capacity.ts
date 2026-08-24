@@ -13,6 +13,7 @@ export class TripCapacityFullError extends Error {
 export type SeatHolder = {
   email?: string | null;
   userId?: string | null;
+  participants?: number;
 };
 
 export type TripCapacitySnapshot = {
@@ -32,6 +33,23 @@ function occupantKeys(holder: SeatHolder): string[] {
   if (email) keys.push(`email:${email}`);
   if (holder.userId) keys.push(`user:${holder.userId}`);
   return keys;
+}
+
+export function normalizeSeatCount(value: unknown): number {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 1) return 1;
+  return Math.floor(parsed);
+}
+
+export function hasCapacityFor(
+  remainingSeats: number,
+  requestedSeats: number,
+  alreadyHeldSeats = 0
+): boolean {
+  return (
+    remainingSeats + Math.max(0, alreadyHeldSeats) >=
+    Math.max(1, requestedSeats)
+  );
 }
 
 export function allowedSeats(
@@ -61,30 +79,37 @@ export function buildCapacitySnapshot(
 }
 
 /**
- * Each pending/paid booking occupies 1 seat. Each application occupies 1 seat
- * unless the same email or user already holds a pending/paid booking
- * (checkout creates both records).
+ * Each pending/paid booking occupies its `participants` count (default 1).
+ * Each open application occupies its `participants` unless the same email
+ * or user already holds a pending/paid booking or another open application.
+ * Converted/released applications are filtered out before this function runs.
  */
 export function countOccupiedSeatsFromRecords(input: {
   bookings: SeatHolder[];
   applications: SeatHolder[];
 }): number {
   const covered = new Set<string>();
+  let bookingSeats = 0;
 
   for (const booking of input.bookings) {
+    bookingSeats += normalizeSeatCount(booking.participants);
     for (const key of occupantKeys(booking)) {
       covered.add(key);
     }
   }
 
-  let extraApplications = 0;
+  const seenApplications = new Set<string>();
+  let extraApplicationSeats = 0;
   for (const application of input.applications) {
     const keys = occupantKeys(application);
-    if (keys.some((key) => covered.has(key))) continue;
-    extraApplications += 1;
+    if (keys.some((key) => covered.has(key) || seenApplications.has(key))) {
+      continue;
+    }
+    for (const key of keys) seenApplications.add(key);
+    extraApplicationSeats += normalizeSeatCount(application.participants);
   }
 
-  return input.bookings.length + extraApplications;
+  return bookingSeats + extraApplicationSeats;
 }
 
 export function parseCapacityField(

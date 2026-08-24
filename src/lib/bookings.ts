@@ -217,6 +217,23 @@ export async function fulfillPaidStripeSession(input: {
   return { bookingId: payment.bookingId, alreadyPaid: !transitioned };
 }
 
+export async function abandonPendingCheckout(bookingId: string) {
+  await prisma.$transaction(async (tx) => {
+    await tx.booking.updateMany({
+      where: { id: bookingId, status: "pending" },
+      data: { status: "cancelled" },
+    });
+    await tx.payment.updateMany({
+      where: { bookingId, status: "pending" },
+      data: { status: "failed" },
+    });
+    await tx.tripApplication.updateMany({
+      where: { bookingId },
+      data: { status: "released", read: true },
+    });
+  });
+}
+
 export async function cancelExpiredStripeSession(stripeSessionId: string) {
   const payment = await prisma.payment.findUnique({
     where: { stripeSessionId },
@@ -224,14 +241,5 @@ export async function cancelExpiredStripeSession(stripeSessionId: string) {
 
   if (!payment || payment.status !== "pending") return;
 
-  await prisma.$transaction([
-    prisma.payment.update({
-      where: { id: payment.id },
-      data: { status: "failed" },
-    }),
-    prisma.booking.update({
-      where: { id: payment.bookingId },
-      data: { status: "cancelled" },
-    }),
-  ]);
+  await abandonPendingCheckout(payment.bookingId);
 }
