@@ -121,7 +121,7 @@
     "tripsTitle": "Trips",
     "tripsDescription": "HU/EN content, images, dates, and publishing.",
     "bookingsTitle": "Bookings",
-    "bookingsDescription": "Incoming bookings, Stripe status, and invoice issuance.",
+    "bookingsDescription": "Incoming bookings, Stripe status, and invoice issuance. New paid bookings appear as unread.",
     "bookingAmount": "Total",
     "bookingDeposit": "Deposit",
     "bookingDate": "Date",

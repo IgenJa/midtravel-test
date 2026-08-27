@@ -121,7 +121,7 @@
     "tripsTitle": "Utak",
     "tripsDescription": "HU/EN tartalom, képek, dátumok és publikálás.",
     "bookingsTitle": "Foglalások",
-    "bookingsDescription": "Beérkező foglalások, Stripe státusz és számla kiállítás.",
+    "bookingsDescription": "Beérkező foglalások, Stripe státusz és számla kiállítás. Az új fizetett foglalások olvasatlanként jelennek meg.",
     "bookingAmount": "Teljes ár",
     "bookingDeposit": "Előleg",
     "bookingDate": "Dátum",

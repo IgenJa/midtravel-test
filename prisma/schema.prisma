@@ -294,6 +294,7 @@ model Booking {
   companionName     String?
   companionPhone    String?
   locale            String          @default("hu")
+  read              Boolean         @default(true)
   guestEmailStatus  EmailSendStatus @default(pending)
   officeEmailStatus EmailSendStatus @default(pending)
   termsAcceptedAt     DateTime?
@@ -310,6 +311,7 @@ model Booking {
 
   @@index([userId])
   @@index([status])
+  @@index([read])
   @@index([officeEmailStatus])
   @@map("booking")
 }

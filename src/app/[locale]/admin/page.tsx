@@ -35,6 +35,7 @@ export default async function AdminPage({ params }: Props) {
     contactCount,
     applicationCount,
     bookingCount,
+    unreadBookingCount,
     failedContacts,
     failedApplications,
     failedBookings,
@@ -48,6 +49,7 @@ export default async function AdminPage({ params }: Props) {
         where: { read: false, status: "open" },
       }),
       prisma.booking.count(),
+      prisma.booking.count({ where: { read: false, status: "paid" } }),
       prisma.contactMessage.count({ where: failedEmailWhere }),
       prisma.tripApplication.count({ where: failedEmailWhere }),
       prisma.booking.count({ where: failedEmailWhere }),
@@ -62,24 +64,31 @@ export default async function AdminPage({ params }: Props) {
       value: tripCount,
       href: "/admin/trips",
       cta: t("manageTrips"),
+      hint: null,
     },
     {
       title: t("navBookings"),
       value: bookingCount,
       href: "/admin/bookings",
       cta: t("manageBookings"),
+      hint:
+        unreadBookingCount > 0
+          ? t("unreadCount", { count: unreadBookingCount })
+          : null,
     },
     {
       title: t("navTeam"),
       value: teamCount,
       href: "/admin/team",
       cta: t("manageTeam"),
+      hint: null,
     },
     {
       title: t("navTestimonials"),
       value: testimonialCount,
       href: "/admin/testimonials",
       cta: t("manageTestimonials"),
+      hint: null,
     },
   ];
 
@@ -102,6 +111,9 @@ export default async function AdminPage({ params }: Props) {
             <p className="mt-2 font-display text-4xl font-bold text-slate-900">
               {card.value}
             </p>
+            {card.hint ? (
+              <p className="mt-1 text-sm font-medium text-amber-700">{card.hint}</p>
+            ) : null}
             <Button href={card.href} size="sm" className="mt-4">
               {card.cta}
             </Button>

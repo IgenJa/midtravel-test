@@ -1,4 +1,5 @@
 import { type ReactNode } from "react";
+import { GoldRule } from "@/components/ui/GoldRule";
 import { cn } from "@/lib/utils";
 
 interface SectionHeadingProps {
@@ -33,6 +34,7 @@ export function SectionHeading({
       <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
         {title}
       </h2>
+      <GoldRule className={cn("mt-5", align === "left" && "justify-start")} />
       {description && (
         <p className="mt-4 text-lg leading-relaxed text-slate-600">
           {description}

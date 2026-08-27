@@ -2,12 +2,14 @@ import { Compass, Sparkles, GraduationCap, BadgeCheck } from "lucide-react";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { HomeHero } from "./HomeHero";
+import { CtaBanner } from "@/components/ui/CtaBanner";
 import { Button } from "@/components/ui/Button";
 import { TripCard } from "@/components/ui/TripCard";
 import { Testimonials } from "@/components/ui/Testimonials";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Stats } from "@/components/ui/Stats";
 import { AnimatedSection, FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/AnimatedSection";
+import { GoldRule } from "@/components/ui/GoldRule";
 import { getCompany } from "@/data/company";
 import { getTrips, getFeaturedTrips } from "@/data/trips";
 import { getTestimonials } from "@/data/testimonials";
@@ -43,36 +45,6 @@ export default async function HomePage({ params }: Props) {
         signUpLabel={t("signUp")}
       />
 
-      <AnimatedSection className="py-20 sm:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
-            <FadeIn direction="left">
-              <SectionHeading
-                eyebrow={t("aboutEyebrow")}
-                title={t("aboutTitle")}
-                description={company.description}
-                align="left"
-              />
-              <Button href="/about" variant="outline" className="mt-6">
-                {t("learnMore")}
-              </Button>
-            </FadeIn>
-            <FadeIn direction="right" delay={0.2}>
-              <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-2xl">
-                <Image
-                  src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80"
-                  alt={t("aboutImageAlt")}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-tr from-teal-600/20 to-transparent" />
-              </div>
-            </FadeIn>
-          </div>
-        </div>
-      </AnimatedSection>
-
       <section className="bg-gradient-to-b from-teal-50 to-cream py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
@@ -99,6 +71,36 @@ export default async function HomePage({ params }: Props) {
 
       <AnimatedSection className="py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            <FadeIn direction="left">
+              <SectionHeading
+                eyebrow={t("aboutEyebrow")}
+                title={t("aboutTitle")}
+                description={company.description}
+                align="left"
+              />
+              <Button href="/about" variant="outline" className="mt-6">
+                {t("learnMore")}
+              </Button>
+            </FadeIn>
+            <FadeIn direction="right" delay={0.2}>
+              <div className="photo-frame relative aspect-[4/3]">
+                <Image
+                  src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80"
+                  alt={t("aboutImageAlt")}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-tr from-teal-600/20 to-transparent" />
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      </AnimatedSection>
+
+      <AnimatedSection className="py-20 sm:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow={t("whyEyebrow")}
             title={t("whyTitle")}
@@ -109,8 +111,8 @@ export default async function HomePage({ params }: Props) {
               const Icon = iconMap[item.icon as keyof typeof iconMap];
               return (
                 <StaggerItem key={item.title} className="h-full">
-                  <div className="flex h-full flex-col rounded-2xl bg-[#fffdf8] p-6 shadow-md ring-1 ring-teal-200/50 transition-shadow hover:shadow-lg">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-teal-500 text-white">
+                  <div className="feature-card flex h-full flex-col rounded-2xl bg-[#fffdf8] p-6 shadow-md ring-1 ring-teal-200/50">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-teal-500 text-white shadow-md shadow-navy/20 ring-1 ring-white/20">
                       <Icon className="h-6 w-6" />
                     </div>
                     <h3 className="mt-4 font-display text-lg font-bold text-slate-900">
@@ -127,12 +129,13 @@ export default async function HomePage({ params }: Props) {
         </div>
       </AnimatedSection>
 
-      <section className="bg-gradient-to-br from-teal-700 via-teal-600 to-teal-500 py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="navy-band py-20">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
-            <h2 className="mb-12 text-center font-display text-3xl font-bold text-white sm:text-4xl">
+            <h2 className="mb-4 text-center font-display text-3xl font-bold text-white sm:text-4xl">
               {t("statsTitle")}
             </h2>
+            <GoldRule className="mb-12" light />
             <Stats stats={company.stats} />
           </AnimatedSection>
         </div>
@@ -154,43 +157,15 @@ export default async function HomePage({ params }: Props) {
       <section className="py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-teal-700 to-teal-600 px-8 py-16 text-center sm:px-16">
-              <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-teal-200/25 blur-3xl" />
-              <h2 className="relative font-display text-3xl font-bold text-white sm:text-4xl">
-                {t("ctaTitle")}
-              </h2>
-              <p className="relative mx-auto mt-4 max-w-xl text-teal-100/90">
-                {t("ctaDescription")}
-              </p>
-              <div className="relative mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Button href="/apply" size="lg">
-                  {t("applyNow")}
-                </Button>
-                <Button href="/contact" variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
-                  {t("contactUs")}
-                </Button>
-              </div>
-            </div>
+            <CtaBanner title={t("ctaTitle")} description={t("ctaDescription")}>
+              <Button href="/apply" size="lg">
+                {t("applyNow")}
+              </Button>
+              <Button href="/contact" variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+                {t("contactUs")}
+              </Button>
+            </CtaBanner>
           </AnimatedSection>
-        </div>
-      </section>
-
-      <section className="bg-teal-50/70 py-20 sm:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <AnimatedSection>
-            <SectionHeading
-              eyebrow={t("latestEyebrow")}
-              title={t("latestTitle")}
-              description={t("latestDescription")}
-            />
-          </AnimatedSection>
-          <StaggerContainer className="grid grid-cols-2 gap-3 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {trips.slice(0, 6).map((trip) => (
-              <StaggerItem key={trip.id}>
-                <TripCard trip={trip} compact />
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
         </div>
       </section>
 

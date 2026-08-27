@@ -44,6 +44,7 @@ export type AdminBookingActionResult =
         | "NOT_CONFIGURED"
         | "MISSING_EXCHANGE_RATE"
         | "ISSUE_FAILED"
+        | "SAVE_FAILED"
         | "RESEND_FAILED";
       message?: string;
     };
@@ -55,7 +56,32 @@ async function requireAdminSession() {
 }
 
 function revalidateBookingPages() {
+  revalidatePath("/[locale]/admin", "layout");
   revalidatePath("/[locale]/admin/bookings", "layout");
+}
+
+export async function setBookingRead(
+  id: string,
+  read: boolean
+): Promise<AdminBookingActionResult> {
+  if (!(await requireAdminSession())) {
+    return { ok: false, code: "UNAUTHORIZED" };
+  }
+
+  try {
+    const existing = await prisma.booking.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+    if (!existing) return { ok: false, code: "NOT_FOUND" };
+
+    await prisma.booking.update({ where: { id }, data: { read } });
+    revalidateBookingPages();
+    return { ok: true };
+  } catch (error) {
+    Sentry.captureException(error);
+    return { ok: false, code: "SAVE_FAILED" };
+  }
 }
 
 function normalizeBilling(input: BookingBillingInput): {

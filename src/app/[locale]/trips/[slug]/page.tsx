@@ -194,7 +194,7 @@ export default async function TripDetailPage({ params }: Props) {
               <FaqAccordion items={trip.faq} />
             </div>
             <div>
-              <Card hover={false} className="sticky top-24">
+              <Card hover={false} className="sticky top-24 border-t-2 border-teal-300">
                 <p className="text-sm text-slate-500">{t("pricePerPerson")}</p>
                 <p className="font-display text-3xl font-bold text-teal-700">
                   {formatPrice(trip.price)}

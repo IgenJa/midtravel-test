@@ -19,9 +19,9 @@ export function Stats({ stats }: StatsProps) {
         <StaggerItem key={stat.label}>
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="rounded-2xl bg-white/10 p-6 text-center backdrop-blur-sm"
+            className="rounded-2xl bg-white/10 p-6 text-center ring-1 ring-white/10 backdrop-blur-sm"
           >
-            <p className="font-display text-3xl font-bold text-white sm:text-4xl">
+            <p className="font-display text-3xl font-bold text-teal-100 sm:text-4xl">
               {stat.value}
             </p>
             <p className="mt-2 text-sm text-teal-100">{stat.label}</p>

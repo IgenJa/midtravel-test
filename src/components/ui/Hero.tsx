@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { GoldRule } from "@/components/ui/GoldRule";
 
 interface HeroProps {
   title: string;
@@ -39,8 +40,9 @@ export function Hero({
         className="object-cover"
       />
       {overlay && (
-        <div className="absolute inset-0 bg-gradient-to-b from-teal-900/40 via-teal-800/25 to-teal-900/50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-navy/45 via-navy/25 to-navy/55" />
       )}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-cream/70 to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
         <motion.div
@@ -51,7 +53,8 @@ export function Hero({
           <h1 className="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-7xl">
             {title}
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-200 sm:text-xl">
+          <GoldRule className="mt-6" light />
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85 sm:text-xl">
             {subtitle}
           </p>
           {(ctaPrimary || ctaSecondary) && (

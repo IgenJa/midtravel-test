@@ -187,14 +187,14 @@ export async function fulfillPaidStripeSession(input: {
     if (updated.count === 0) {
       await tx.booking.updateMany({
         where: { id: payment.bookingId, status: { not: "paid" } },
-        data: { status: "paid" },
+        data: { status: "paid", read: false },
       });
       return false;
     }
 
     await tx.booking.update({
       where: { id: payment.bookingId },
-      data: { status: "paid" },
+      data: { status: "paid", read: false },
     });
     return true;
   });

@@ -2,6 +2,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmailFailedBadge } from "@/components/admin/EmailFailedBadge";
+import { InboundReadToggle } from "@/components/admin/InboundReadToggle";
+import { InboundStatusBadge } from "@/components/admin/InboundStatusBadge";
 import { hasFailedEmail } from "@/lib/email-delivery";
 import { prisma } from "@/lib/prisma";
 import { createMetadata } from "@/lib/seo";
@@ -42,7 +44,7 @@ export default async function AdminBookingsPage({ params }: Props) {
   const t = await getTranslations("admin");
 
   const bookings = await prisma.booking.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ read: "asc" }, { createdAt: "desc" }],
     include: {
       user: { select: { name: true, email: true } },
       trip: {
@@ -71,6 +73,16 @@ export default async function AdminBookingsPage({ params }: Props) {
         description={t("bookingsDescription")}
         align="left"
       />
+
+      {bookings.length > 0 ? (
+        <p className="mt-4 text-sm text-slate-500">
+          {t("unreadCount", {
+            count: bookings.filter(
+              (booking) => !booking.read && booking.status === "paid"
+            ).length,
+          })}
+        </p>
+      ) : null}
 
       {bookings.length === 0 ? (
         <p className="mt-8 text-slate-600">{t("emptyBookings")}</p>
@@ -109,11 +121,18 @@ export default async function AdminBookingsPage({ params }: Props) {
                     key={booking.id}
                     className={cn(
                       "border-b border-slate-100",
-                      emailFailed && "bg-red-50/60"
+                      emailFailed
+                        ? "bg-red-50/60"
+                        : !booking.read && "bg-amber-50/40"
                     )}
                   >
                     <td className="px-4 py-3">
-                      <div className="font-medium text-slate-900">
+                      <div
+                        className={cn(
+                          "text-slate-900",
+                          !booking.read && "font-semibold"
+                        )}
+                      >
                         {booking.customerName ?? booking.user.name}
                       </div>
                       <div className="text-xs text-slate-500">
@@ -142,6 +161,11 @@ export default async function AdminBookingsPage({ params }: Props) {
                         >
                           {t(`bookingStatus.${booking.status}`)}
                         </span>
+                        <InboundStatusBadge
+                          read={booking.read}
+                          readLabel={t("readStatus")}
+                          unreadLabel={t("unreadStatus")}
+                        />
                         <EmailFailedBadge
                           guestEmailStatus={booking.guestEmailStatus}
                           officeEmailStatus={booking.officeEmailStatus}
@@ -162,12 +186,19 @@ export default async function AdminBookingsPage({ params }: Props) {
                       {formatDate(booking.createdAt.toISOString(), locale)}
                     </td>
                     <td className="px-4 py-3">
-                      <Link
-                        href={`/admin/bookings/${booking.id}`}
-                        className="text-sm font-semibold text-teal-700 hover:text-teal-800"
-                      >
-                        {t("openBooking")}
-                      </Link>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Link
+                          href={`/admin/bookings/${booking.id}`}
+                          className="text-sm font-semibold text-teal-700 hover:text-teal-800"
+                        >
+                          {t("openBooking")}
+                        </Link>
+                        <InboundReadToggle
+                          kind="booking"
+                          id={booking.id}
+                          read={booking.read}
+                        />
+                      </div>
                     </td>
                   </tr>
                 );

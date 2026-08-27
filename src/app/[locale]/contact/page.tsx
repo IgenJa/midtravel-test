@@ -53,7 +53,7 @@ export default async function ContactPage({ params }: Props) {
 
               <div className="mt-8 space-y-6">
                 <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-100 to-gold text-teal-700 ring-1 ring-teal-200/80">
                     <MapPin className="h-5 w-5" />
                   </div>
                   <div>
@@ -62,7 +62,7 @@ export default async function ContactPage({ params }: Props) {
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-100 to-gold text-teal-700 ring-1 ring-teal-200/80">
                     <Phone className="h-5 w-5" />
                   </div>
                   <div>
@@ -73,7 +73,7 @@ export default async function ContactPage({ params }: Props) {
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-100 to-gold text-teal-700 ring-1 ring-teal-200/80">
                     <Mail className="h-5 w-5" />
                   </div>
                   <div>
@@ -84,7 +84,7 @@ export default async function ContactPage({ params }: Props) {
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-100 to-gold text-teal-700 ring-1 ring-teal-200/80">
                     <Clock className="h-5 w-5" />
                   </div>
                   <div>

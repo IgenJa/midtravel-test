@@ -56,7 +56,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full">
       <nav
-        className="border-b border-navy/20 bg-[#f4efd8]/90 backdrop-blur-xl"
+        className="border-b border-teal-300/45 bg-[#f4efd8]/88 backdrop-blur-xl"
         aria-label="Main navigation"
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -66,7 +66,7 @@ export function Navbar() {
               alt={company.name}
               width={36}
               height={36}
-              className="h-9 w-9 shrink-0 rounded-full object-cover"
+              className="h-9 w-9 shrink-0 rounded-full object-cover ring-1 ring-teal-300/50"
               priority
             />
             <span className="font-display text-xl font-bold text-slate-900">
@@ -132,19 +132,9 @@ export function Navbar() {
                 </>
               )
             )}
-
-            <Button
-              href="/apply"
-              size="sm"
-              variant={isActivePath(pathname, "/apply") ? "secondary" : "primary"}
-              className={isActivePath(pathname, "/apply") ? "ring-2 ring-teal-200 ring-offset-2 ring-offset-teal-100" : ""}
-            >
-              {t("applyTrip")}
-            </Button>
           </div>
 
-          <div className="flex items-center gap-2 md:hidden">
-            <LanguageSwitcher />
+          <div className="md:hidden">
             <button
               type="button"
               className="inline-flex items-center justify-center rounded-lg p-2 text-slate-800 hover:bg-white/60"
@@ -229,18 +219,8 @@ export function Navbar() {
                   </div>
                 )}
 
-                <div className="pt-2">
-                  <Button
-                    href="/apply"
-                    className={cn(
-                      "w-full",
-                      isActivePath(pathname, "/apply") && "ring-2 ring-teal-600 ring-offset-2 ring-offset-teal-50"
-                    )}
-                    variant={isActivePath(pathname, "/apply") ? "secondary" : "primary"}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {t("applyTrip")}
-                  </Button>
+                <div className="flex justify-center pt-3">
+                  <LanguageSwitcher />
                 </div>
               </div>
             </motion.div>

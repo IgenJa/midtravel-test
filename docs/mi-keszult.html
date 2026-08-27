@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="hu" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MidTravel — mi készült el a bemutató óta</title>
+  <style>
+    :root {
+      --bg-editor: #141414;
+      --bg-chrome: #1b1b1b;
+      --text: #f0f0f0;
+      --text-2: rgba(240, 240, 240, 0.74);
+      --text-3: rgba(240, 240, 240, 0.60);
+      --text-4: rgba(240, 240, 240, 0.36);
+      --fill-1: rgba(240, 240, 240, 0.20);
+      --fill-2: rgba(240, 240, 240, 0.14);
+      --fill-3: rgba(240, 240, 240, 0.08);
+      --fill-4: rgba(240, 240, 240, 0.06);
+      --stroke-1: rgba(240, 240, 240, 0.20);
+      --stroke-2: rgba(240, 240, 240, 0.12);
+      --stroke-3: rgba(240, 240, 240, 0.08);
+      --accent: #82a7ff;
+      --green: #3d9b74;
+      --red: #e06c75;
+      --orange: #d19a66;
+      --blue: #61afef;
+      --gray: #8a8a8a;
+      --warn-bg: rgba(209, 154, 102, 0.10);
+      --info-bg: rgba(97, 175, 239, 0.10);
+      --ok-bg: rgba(61, 155, 116, 0.10);
+      --radius: 8px;
+    }
+
+    html[data-theme="light"] {
+      --bg-editor: #f7f7f4;
+      --bg-chrome: #ffffff;
+      --text: #141414;
+      --text-2: rgba(20, 20, 20, 0.74);
+      --text-3: rgba(20, 20, 20, 0.60);
+      --text-4: rgba(20, 20, 20, 0.36);
+      --fill-1: rgba(20, 20, 20, 0.12);
+      --fill-2: rgba(20, 20, 20, 0.08);
+      --fill-3: rgba(20, 20, 20, 0.05);
+      --fill-4: rgba(20, 20, 20, 0.035);
+      --stroke-1: rgba(20, 20, 20, 0.16);
+      --stroke-2: rgba(20, 20, 20, 0.10);
+      --stroke-3: rgba(20, 20, 20, 0.08);
+      --accent: #3b6cf0;
+      --green: #1f8a65;
+      --red: #c04848;
+      --orange: #c06028;
+      --blue: #2e79b5;
+      --gray: #6b6b6b;
+      --warn-bg: rgba(192, 96, 40, 0.08);
+      --info-bg: rgba(46, 121, 181, 0.08);
+      --ok-bg: rgba(31, 138, 101, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+      background: var(--bg-editor);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 24px 24px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .stack { display: flex; flex-direction: column; }
+    .stack-8 { gap: 8px; }
+    .stack-6 { gap: 6px; }
+    .stack-10 { gap: 10px; }
+
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 24px; line-height: 30px; font-weight: 590; }
+    h2 { font-size: 18px; line-height: 24px; font-weight: 590; }
+    h3 { font-size: 16px; line-height: 22px; font-weight: 590; }
+    .secondary { color: var(--text-2); }
+    .tertiary { color: var(--text-3); }
+    .small { font-size: 12px; line-height: 16px; }
+    .kicker {
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 590;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--text-3);
+    }
+    .agenda {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .agenda-item {
+      border: 1px solid var(--stroke-3);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+    }
+    .agenda-item .n {
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--text-3);
+      margin-bottom: 4px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin: -8px 0 -16px;
+    }
+    .theme-btn {
+      appearance: none;
+      border: 1px solid var(--stroke-2);
+      background: transparent;
+      color: var(--text-3);
+      font: inherit;
+      font-size: 12px;
+      line-height: 16px;
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 9999px;
+      cursor: pointer;
+    }
+    .theme-btn:hover { background: var(--fill-3); color: var(--text-2); }
+
+    .callout {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      background: var(--fill-3);
+      break-inside: avoid;
+    }
+    .callout.warn { background: var(--warn-bg); }
+    .callout.info { background: var(--info-bg); }
+    .callout.ok { background: var(--ok-bg); }
+    .callout svg { flex: none; margin-top: 2px; }
+    .callout .title { font-weight: 590; margin-bottom: 2px; }
+    .callout .body { color: var(--text-2); }
+
+    .frame {
+      border: 1px solid var(--stroke-3);
+      border-radius: var(--radius);
+      overflow: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      line-height: 18px;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--stroke-3);
+    }
+    th {
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 590;
+      color: var(--text-3);
+      background: var(--bg-editor);
+    }
+    tr:last-child td { border-bottom: 0; }
+    tbody tr:nth-child(even) td { background: var(--fill-4); }
+    .tone {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: 1px;
+    }
+    .tone.success { background: var(--green); }
+    .tone.danger { background: var(--red); }
+    .tone.warning { background: var(--orange); }
+    .tone.info { background: var(--blue); }
+    .tone.gray { background: var(--gray); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .stats.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stat .value {
+      font-size: 24px;
+      line-height: 30px;
+      font-weight: 590;
+    }
+    .stat .label { font-size: 12px; line-height: 16px; color: var(--text-3); }
+    .stat.success .value { color: var(--green); }
+    .stat.danger .value { color: var(--red); }
+    .stat.warning .value { color: var(--orange); }
+    .stat.info .value { color: var(--blue); }
+
+    .usage-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--text-3);
+      margin-bottom: 6px;
+    }
+    .usage {
+      display: flex;
+      gap: 3px;
+      height: 6px;
+    }
+    .usage i {
+      display: block;
+      height: 100%;
+      border-radius: 9999px;
+    }
+    .usage .then { width: 22%; background: var(--gray); }
+    .usage .now { width: 68%; background: var(--green); }
+    .usage .polish { width: 10%; background: var(--orange); }
+
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill {
+      appearance: none;
+      border: 1px solid var(--stroke-2);
+      background: transparent;
+      color: var(--text-2);
+      font: inherit;
+      font-size: 12px;
+      line-height: 16px;
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 9999px;
+      cursor: pointer;
+    }
+    .pill:hover { background: var(--fill-3); }
+    .pill.active {
+      background: var(--fill-1);
+      border-color: transparent;
+      color: var(--text);
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid var(--stroke-3);
+      margin: 0;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .card {
+      border: 1px solid var(--stroke-3);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--bg-editor);
+      break-inside: avoid;
+    }
+    .card-h {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      height: 28px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--stroke-3);
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 590;
+    }
+    .card-h span { color: var(--text-3); font-weight: 400; }
+    .card-b { padding: 12px 16px; }
+    .card-b p + p { margin-top: 6px; }
+
+    .hidden { display: none; }
+    .ask { break-inside: avoid; }
+    .need {
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 590;
+      white-space: nowrap;
+    }
+    .need.must { color: var(--orange); }
+    .need.soon { color: var(--blue); }
+    .need.later { color: var(--text-3); }
+
+    @media (max-width: 720px) {
+      .page { padding: 16px 16px 40px; }
+      .stats, .cards, .agenda { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      :root, html[data-theme="dark"] {
+        --bg-editor: #ffffff;
+        --bg-chrome: #ffffff;
+        --text: #141414;
+        --text-2: rgba(20, 20, 20, 0.74);
+        --text-3: rgba(20, 20, 20, 0.60);
+        --text-4: rgba(20, 20, 20, 0.36);
+        --fill-1: rgba(20, 20, 20, 0.12);
+        --fill-3: rgba(20, 20, 20, 0.05);
+        --fill-4: rgba(20, 20, 20, 0.035);
+        --stroke-2: rgba(20, 20, 20, 0.10);
+        --stroke-3: rgba(20, 20, 20, 0.10);
+        --green: #1f8a65;
+        --red: #c04848;
+        --orange: #c06028;
+        --blue: #2e79b5;
+        --gray: #6b6b6b;
+        --warn-bg: rgba(192, 96, 40, 0.08);
+        --info-bg: rgba(46, 121, 181, 0.08);
+        --ok-bg: rgba(31, 138, 101, 0.08);
+      }
+      .topbar { display: none; }
+      .page { padding: 0; max-width: none; }
+      .callout, .card, .frame, .stat, .agenda-item, tr { break-inside: avoid; }
+      #kerjuk { break-before: page; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <button type="button" class="theme-btn" id="theme-btn">Sötét</button>
+    </div>
+
+    <div class="stack stack-8">
+      <p class="kicker">MID Travel · állapotjelentés</p>
+      <h1>Mi készült el a bemutató óta — és mire van szükségünk tőletek</h1>
+      <p class="meta">
+        <span>Megbeszélés anyaga</span>
+        <span>2026. augusztus</span>
+        <span>midtravel.hu</span>
+      </p>
+      <p class="secondary">
+        Akkoriban egy gyorsan összerakott, szép bemutató oldal volt: meg lehetett
+        nézni az utakat, a csapatot, a kapcsolatot — de mögötte még nem volt
+        igazi rendszer. Azóta ez működő utazási iroda-weboldallá nőtt. A motor
+        kész. Az éles induláshoz tőletek kellenek hozzáférések, kulcsok és a
+        valós tartalom.
+      </p>
+    </div>
+
+    <div class="agenda">
+      <div class="agenda-item">
+        <div class="n">1 · Hol tartunk</div>
+        <p>A kirakatból irodai rendszer lett: foglalás, fizetés, admin, e-mail, számla.</p>
+      </div>
+      <div class="agenda-item">
+        <div class="n">2 · Mit tud az oldal</div>
+        <p>Mit lát az utas, mit kezel az iroda, mi megy a háttérben.</p>
+      </div>
+      <div class="agenda-item">
+        <div class="n">3 · Amit tőletek kérünk</div>
+        <p>Rövid lista. A részleteket szóban beszéljük meg.</p>
+      </div>
+    </div>
+
+    <div class="callout ok">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="8" cy="8" r="6.2" stroke="var(--green)" stroke-width="1.3"/>
+        <path d="M5.2 8.1 7.1 10l3.7-4.2" stroke="var(--green)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <div class="title">Egy mondatban</div>
+        <div class="body">
+          A bemutatón egy kirakat volt. Azóta teljes irodai rendszer lett belőle:
+          az utas tud jelentkezni és fizetni, az iroda tudja kezelni az utakat
+          és az ügyfeleket, a háttérben pedig adatbázis, e-mail, fizetés, számla
+          és éles üzemeltetés van.
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="usage-head">
+        <span>Hol tartunk</span>
+        <span>bemutató frontend · működő rendszer · arculat finomítás</span>
+      </div>
+      <div class="usage" aria-hidden="true">
+        <i class="then"></i><i class="now"></i><i class="polish"></i>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="stack stack-10">
+      <h2>Mit tud az utas</h2>
+      <p class="secondary">A látogató / utas oldaláról ez változott a bemutató óta.</p>
+      <div class="pills" id="filters">
+        <button type="button" class="pill active" data-filter="all">Összes</button>
+        <button type="button" class="pill" data-filter="guest">Utas</button>
+        <button type="button" class="pill" data-filter="office">Iroda</button>
+        <button type="button" class="pill" data-filter="ops">Háttér</button>
+      </div>
+      <div class="frame">
+        <table>
+          <thead>
+            <tr><th>Kinek</th><th>Funkció</th><th>Mit jelent ez</th></tr>
+          </thead>
+          <tbody id="feature-rows">
+            <tr data-filter="guest">
+              <td><span class="tone success"></span>Utas</td>
+              <td>Saját fiók</td>
+              <td>Regisztráció, e-mailes megerősítés, belépés, elfelejtett jelszó, saját profil.</td>
+            </tr>
+            <tr data-filter="guest">
+              <td><span class="tone success"></span>Utas</td>
+              <td>Jelentkezés egy útra</td>
+              <td>Űrlap, résztvevőszám, kísérő, biztosítás kérése. Ez elmentésre kerül, nem csak „elmegy egy e-mailbe”.</td>
+            </tr>
+            <tr data-filter="guest">
+              <td><span class="tone success"></span>Utas</td>
+              <td>Foglalás és előleg</td>
+              <td>Bankkártyás fizetés (jellemzően 30% előleg). Sikeres fizetés után a foglalás kifizetett, a profilban látszik.</td>
+            </tr>
+            <tr data-filter="guest">
+              <td><span class="tone success"></span>Utas</td>
+              <td>Kapcsolatűrlap</td>
+              <td>Az üzenet megmarad a rendszerben, és e-mail is megy az ügyfélnek és az irodának.</td>
+            </tr>
+            <tr data-filter="guest">
+              <td><span class="tone success"></span>Utas</td>
+              <td>Magyar és angol</td>
+              <td>Kétnyelvű oldal, jogi dokumentumok (adatkezelés, utazási szerződés, impresszum), süti-hozzájárulás.</td>
+            </tr>
+            <tr data-filter="guest">
+              <td><span class="tone success"></span>Utas</td>
+              <td>Helyek kezelése</td>
+              <td>Ha egy út majdnem tele van, a rendszer nem enged túljelentkezést.</td>
+            </tr>
+            <tr data-filter="office">
+              <td><span class="tone info"></span>Iroda</td>
+              <td>Utak szerkesztése</td>
+              <td>Felvenni, módosítani, publikálni, kiemelni, képet feltölteni — magyarul és angolul, programozó nélkül.</td>
+            </tr>
+            <tr data-filter="office">
+              <td><span class="tone info"></span>Iroda</td>
+              <td>Csapat és vélemények</td>
+              <td>A csapattagok és a vendégvélemények az adminból kezelhetők.</td>
+            </tr>
+            <tr data-filter="office">
+              <td><span class="tone info"></span>Iroda</td>
+              <td>Cégadatok</td>
+              <td>E-mail, telefon, cím beállítása. Ezek megjelennek a láblécben, a kapcsolaton és az impresszumban.</td>
+            </tr>
+            <tr data-filter="office">
+              <td><span class="tone info"></span>Iroda</td>
+              <td>Beérkező üzenetek</td>
+              <td>Jelentkezések és kapcsolatüzenetek listája, megnyitás, olvasott jelölés.</td>
+            </tr>
+            <tr data-filter="office">
+              <td><span class="tone info"></span>Iroda</td>
+              <td>Jelentkezés státusza</td>
+              <td>Nyitott / foglalássá vált / hely felszabadítva — ez a szabad helyeket is számolja.</td>
+            </tr>
+            <tr data-filter="office">
+              <td><span class="tone info"></span>Iroda</td>
+              <td>Foglalások és számla</td>
+              <td>Foglalás megtekintése, számlázási adatok, számla kiállítása. Dupla kiállítás elleni védelem.</td>
+            </tr>
+            <tr data-filter="office">
+              <td><span class="tone info"></span>Iroda</td>
+              <td>Sikertelen e-mail</td>
+              <td>Látszik, ha egy levél nem ment ki, és újra lehet küldeni.</td>
+            </tr>
+            <tr data-filter="ops">
+              <td><span class="tone warning"></span>Háttér</td>
+              <td>Adatbázis</td>
+              <td>Felhasználók, utak, jelentkezések, foglalások, fizetések, számlák egy helyen tárolva.</td>
+            </tr>
+            <tr data-filter="ops">
+              <td><span class="tone warning"></span>Háttér</td>
+              <td>Automatikus e-mailek</td>
+              <td>Visszaigazolás, jelszó-reset, kapcsolat, jelentkezés, foglalás — ügyfélnek és irodának.</td>
+            </tr>
+            <tr data-filter="ops">
+              <td><span class="tone warning"></span>Háttér</td>
+              <td>Bankkártyás fizetés</td>
+              <td>Előlegfizetés kártyával. A többi az utazási szerződés szerint.</td>
+            </tr>
+            <tr data-filter="ops">
+              <td><span class="tone warning"></span>Háttér</td>
+              <td>Számlázás</td>
+              <td>A kifizetett foglaláshoz az adminból számla állítható ki.</td>
+            </tr>
+            <tr data-filter="ops">
+              <td><span class="tone warning"></span>Háttér</td>
+              <td>Jogi nyom</td>
+              <td>Rögzül, melyik szerződés- és adatkezelési verziót fogadta el az utas. A régi PDF-eket nem szabad felülírni.</td>
+            </tr>
+            <tr data-filter="ops">
+              <td><span class="tone warning"></span>Háttér</td>
+              <td>Kereső és védelem</td>
+              <td>Keresőbarát működés, titkosított kapcsolat, spam-korlátozás, az admin el van választva a nyilvános oldaltól.</td>
+            </tr>
+            <tr id="empty-row" class="hidden">
+              <td colspan="3" class="tertiary">Nincs tétel ebben a szűrőben.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small tertiary" id="caption">19 kész funkció — ezeket a megbeszélésen be is lehet mutatni</p>
+    </div>
+
+    <div class="callout info">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="8" cy="8" r="6.2" stroke="var(--blue)" stroke-width="1.3"/>
+        <path d="M8 7.2v4M8 5.1v.2" stroke="var(--blue)" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="title">A tartalom az irodáé</div>
+        <div class="body">
+          A bemutatón lévő utak még demó jellegűek. Élesítés után cserélés saját, valós programokra, árakra és képekre
+        </div>
+      </div>
+    </div>
+
+    <div class="stack stack-10">
+      <h2>Üzemeltetés — hogy ne csak a gépen működjön</h2>
+      <p class="secondary">
+        Az oldal saját szerverre van felkészítve, nem csak egy bemutatóra.
+      </p>
+      <div class="frame">
+        <table>
+          <thead>
+            <tr><th>Terület</th><th>Mit takar</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="tone success"></span>Telepítés</td>
+              <td>Saját szerver, biztonságos kapcsolat, belépés az adminba.</td>
+            </tr>
+            <tr>
+              <td><span class="tone success"></span>Mentés</td>
+              <td>Napi biztonsági mentés az adatbázisról és a feltöltött képekről.</td>
+            </tr>
+            <tr>
+              <td><span class="tone success"></span>Figyelés</td>
+              <td>Automatikus jelzés, ha az oldal vagy az adatbázis nem elérhető.</td>
+            </tr>
+            <tr>
+              <td><span class="tone success"></span>Ellenőrzés</td>
+              <td>Automatikus tesztek, hogy a fontos oldalak és a belépés működjenek.</td>
+            </tr>
+            <tr>
+              <td><span class="tone success"></span>Átadás</td>
+              <td>Írásos útmutató: domain, fizetés, e-mail, számla, mentés, admin belépő.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M8 2.4 14.2 13H1.8L8 2.4Z" stroke="var(--orange)" stroke-width="1.3" stroke-linejoin="round"/>
+        <path d="M8 6.4v3.2M8 11.3v.2" stroke="var(--orange)" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="title">A következő lépés tőletek függ</div>
+        <div class="body">
+          A működő rendszer megvan. Élesíteni akkor tudjuk, ha a lenti fiókok,
+          kulcsok és tartalom megérkeznek — mind a cég nevére, nem a fejlesztőére.
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="stack stack-10 ask" id="kerjuk">
+      <div class="stack stack-8">
+        <p class="kicker">3 · Amit tőletek kérünk</p>
+        <h2>Ezek kellenek az induláshoz</h2>
+        <p class="secondary">
+          Rövid lista, hogy látszódjon a kép. A hol, hogyan, melyik gomb —
+          azt szóban beszéljük meg.
+        </p>
+      </div>
+
+      <h3>Első körben</h3>
+      <p class="secondary">Ezek nélkül nincs éles fizetés, e-mail és számla.</p>
+      <div class="frame">
+        <table>
+          <thead>
+            <tr><th>Mit kérünk</th><th>Mire kell</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Domain + saját szerver a cég nevére</td>
+              <td>Itt fut majd az oldal.</td>
+            </tr>
+            <tr>
+              <td>Stripe fiók (bankkártya, forint)</td>
+              <td>Előlegfizetés.</td>
+            </tr>
+            <tr>
+              <td>E-mail: Resend + feladó cím + postafiók</td>
+              <td>Automatikus levelek, és hogy a válaszok megérkezzenek.</td>
+            </tr>
+            <tr>
+              <td>szamlazz.hu + ÁFA a könyvelőtől</td>
+              <td>Számla az adminból.</td>
+            </tr>
+            <tr>
+              <td>Ki az admin, 30% előleg, cégadatok</td>
+              <td>Ezek pontos működése.</td>
+            </tr>
+            <tr>
+              <td>Adatkezelési tájékoztató és utazási szerződés — aktuális-e?</td>
+              <td>Elég egy igen / nem. Ha van újabb PDF, hozzátok.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Utána, az adminból</h3>
+      <p class="secondary">Nem kell az első körhöz. Feltölthetitek ti, vagy elkülditek.</p>
+      <div class="frame">
+        <table>
+          <thead>
+            <tr><th>Mit kérünk</th><th>Mire kell</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Valós utak, árak, program — magyarul és angolul</td>
+              <td>A demó utak helyére.</td>
+            </tr>
+            <tr>
+              <td>Saját fotók (utak, oldalak, csapat)</td>
+              <td>Élesben ne maradjanak a mostani stock képek.</td>
+            </tr>
+            <tr>
+              <td>Vélemények, logó, extra közösségi linkek — ha van</td>
+              <td>A Facebook már bent van.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Szóban egyeztetjük</h3>
+      <p class="secondary">Ezekre most nem kell anyag, csak döntés a megbeszélésen.</p>
+      <div class="frame">
+        <table>
+          <thead>
+            <tr><th>Téma</th><th>Röviden</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Hátralék, lemondás, indulási dátum, utasnevek</td>
+              <td>Az oldal az előleget szedi. A többi mehet e-mailben, vagy külön építjük.</td>
+            </tr>
+            <tr>
+              <td>Utasbiztosítás</td>
+              <td>A jelentkezésen van egy pipa, hogy kér-e biztosítást. Ajánlat, ár, partner mögötte nincs. Maradjon így, vagy vegyük ki?</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="small tertiary">A kulcsokat ne WhatsAppra / sima e-mailre — személyesen vagy titkosított jegyzet.</p>
+    </div>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const btn = document.getElementById("theme-btn");
+    const stored = localStorage.getItem("mi-keszult-theme");
+    const start = stored || "light";
+    function applyTheme(theme) {
+      root.dataset.theme = theme;
+      btn.textContent = theme === "dark" ? "Világos" : "Sötét";
+    }
+    applyTheme(start);
+    btn.addEventListener("click", () => {
+      const next = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("mi-keszult-theme", next);
+      applyTheme(next);
+    });
+
+    function bindFilter(pillRoot, rowSelector, emptyId, captionId, captionFn) {
+      const pills = document.querySelectorAll(pillRoot + " .pill");
+      const rows = [...document.querySelectorAll(rowSelector)];
+      const empty = document.getElementById(emptyId);
+      const caption = document.getElementById(captionId);
+      pills.forEach((pill) => {
+        pill.addEventListener("click", () => {
+          pills.forEach((p) => p.classList.toggle("active", p === pill));
+          const filter = pill.dataset.filter;
+          let visible = 0;
+          rows.forEach((row) => {
+            const tags = row.dataset.filter.split(" ");
+            const show = filter === "all" || tags.includes(filter);
+            row.classList.toggle("hidden", !show);
+            if (show) visible += 1;
+          });
+          empty.classList.toggle("hidden", visible > 0);
+          if (caption && captionFn) caption.textContent = captionFn(visible, rows.length);
+        });
+      });
+    }
+
+    bindFilter("#filters", "#feature-rows tr[data-filter]", "empty-row", "caption", (visible, total) =>
+      visible + " tétel a szűrőben / " + total + " kész funkció"
+    );
+  </script>
+</body>
+</html>

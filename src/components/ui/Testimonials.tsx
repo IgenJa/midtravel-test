@@ -16,12 +16,12 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
       {testimonials.map((testimonial) => (
         <StaggerItem key={testimonial.id}>
           <Card className="relative h-full">
-            <Quote className="absolute right-6 top-6 h-8 w-8 text-teal-100" />
+            <Quote className="absolute right-6 top-6 h-8 w-8 text-teal-200/80" />
             <div className="flex items-center gap-1">
               {Array.from({ length: testimonial.rating }).map((_, i) => (
                 <Star
                   key={i}
-                  className="h-4 w-4 fill-teal-300 text-teal-300"
+                  className="h-4 w-4 fill-teal-400 text-teal-400"
                 />
               ))}
             </div>

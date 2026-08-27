@@ -31,7 +31,7 @@ export async function Footer() {
   };
 
   return (
-    <footer className="bg-navy text-white/80">
+    <footer className="border-t border-teal-300/30 bg-navy text-white/80">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">
@@ -41,7 +41,7 @@ export async function Footer() {
                 alt={company.name}
                 width={36}
                 height={36}
-                className="h-9 w-9 shrink-0 rounded-full object-cover"
+                className="h-9 w-9 shrink-0 rounded-full object-cover ring-1 ring-teal-300/40"
               />
               <span className="font-display text-xl font-bold text-white">
                 {company.name}

@@ -3,6 +3,8 @@ import Image from "next/image";
 import { Compass, Sparkles, GraduationCap, BadgeCheck, Target, Eye } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Hero } from "@/components/ui/Hero";
+import { CtaBanner } from "@/components/ui/CtaBanner";
+import { GoldRule } from "@/components/ui/GoldRule";
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Stats } from "@/components/ui/Stats";
@@ -66,7 +68,7 @@ export default async function AboutPage({ params }: Props) {
               </div>
             </FadeIn>
             <FadeIn direction="right" delay={0.2}>
-              <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-2xl">
+              <div className="photo-frame relative aspect-[4/3]">
                 <Image
                   src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80"
                   alt={t("storyImageAlt")}
@@ -86,8 +88,8 @@ export default async function AboutPage({ params }: Props) {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <StaggerContainer className="grid gap-8 md:grid-cols-2">
             <StaggerItem>
-              <div className="h-full rounded-2xl bg-[#fffdf8] p-8 shadow-md ring-1 ring-teal-200/50">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-teal-500 text-white">
+              <div className="feature-card h-full rounded-2xl bg-[#fffdf8] p-8 shadow-md ring-1 ring-teal-200/50">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-teal-500 text-white shadow-md shadow-navy/20 ring-1 ring-white/20">
                   <Target className="h-6 w-6" />
                 </div>
                 <h3 className="mt-4 font-display text-2xl font-bold text-slate-900">
@@ -99,8 +101,8 @@ export default async function AboutPage({ params }: Props) {
               </div>
             </StaggerItem>
             <StaggerItem>
-              <div className="h-full rounded-2xl bg-[#fffdf8] p-8 shadow-md ring-1 ring-teal-200/50">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-teal-500 text-white">
+              <div className="feature-card h-full rounded-2xl bg-[#fffdf8] p-8 shadow-md ring-1 ring-teal-200/50">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-teal-500 text-white shadow-md shadow-navy/20 ring-1 ring-white/20">
                   <Eye className="h-6 w-6" />
                 </div>
                 <h3 className="mt-4 font-display text-2xl font-bold text-slate-900">
@@ -126,7 +128,7 @@ export default async function AboutPage({ params }: Props) {
           <StaggerContainer className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {company.about.values.map((value) => (
               <StaggerItem key={value.title}>
-                <div className="h-full rounded-2xl bg-[#fffdf8] p-6 shadow-md ring-1 ring-teal-200/50">
+                <div className="feature-card h-full rounded-2xl bg-[#fffdf8] p-6 shadow-md ring-1 ring-teal-200/50">
                   <h3 className="font-display text-lg font-bold text-slate-900">
                     {value.title}
                   </h3>
@@ -153,8 +155,8 @@ export default async function AboutPage({ params }: Props) {
               const Icon = iconMap[item.icon as keyof typeof iconMap];
               return (
                 <StaggerItem key={item.title} className="h-full">
-                  <div className="flex h-full flex-col rounded-2xl bg-[#fffdf8] p-6 shadow-md ring-1 ring-teal-200/50">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-teal-500 text-white">
+                  <div className="feature-card flex h-full flex-col rounded-2xl bg-[#fffdf8] p-6 shadow-md ring-1 ring-teal-200/50">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-teal-500 text-white shadow-md shadow-navy/20 ring-1 ring-white/20">
                       <Icon className="h-6 w-6" />
                     </div>
                     <h3 className="mt-4 font-display text-lg font-bold text-slate-900">
@@ -172,12 +174,13 @@ export default async function AboutPage({ params }: Props) {
       </section>
 
       {/* Stats */}
-      <section className="bg-gradient-to-br from-teal-700 via-teal-600 to-teal-500 py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="navy-band py-20">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
-            <h2 className="mb-12 text-center font-display text-3xl font-bold text-white sm:text-4xl">
+            <h2 className="mb-4 text-center font-display text-3xl font-bold text-white sm:text-4xl">
               {t("statsTitle")}
             </h2>
+            <GoldRule className="mb-12" light />
             <Stats stats={company.stats} />
           </AnimatedSection>
         </div>
@@ -186,23 +189,14 @@ export default async function AboutPage({ params }: Props) {
       {/* CTA */}
       <AnimatedSection className="py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-teal-700 to-teal-600 px-8 py-16 text-center sm:px-16">
-            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-teal-200/25 blur-3xl" />
-            <h2 className="relative font-display text-3xl font-bold text-white sm:text-4xl">
-              {t("ctaTitle")}
-            </h2>
-            <p className="relative mx-auto mt-4 max-w-xl text-teal-100/90">
-              {t("ctaDescription")}
-            </p>
-            <div className="relative mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Button href="/team" size="lg">
-                {t("meetTeam")}
-              </Button>
-              <Button href="/trips" variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
-                {t("exploreTrips")}
-              </Button>
-            </div>
-          </div>
+          <CtaBanner title={t("ctaTitle")} description={t("ctaDescription")}>
+            <Button href="/team" size="lg">
+              {t("meetTeam")}
+            </Button>
+            <Button href="/trips" variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+              {t("exploreTrips")}
+            </Button>
+          </CtaBanner>
         </div>
       </AnimatedSection>
     </>

@@ -14,17 +14,21 @@ export default async function AdminLayout({ children, params }: Props) {
   setRequestLocale(locale);
   await requireAdmin(locale);
 
-  const [unreadContacts, unreadApplications] = await Promise.all([
+  const [unreadContacts, unreadApplications, unreadBookings] = await Promise.all([
     prisma.contactMessage.count({ where: { read: false } }),
     prisma.tripApplication.count({
       where: { read: false, status: "open" },
     }),
+    prisma.booking.count({ where: { read: false, status: "paid" } }),
   ]);
 
   return (
     <AdminGuard>
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-        <AdminNav unreadInbound={unreadContacts + unreadApplications} />
+        <AdminNav
+          unreadInbound={unreadContacts + unreadApplications}
+          unreadBookings={unreadBookings}
+        />
         {children}
       </div>
     </AdminGuard>

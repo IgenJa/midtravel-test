@@ -37,12 +37,12 @@ export function TripCard({ trip, featured = false, compact = false }: TripCardPr
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
           {(featured || trip.featured) && (
-            <span className="absolute left-2 top-2 rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-semibold text-teal-800 sm:left-4 sm:top-4 sm:px-3 sm:py-1 sm:text-xs">
+            <span className="absolute left-2 top-2 rounded-full bg-[#fffdf8]/92 px-2 py-0.5 text-[10px] font-semibold text-navy shadow-sm ring-1 ring-teal-300/60 backdrop-blur-sm sm:left-4 sm:top-4 sm:px-3 sm:py-1 sm:text-xs">
               {t("featured")}
             </span>
           )}
           <div className="absolute bottom-2 left-2 right-2 sm:bottom-4 sm:left-4 sm:right-4">
-            <p className="text-[11px] font-medium text-teal-300 sm:text-sm">{trip.country}</p>
+            <p className="text-[11px] font-medium tracking-wide text-teal-200 sm:text-sm">{trip.country}</p>
             <h3 className="font-display text-sm font-bold leading-tight text-white sm:text-xl">
               {trip.title}
             </h3>

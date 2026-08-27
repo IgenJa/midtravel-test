@@ -37,7 +37,7 @@ export function Gallery({ images, title }: GalleryProps) {
             type="button"
             onClick={() => openLightbox(index)}
             whileHover={{ scale: 1.02 }}
-            className={`relative overflow-hidden rounded-2xl ${
+            className={`group relative overflow-hidden rounded-2xl ${
               index === 0 ? "col-span-2 row-span-2 aspect-[16/10]" : "aspect-square"
             }`}
             aria-label={`View ${title} photo ${index + 1}`}
@@ -47,8 +47,9 @@ export function Gallery({ images, title }: GalleryProps) {
               alt={`${title} - photo ${index + 1}`}
               fill
               sizes="(max-width: 768px) 50vw, 33vw"
-              className="object-cover transition-transform duration-300 hover:scale-105"
+              className="object-cover transition-transform duration-500 hover:scale-105"
             />
+            <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy/30 via-transparent to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-30" />
           </motion.button>
         ))}
       </div>

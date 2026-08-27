@@ -34,9 +34,10 @@ const links: {
 
 type Props = {
   unreadInbound?: number;
+  unreadBookings?: number;
 };
 
-export function AdminNav({ unreadInbound = 0 }: Props) {
+export function AdminNav({ unreadInbound = 0, unreadBookings = 0 }: Props) {
   const pathname = usePathname();
   const t = useTranslations("admin");
 
@@ -46,7 +47,13 @@ export function AdminNav({ unreadInbound = 0 }: Props) {
         const active = link.exact
           ? pathname === link.href
           : pathname === link.href || pathname.startsWith(`${link.href}/`);
-        const showBadge = link.href === "/admin/inbound" && unreadInbound > 0;
+        const badgeCount =
+          link.href === "/admin/inbound"
+            ? unreadInbound
+            : link.href === "/admin/bookings"
+              ? unreadBookings
+              : 0;
+        const showBadge = badgeCount > 0;
 
         return (
           <Link
@@ -67,7 +74,7 @@ export function AdminNav({ unreadInbound = 0 }: Props) {
                   active ? "bg-white/25 text-white" : "bg-teal-600 text-white"
                 )}
               >
-                {unreadInbound}
+                {badgeCount}
               </span>
             ) : null}
           </Link>

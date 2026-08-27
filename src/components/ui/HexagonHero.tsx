@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/Button";
+import { GoldRule } from "@/components/ui/GoldRule";
 import { HERO_TILE_COLS, HERO_TILE_ROWS, type HeroTile } from "@/lib/hero-tiles";
 import { cn } from "@/lib/utils";
 
@@ -167,14 +168,15 @@ export function HexagonHero({
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
         <motion.div
-          initial={{ y: 20 }}
-          animate={{ y: 0 }}
+          initial={{ y: 18, opacity: 0.92 }}
+          animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="mx-auto max-w-3xl rounded-3xl bg-[#fffdf8]/92 px-6 py-8 shadow-2xl ring-1 ring-navy/10 backdrop-blur-md sm:px-12 sm:py-12"
+          className="mx-auto max-w-3xl rounded-3xl bg-[#fffdf8]/88 px-6 py-8 shadow-[0_28px_80px_rgb(58_63_102_/_0.2)] ring-1 ring-[#c8b87a]/45 backdrop-blur-xl sm:px-12 sm:py-12"
         >
           <h1 className="font-display text-4xl font-bold tracking-tight text-navy sm:text-5xl lg:text-6xl">
             {title}
           </h1>
+          <GoldRule className="mt-6" />
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-600 sm:text-xl">
             {subtitle}
           </p>

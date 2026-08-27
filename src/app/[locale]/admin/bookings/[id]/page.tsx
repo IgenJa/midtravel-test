@@ -4,6 +4,8 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { BookingInvoicePanel } from "@/components/admin/BookingInvoicePanel";
 import { EmailDeliveryPanel } from "@/components/admin/EmailDeliveryPanel";
+import { InboundReadToggle } from "@/components/admin/InboundReadToggle";
+import { InboundStatusBadge } from "@/components/admin/InboundStatusBadge";
 import { LegalAcceptancePanel } from "@/components/admin/LegalAcceptancePanel";
 import { ResendNotifyEmailsButton } from "@/components/admin/ResendNotifyEmailsButton";
 import { legalDocumentHref } from "@/data/legal-docs";
@@ -96,7 +98,20 @@ export default async function AdminBookingDetailPage({ params }: Props) {
         align="left"
       />
 
-      <div className="mt-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-8 flex flex-wrap items-center gap-3">
+        <InboundStatusBadge
+          read={booking.read}
+          readLabel={t("readStatus")}
+          unreadLabel={t("unreadStatus")}
+        />
+        <InboundReadToggle
+          kind="booking"
+          id={booking.id}
+          read={booking.read}
+        />
+      </div>
+
+      <div className="mt-6 grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
             {t("status")}
